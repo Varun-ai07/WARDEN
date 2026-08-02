@@ -255,14 +255,14 @@ export class WardenService {
   }
 
   /**
-   * Auto-expire AWAITING_APPROVAL decisions that have been waiting >5 minutes.
+   * Auto-expire AWAITING_APPROVAL decisions that have been waiting >2 minutes.
    * This prevents stale approvals from blocking new runs forever.
    */
   private async autoExpireStaleApprovals(userId: string) {
     const staleRuns = await this.db.all<Row>(
       "SELECT DISTINCT r.run_id FROM runs r JOIN decisions d ON d.run_id = r.run_id WHERE r.user_id = $1 AND r.run_status = 'EXECUTING' AND d.execution_status = 'AWAITING_APPROVAL' AND r.created_at < $2",
       userId,
-      new Date(Date.now() - 5 * 60_000).toISOString(),
+      new Date(Date.now() - 2 * 60_000).toISOString(),
     );
     for (const row of staleRuns) {
       const runId = String(row.run_id);
