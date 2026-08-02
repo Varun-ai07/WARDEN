@@ -269,7 +269,6 @@ Evaluate each policy rule against this subscription:
 - **reasoning**: Explain which rule triggered the action and why, in plain English. Be specific about numbers.
 
 ## Critical Rules
-- subscription_id MUST be exactly: "${subscription.id}" — do not change or invent this value.
 - target_plan MUST be from the available plans list. Never invent plan names.
 - If no alt plans exist and the subscription should change, use DECLINE instead of SWITCH.
 - policy_rule_reference MUST match a rule_id from the policy rules array.
