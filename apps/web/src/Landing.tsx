@@ -5,7 +5,7 @@ interface Props {
   onGetStarted: (policy?: string) => void;
 }
 
-const DEFAULT_POLICY = "Never let total subscriptions exceed $60/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.";
+const DEFAULT_POLICY = "Never let total subscriptions exceed $100/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.";
 
 export function Landing({ onGetStarted }: Props) {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
@@ -387,7 +387,7 @@ export function Landing({ onGetStarted }: Props) {
             />
             <div className="policy-modal__examples">
               <span>Examples:</span>
-              <button onClick={() => setPolicyText("Never let total subscriptions exceed $60/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.")} disabled={isStarting}>
+              <button onClick={() => setPolicyText("Never let total subscriptions exceed $100/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.")} disabled={isStarting}>
                 Budget + Inactivity
               </button>
               <button onClick={() => setPolicyText("Cancel any free trial that converts to paid. Downgrade any subscription not used in 14 days. Maximum $100/month total.")} disabled={isStarting}>
