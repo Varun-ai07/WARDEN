@@ -448,9 +448,18 @@ export class WardenService {
 
       if (candidate.action === "SWITCH") {
         const target = subscription.alt_plans.find((plan) => plan.plan_id === candidate.target_plan);
-        if (!target) throw new HttpError(422, "SWITCH candidate has no valid target plan", "INVALID_TARGET_PLAN");
-        authorizedAmount = target.authorized_amount_minor;
-        effectiveCost = target.effective_monthly_cost_minor;
+        if (!target) {
+          // Target plan invalid - use FakeReasoner logic as fallback
+          const cheapest = [...subscription.alt_plans].sort((a, b) => a.effective_monthly_cost_minor - b.effective_monthly_cost_minor)[0];
+          if (cheapest) {
+            candidate = { ...candidate, action: "SWITCH", target_plan: cheapest.plan_id, reasoning: `${subscription.merchant_name} is unused ${subscription.last_used_days_ago}+ days. Switching to cheapest available plan: ${cheapest.plan_id}.` };
+          } else {
+            candidate = { ...candidate, action: "DECLINE", target_plan: null, reasoning: `${subscription.merchant_name} is unused ${subscription.last_used_days_ago}+ days with no alternative plans. Recommending cancellation.` };
+          }
+        }
+        const validTarget = subscription.alt_plans.find((plan) => plan.plan_id === candidate.target_plan);
+        authorizedAmount = validTarget?.authorized_amount_minor ?? 0;
+        effectiveCost = validTarget?.effective_monthly_cost_minor ?? subscription.current_monthly_cost_minor;
         recurringSavings = Math.max(0, subscription.current_monthly_cost_minor - effectiveCost);
         status = subscription.capability === "unverified" ? "RECOMMENDED" : "AWAITING_APPROVAL";
         outcome = status === "RECOMMENDED" ? "decision_only" : null;
