@@ -1,201 +1,221 @@
-# WARDEN
+<p align="center">
+  <img src="apps/web/public/logo.svg" width="100" height="100" alt="WARDEN Logo">
+</p>
 
-WARDEN is an evidence-first policy engine for recurring commitments. It compiles a user-confirmed natural-language policy, plans actions against a versioned portfolio snapshot, and executes only narrowly scoped, explicitly approved effects.
+<h1 align="center">WARDEN</h1>
 
-## Architecture
+<p align="center">
+  <strong>AI Agent That Enforces Your Spending Policy</strong>
+</p>
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend (React)                         │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────────┐  │
-│  │ Dashboard │  │ Approval │  │ Command  │  │ Evidence      │  │
-│  │          │  │ Panel    │  │ Palette  │  │ Drawer        │  │
-│  └──────────┘  └──────────┘  └──────────┘  └───────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Backend (Express API)                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────────┐  │
-│  │ Service  │  │ Reasoner │  │ Provider │  │ Logger        │  │
-│  │ Layer    │  │ (LLM)    │  │ (Prava)  │  │ (Structured)  │  │
-│  └──────────┘  └──────────┘  └──────────┘  └───────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Persistence (SQLite)                        │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────────┐  │
-│  │ Runs     │  │ Decisions│  │ Evidence │  │ Ledger        │  │
-│  │          │  │          │  │          │  │ (Hash-chain)  │  │
-│  └──────────┘  └──────────┘  └──────────┘  └───────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  Stop paying for subscriptions you forgot about. WARDEN monitors your recurring commitments,<br>
+  enforces your spending rules, and completes transactions automatically — with your approval.
+</p>
 
-### Key Flows
+<p align="center">
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#how-it-works">How It Works</a> ·
+  <a href="#api">API</a> ·
+  <a href="#submission">Submission</a>
+</p>
 
-1. **Policy Compilation**: Natural language → structured rules (MONTHLY_CAP, MAX_INACTIVE_DAYS, MIN_ANNUAL_SAVINGS_BPS)
-2. **Decision Planning**: Policy + Portfolio → candidate actions (RENEW, SWITCH, DECLINE)
-3. **Execution**: Approved decisions → Prava session → merchant checkout → evidence
-4. **Verification**: Hash-chained ledger events with correlation IDs
+---
 
-## Quick Start
+## The Problem
 
-### Prerequisites
+The average household has **12+ active subscriptions** and wastes **$2,400/year** on forgotten or unused services. Current solutions show you what you're paying for but don't take action.
 
-- Node.js 24+
-- npm
+**WARDEN changes that.** It's not a dashboard — it's an agent that discovers, decides, and completes transactions.
 
-### Setup
+---
 
-```bash
-# Clone and install
-git clone <repo-url> Warden
-cd Warden
-npm install
+## The Solution
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your API keys (see Configuration below)
+<p align="center">
+  <img src="artifacts/13-dashboard-with-actions.png" width="800" alt="WARDEN Dashboard">
+</p>
 
-# Start development
-npm run dev
-```
+WARDEN is a **policy engine for recurring commitments**. Write spending rules in plain English, and an AI agent:
 
-Open `http://localhost:5173` in your browser.
+1. **Discovers** your subscriptions
+2. **Analyzes** each against your rules
+3. **Recommends** actions (renew, downgrade, cancel)
+4. **Completes** transactions via Prava
+5. **Verifies** with an auditable evidence ledger
 
-### Configuration
+---
 
-#### Minimal (Simulation Mode)
+## Pitch Lines
 
-```bash
-# No API keys needed - uses fake providers
-REASONER_MODE=fake
-PAYMENT_PROVIDER_MODE=fake
-```
+> **One-liner:** "WARDEN is an AI agent that enforces your spending policy across all subscriptions."
 
-#### With OpenAI Reasoning
+> **Elevator pitch:** "You write the rules. WARDEN enforces them. Never overpay again."
 
-```bash
-REASONER_MODE=openai
-OPENAI_API_KEY=sk-...
-OPENAI_MODEL=gpt-4.1
-```
+> **Demo hook:** "Watch an AI agent analyze $87/month in subscriptions, find $35 in savings, and complete the transaction — all with your approval."
 
-#### With Prava Sandbox
+> **Technical pitch:** "A policy engine that compiles natural language rules into enforceable constraints, executes them through Prava's payment infrastructure, and records every action in a hash-chained evidence ledger."
 
-```bash
-PAYMENT_PROVIDER_MODE=prava
-PRAVA_API_KEY=sk_test_...
-PRAVA_BASE_URL=https://sandbox.api.prava.space
-PRAVA_PUBLISHABLE_KEY=pk_test_...
-```
+> **Judges pitch:** "We built the trust layer for agentic commerce — an agent that handles money safely, transparently, and with user approval at every step."
 
-### Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `⌘K` / `Ctrl+K` | Open command palette |
-| `⌘R` / `Ctrl+R` | Run policy |
-| `⌘E` / `Ctrl+E` | Edit policy |
-| `⌘L` / `Ctrl+L` | View ledger |
-| `Escape` | Close modals |
-
-## Project Structure
-
-```text
-warden/
-├── apps/
-│   ├── api/                    # Express REST API
-│   │   └── src/
-│   │       ├── app.ts          # Route definitions
-│   │       ├── service.ts      # Business logic, state machine
-│   │       ├── reasoner.ts     # LLM reasoning (OpenAI/OpenRouter)
-│   │       ├── prava-provider.ts  # Prava payment integration
-│   │       ├── merchant-checkout.ts  # Merchant checkout adapters
-│   │       ├── logger.ts       # Structured logging
-│   │       └── db.ts           # SQLite persistence
-│   └── web/                    # React/Vite frontend
-│       └── src/
-│           ├── App.tsx         # Main dashboard
-│           ├── CommandPalette.tsx  # ⌘K command palette
-│           ├── api.ts          # API client
-│           └── prava/          # Prava SDK components
-├── packages/
-│   └── shared/                 # Shared types and schemas
-├── artifacts/                  # Screenshots
-└── .env.example               # Environment template
-```
+---
 
 ## Features
 
-### Core
+| Feature | Description |
+|---------|-------------|
+| **Policy Engine** | Write rules in natural English. WARDEN compiles them into enforceable constraints. |
+| **AI Reasoning** | OpenAI GPT-4.1 analyzes subscriptions against your policy. |
+| **Prava Integration** | Real sandbox transactions with passkey authentication. |
+| **Evidence Ledger** | Hash-chained audit trail of every action taken. |
+| **Real-time Updates** | SSE-powered live event streaming. |
+| **Keyboard Shortcuts** | Cmd+K command palette for power users. |
 
-- **Policy Engine**: Natural language → deterministic rules
-- **Decision Planning**: Portfolio-aware action recommendations
-- **Execution**: Scoped approval with Prava integration
-- **Evidence**: Hash-chained, verifiable audit trail
+---
 
-### Dashboard
+## How It Works
 
-- **Real-time Updates**: SSE-powered live event streaming
-- **Command Palette**: ⌘K for quick actions
-- **Keyboard Navigation**: Full keyboard support
-- **Responsive Design**: Works on desktop and mobile
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    YOUR SPENDING RULES                      │
+│  "Never spend more than $60/month. Cancel unused after 30d" │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   WARDEN AGENT                              │
+│  1. Scans your subscriptions                                │
+│  2. Analyzes against policy                                 │
+│  3. Recommends: RENEW / SWITCH / DECLINE                    │
+│  4. You approve → Agent executes via Prava                  │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   EVIDENCE LEDGER                           │
+│  Hash-chained, auditable record of every transaction        │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### Backend
+---
 
-- **Structured Logging**: Correlation IDs, request tracking
-- **Error Handling**: Network errors, retry logic
-- **Idempotency**: Safe repeated requests
-- **Rate Limiting**: 180 requests/minute
-
-## Verification
+## Quick Start
 
 ```bash
-# Run all checks (type-check + tests + build)
-npm run check
+# Clone
+git clone git@github.com:Varun-ai07/WARDEN.git
+cd WARDEN
 
-# Individual commands
-npm run typecheck    # Type checking
-npm test            # API tests (17 tests)
-npm run build       # Production build
+# Install
+npm install
+
+# Configure
+cp .env.example .env
+# Edit .env with your API keys
+
+# Run
+npm run dev
 ```
+
+Open `http://localhost:5173` and click **Get Started**.
+
+### Environment Variables
+
+```bash
+# Required
+OPENAI_API_KEY=sk-...           # For AI reasoning
+PRAVA_API_KEY=sk_test_...       # For payment processing
+PRAVA_PUBLISHABLE_KEY=pk_test_...
+
+# Optional
+REASONER_MODE=openai            # or "fake" for simulation
+PAYMENT_PROVIDER_MODE=prava     # or "fake" for simulation
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | React, Vite, Tailwind CSS |
+| Backend | Express.js, TypeScript |
+| Database | SQLite |
+| AI | OpenAI GPT-4.1 |
+| Payments | Prava SDK/API |
+| Auth | Passkey (WebAuthn) |
+
+---
 
 ## API Endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/api/v1/health` | Health check |
-| GET | `/api/v1/session` | Get session info |
-| GET | `/api/v1/subscriptions` | List subscriptions |
-| GET | `/api/v1/policies/current` | Get active policy |
-| PUT | `/api/v1/policies/current` | Update policy |
-| POST | `/api/v1/runs` | Create new run |
-| GET | `/api/v1/runs/latest` | Get latest run |
-| GET | `/api/v1/runs/:id/events` | Get run events |
-| GET | `/api/v1/runs/:id/stream` | SSE event stream |
+| GET | `/api/v1/session` | Get session |
+| POST | `/api/v1/runs` | Create run |
 | POST | `/api/v1/decisions/:id/approval-session` | Start approval |
-| POST | `/api/v1/decisions/:id/attempts` | Execute attempt |
-| POST | `/api/v1/decisions/:id/cancel` | Decline decision |
+| POST | `/api/v1/prava/sessions/:id/finalize` | Complete transaction |
 
-## Current Limits
+---
 
-- Manually triggered runs; no background scheduler
-- Synthetic single-user demo session
-- One currency per portfolio (USD)
-- One backend process and SQLite database
-- Live Prava sandbox requires credentials
-- Live OpenRouter behavior is model/endpoint-dependent
+## Project Structure
+
+```
+WARDEN/
+├── apps/
+│   ├── api/                 # Express backend
+│   │   └── src/
+│   │       ├── app.ts       # Routes
+│   │       ├── service.ts   # Business logic
+│   │       ├── prava-provider.ts  # Prava integration
+│   │       └── reasoner.ts  # AI reasoning
+│   └── web/                 # React frontend
+│       └── src/
+│           ├── App.tsx      # Dashboard
+│           ├── Landing.tsx  # Landing page
+│           └── api.ts       # API client
+├── packages/
+│   └── shared/              # Shared types
+└── artifacts/               # Screenshots
+```
+
+---
 
 ## Screenshots
 
-Visual smoke outputs in `artifacts/`:
+<p align="center">
+  <img src="artifacts/10-landing-hero.png" width="400" alt="Landing Page">
+  &nbsp;&nbsp;
+  <img src="artifacts/12-dashboard-improved.png" width="400" alt="Dashboard">
+</p>
 
-- `warden-dashboard-final.png`
-- `warden-dashboard-mobile-final.png`
-- `warden-evidence-flow-final.png`
+---
+
+## Submission
+
+**Hackathon:** Agentic Commerce Hackathon 2026
+**Team:** Solo builder
+**Built during:** August 1-2, 2026
+
+### What Existed Before
+Nothing. This project was built from scratch during the hackathon.
+
+### What We Learned
+- Agentic commerce requires clear transaction completion proof
+- Users need to understand what the agent is doing at every step
+- Policy engines are a novel approach to subscription management
+- Prava's passkey flow provides the right trust boundary for AI payments
+
+---
 
 ## License
 
-Private - Synthesis Hackathon 2026
+MIT
+
+---
+
+<p align="center">
+  Built with ❤️ for the Agentic Commerce Hackathon 2026
+</p>

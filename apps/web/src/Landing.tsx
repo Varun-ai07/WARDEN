@@ -1,14 +1,19 @@
-import { ArrowRight, Check, Shield, Zap, Eye, Lock, BarChart3, Clock, CreditCard, TrendingDown } from "lucide-react";
+import { ArrowRight, Check, Shield, Zap, Eye, Lock, BarChart3, Clock, CreditCard, TrendingDown, X, LoaderCircle } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Props {
-  onGetStarted: () => void;
+  onGetStarted: (policy?: string) => void;
 }
+
+const DEFAULT_POLICY = "Never let total subscriptions exceed $60/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.";
 
 export function Landing({ onGetStarted }: Props) {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
   const [navVisible, setNavVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
+  const [showPolicyInput, setShowPolicyInput] = useState(false);
+  const [policyText, setPolicyText] = useState(DEFAULT_POLICY);
+  const [isStarting, setIsStarting] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -46,6 +51,17 @@ export function Landing({ onGetStarted }: Props) {
 
   const isVisible = useCallback((id: string) => visibleSections.has(id), [visibleSections]);
 
+  const handleGetStarted = useCallback(() => {
+    setShowPolicyInput(true);
+  }, []);
+
+  const handleStartWithPolicy = useCallback(() => {
+    setIsStarting(true);
+    setTimeout(() => {
+      onGetStarted(policyText || DEFAULT_POLICY);
+    }, 800);
+  }, [onGetStarted, policyText]);
+
   return (
     <div className="landing">
       {/* Navbar */}
@@ -61,7 +77,7 @@ export function Landing({ onGetStarted }: Props) {
             <a href="#how-it-works">How It Works</a>
             <a href="#guide">Guide</a>
           </div>
-          <button className="button button--primary button--sm" onClick={onGetStarted}>
+          <button className="button button--primary button--sm" onClick={handleGetStarted}>
             Get Started <ArrowRight size={14} />
           </button>
         </div>
@@ -80,7 +96,7 @@ export function Landing({ onGetStarted }: Props) {
             and executes changes automatically — with your approval at every step.
           </p>
           <div className="landing__cta-group">
-            <button className="button button--primary button--lg" onClick={onGetStarted}>
+            <button className="button button--primary button--lg" onClick={handleGetStarted}>
               Get Started <ArrowRight size={18} />
             </button>
             <a href="#how-it-works" className="button button--secondary button--lg">
@@ -326,7 +342,7 @@ export function Landing({ onGetStarted }: Props) {
           <img src="/logo.svg" alt="Warden" width="72" height="72" className="landing__cta-logo" />
           <h2>Ready to take control?</h2>
           <p>Stop losing money to forgotten subscriptions. Start enforcing your spending rules today.</p>
-          <button className="button button--primary button--lg" onClick={onGetStarted}>
+          <button className="button button--primary button--lg" onClick={handleGetStarted}>
             Launch WARDEN <ArrowRight size={18} />
           </button>
         </div>
@@ -350,6 +366,43 @@ export function Landing({ onGetStarted }: Props) {
           </div>
         </div>
       </footer>
+
+      {/* Policy Input Modal */}
+      {showPolicyInput && (
+        <div className="policy-modal-backdrop" onClick={() => !isStarting && setShowPolicyInput(false)}>
+          <div className="policy-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="policy-modal__close" onClick={() => !isStarting && setShowPolicyInput(false)} disabled={isStarting}>
+              <X size={18} />
+            </button>
+            <img src="/logo.svg" alt="Warden" width="48" height="48" className="policy-modal__logo" />
+            <h2>Set Your Spending Rules</h2>
+            <p>Tell WARDEN how to manage your subscriptions. Write your rules in plain English.</p>
+            <textarea
+              className="policy-modal__textarea"
+              value={policyText}
+              onChange={(e) => setPolicyText(e.target.value)}
+              placeholder="e.g., Never spend more than $60/month. Cancel anything unused for 30 days."
+              rows={5}
+              disabled={isStarting}
+            />
+            <div className="policy-modal__examples">
+              <span>Examples:</span>
+              <button onClick={() => setPolicyText("Never let total subscriptions exceed $60/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.")} disabled={isStarting}>
+                Budget + Inactivity
+              </button>
+              <button onClick={() => setPolicyText("Cancel any free trial that converts to paid. Downgrade any subscription not used in 14 days. Maximum $100/month total.")} disabled={isStarting}>
+                Trial Prevention
+              </button>
+              <button onClick={() => setPolicyText("Always choose annual plans if they save more than 20%. Cancel anything unused for 60 days. Keep total under $50/month.")} disabled={isStarting}>
+                Annual Optimization
+              </button>
+            </div>
+            <button className="button button--primary button--wide" onClick={handleStartWithPolicy} disabled={isStarting || !policyText.trim()}>
+              {isStarting ? <><LoaderCircle className="spin" size={16} /> Setting up your policy...</> : <>Start WARDEN <ArrowRight size={16} /></>}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

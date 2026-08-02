@@ -143,8 +143,9 @@ export function App() {
     }
   }, []);
 
-  const navigateToDashboard = useCallback(() => {
+  const navigateToDashboard = useCallback((policyText?: string) => {
     setView("dashboard");
+    if (policyText) setPolicyText(policyText);
     void load();
   }, [load]);
 
