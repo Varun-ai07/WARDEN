@@ -212,10 +212,12 @@ export class WardenDb {
       this.run("INSERT INTO portfolio_meta VALUES (?, ?)", "user_demo", 1);
 
       const seeds = [
-        ["sub_ai_service", "merchant_ai_service", "Sample AI service", "monthly", 2000, "monthly", 1, 92, 95, "payment", [{ plan_id: "annual", authorized_amount_minor: 16500, effective_monthly_cost_minor: 1375, currency: "USD" }]],
-        ["sub_gym", "merchant_gym", "Sample gym service", "standard", 2500, "monthly", 42, 12, 30, "unverified", [{ plan_id: "basic", authorized_amount_minor: 1000, effective_monthly_cost_minor: 1000, currency: "USD" }]],
-        ["sub_free_trial", "merchant_trial", "Sample SaaS trial", "trial", 1200, "trial", null, null, 20, "prevention", []],
-        ["sub_notion", "merchant_notion", "Notion", "monthly", 1000, "monthly", 2, 82, 85, "unverified", []],
+        ["sub_notion", "merchant_notion", "Notion", "monthly", 1000, "monthly", 2, 82, 85, "payment", []],
+        ["sub_figma", "merchant_figma", "Figma", "professional", 1500, "monthly", 1, 90, 92, "payment", [{ plan_id: "annual", authorized_amount_minor: 14400, effective_monthly_cost_minor: 1200, currency: "USD" }]],
+        ["sub_gym", "merchant_gym", "Equinox Gym", "standard", 2500, "monthly", 42, 12, 30, "unverified", [{ plan_id: "basic", authorized_amount_minor: 1000, effective_monthly_cost_minor: 1000, currency: "USD" }]],
+        ["sub_spotify", "merchant_spotify", "Spotify", "family", 1700, "monthly", 3, 85, 88, "payment", [{ plan_id: "individual", authorized_amount_minor: 1100, effective_monthly_cost_minor: 1100, currency: "USD" }]],
+        ["sub_coursera", "merchant_coursera", "Coursera Plus", "trial", 800, "trial", null, null, 20, "prevention", []],
+        ["sub_adobe", "merchant_adobe", "Adobe Creative Cloud", "monthly", 5500, "monthly", 35, 15, 40, "unverified", [{ plan_id: "annual", authorized_amount_minor: 59900, effective_monthly_cost_minor: 4992, currency: "USD" }]],
       ] as const;
 
       for (const [subscriptionId, merchantId, merchantName, planId, cost, cycle, lastUsed, frequency, priority, capability, altPlans] of seeds) {

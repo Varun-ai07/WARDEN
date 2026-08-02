@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="apps/web/public/logo-white.svg" width="100" height="100" alt="WARDEN Logo">
+  <img src="apps/web/public/logo-white.svg" width="400" height="400" alt="WARDEN Logo">
 </p>
 
 <h1 align="center">WARDEN</h1>
@@ -34,7 +34,7 @@ The average household has **12+ active subscriptions** and wastes **$2,400/year*
 ## The Solution
 
 <p align="center">
-  <img src="artifacts/13-dashboard-with-actions.png" width="800" alt="WARDEN Dashboard">
+  <img src="artifacts/8_dashboard-improved.png" width="800" alt="WARDEN Dashboard">
 </p>
 
 WARDEN is a **policy engine for recurring commitments**. Write spending rules in plain English, and an AI agent:
@@ -47,19 +47,6 @@ WARDEN is a **policy engine for recurring commitments**. Write spending rules in
 
 ---
 
-## Pitch Lines
-
-> **One-liner:** "WARDEN is an AI agent that enforces your spending policy across all subscriptions."
-
-> **Elevator pitch:** "You write the rules. WARDEN enforces them. Never overpay again."
-
-> **Demo hook:** "Watch an AI agent analyze $87/month in subscriptions, find $35 in savings, and complete the transaction — all with your approval."
-
-> **Technical pitch:** "A policy engine that compiles natural language rules into enforceable constraints, executes them through Prava's payment infrastructure, and records every action in a hash-chained evidence ledger."
-
-> **Judges pitch:** "We built the trust layer for agentic commerce — an agent that handles money safely, transparently, and with user approval at every step."
-
----
 
 ## Features
 

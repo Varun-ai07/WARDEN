@@ -339,7 +339,7 @@ export function Landing({ onGetStarted }: Props) {
       {/* CTA */}
       <section className="landing__cta-section">
         <div className="landing__cta-content">
-          <img src="/logo.svg" alt="Warden" width="72" height="72" className="landing__cta-logo" />
+          <img src="/logo-white.svg" alt="Warden" width="96" height="96" className="landing__cta-logo" />
           <h2>Ready to take control?</h2>
           <p>Stop losing money to forgotten subscriptions. Start enforcing your spending rules today.</p>
           <button className="button button--primary button--lg" onClick={handleGetStarted}>

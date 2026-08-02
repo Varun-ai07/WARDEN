@@ -22,13 +22,32 @@ const money = (minor: number, currency = "USD") => new Intl.NumberFormat("en-US"
 const shortId = (value: string) => `${value.slice(0, 11)}…${value.slice(-4)}`;
 const terminalStatuses = new Set(["NO_ACTION_REQUIRED", "RECOMMENDED", "VALIDATION_FAILED", "STALE", "APPROVAL_DECLINED", "EXPIRED", "COMPLETED", "AVOIDED", "FAILED"]);
 
-function StatusMark({ status, label }: { status: string; label?: string }) {
-  const tone = status === "COMPLETED" || status === "AVOIDED" ? "success" : status === "RECOMMENDED" || status === "NO_ACTION_REQUIRED" ? "neutral" : status.includes("APPROVAL") || status === "AUTHORIZED" ? "warning" : status === "UNKNOWN" || status === "RECONCILING" ? "unknown" : status === "FAILED" || status === "EXPIRED" || status === "STALE" || status === "VALIDATION_FAILED" ? "error" : "info";
-  return <span className={`status status--${tone}`}><span className="status__dot" />{label ?? status.replaceAll("_", " ")}</span>;
+function actionTypeLabel(action: string, targetPlan: string | null): string {
+  if (action === "RENEW") return "RENEW";
+  if (action === "SWITCH") return targetPlan ? `SWITCH → ${targetPlan}` : "SWITCH";
+  if (action === "DECLINE") return "DECLINE";
+  return action;
+}
+
+function StatusMark({ status, label, action, targetPlan }: { status: string; label?: string; action?: string; targetPlan?: string | null }) {
+  const isTerminal = status === "COMPLETED" || status === "AVOIDED";
+  const isRecommendation = status === "RECOMMENDED" || status === "NO_ACTION_REQUIRED";
+
+  let tone = "info";
+  if (isTerminal && action === "DECLINE") tone = "error";
+  else if (isTerminal && action === "SWITCH") tone = "success";
+  else if (isTerminal && action === "RENEW") tone = "warning";
+  else if (isRecommendation) tone = "info";
+  else if (status.includes("APPROVAL") || status === "AUTHORIZED") tone = "warning";
+  else if (status === "FAILED" || status === "EXPIRED" || status === "STALE") tone = "error";
+  else if (status === "RECONCILING" || status === "UNKNOWN") tone = "unknown";
+
+  const displayLabel = label ?? (action ? actionTypeLabel(action, targetPlan ?? null) : status.replaceAll("_", " "));
+  return <span className={`status status--${tone}`}><span className="status__dot" />{displayLabel}</span>;
 }
 
 function decisionStatusLabel(decision: Decision, environment: SessionResponse["environment"] | undefined): string {
-  if (decision.execution_status === "RECOMMENDED") return "RECOMMENDATION ONLY";
+  if (decision.execution_status === "RECOMMENDED") return "RECOMMENDATION";
   if (decision.execution_status === "NO_ACTION_REQUIRED") return "NO ACTION REQUIRED";
   if (decision.execution_status === "STALE") return "BLOCKED BY PREREQUISITE";
   if (decision.execution_status === "VALIDATION_FAILED") return "VALIDATION FAILED";
@@ -39,13 +58,15 @@ function decisionStatusLabel(decision: Decision, environment: SessionResponse["e
   if (decision.execution_status === "RECONCILING") return "RECONCILING PROVIDER RESULT";
   if (decision.execution_status === "COMPLETED") {
     if (decision.evidence_ids.length === 0) return "EVIDENCE PENDING";
-    if (decision.outcome_type === "decision_only") return "RECOMMENDATION ONLY";
-    return environment === "simulation" ? "SIMULATED · TRANSACTION COMPLETED" : "TRANSACTION COMPLETED";
+    if (decision.outcome_type === "decision_only") return "RECOMMENDATION";
+    if (decision.action === "RENEW") return "RENEWED";
+    if (decision.action === "SWITCH") return `SWITCHED → ${decision.target_plan_id}`;
+    return "TRANSACTION COMPLETED";
   }
   if (decision.execution_status === "AVOIDED") {
     if (decision.evidence_ids.length === 0) return "EVIDENCE PENDING";
-    if (decision.outcome_type === "decision_only") return "RECOMMENDATION ONLY";
-    return decision.recurring_monthly_savings_minor > 0 ? "CHARGE PREVENTED · TRANSACTION COMPLETED" : "CANCELLATION CONFIRMED";
+    if (decision.outcome_type === "decision_only") return "RECOMMENDATION";
+    return "DECLINED · CHARGE PREVENTED";
   }
   return decision.execution_status.replaceAll("_", " ");
 }
@@ -65,25 +86,54 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
       <div className="decision__body">
         <div className="decision__head">
           <div><p className="eyebrow">{decision.action}{decision.target_plan_id ? ` → ${decision.target_plan_id}` : ""}</p><h3>{decision.merchant_name}</h3></div>
-          <StatusMark status={decision.execution_status} label={decisionStatusLabel(decision, environment)} />
+          <StatusMark status={decision.execution_status} label={decisionStatusLabel(decision, environment)} action={decision.action} targetPlan={decision.target_plan_id} />
         </div>
         <p className="decision__reason">{decision.reasoning}</p>
         <div className="decision__facts">
           <span>Rule <strong>{decision.policy_rule_reference}</strong></span>
           {decision.authorized_amount_minor > 0 && <span>Authorize <strong>{money(decision.authorized_amount_minor, decision.currency)}</strong></span>}
-          {decision.recurring_monthly_savings_minor > 0 && <span>Recurring <strong>{money(decision.recurring_monthly_savings_minor, decision.currency)}/mo</strong></span>}
+          {decision.recurring_monthly_savings_minor > 0 && <span>Save <strong>{money(decision.recurring_monthly_savings_minor, decision.currency)}/mo</strong> ({Math.round((decision.recurring_monthly_savings_minor / decision.effective_monthly_cost_minor) * 100)}%)</span>}
         </div>
-        {decision.outcome_type === "decision_only" && <p className="decision__recommendation">This is a recommendation only. No payment will be processed.</p>}
+        {decision.outcome_type === "decision_only" && decision.action === "DECLINE" && (
+          <div className="decision__auto-decline">
+            <AlertTriangle size={14} />
+            <span>Agent will automatically decline this charge — no payment required.</span>
+          </div>
+        )}
+        {decision.outcome_type === "decision_only" && decision.action !== "DECLINE" && (
+          <p className="decision__recommendation">This is a recommendation only. No payment will be processed.</p>
+        )}
         {(decision.execution_status === "COMPLETED" || decision.execution_status === "AVOIDED") && decision.evidence_ids.length > 0 && (
           <div className="decision__transaction-proof">
             <Check size={14} />
             <span>{decision.execution_status === "COMPLETED" ? "Transaction completed successfully" : "Charge prevented successfully"}</span>
           </div>
         )}
-        {decision.execution_status === "AWAITING_APPROVAL" && <div className="decision__actions">
-          <button className="button button--primary" disabled={busy === decision.decision_id} onClick={() => onApprove(decision)}>{busy === decision.decision_id ? <LoaderCircle className="spin" size={16} /> : <ShieldCheck size={16} />}Review scoped approval</button>
-          <button className="button button--text" onClick={() => onDecline(decision)}>Decline</button>
-        </div>}
+        {decision.execution_status === "AWAITING_APPROVAL" && decision.action === "SWITCH" && (
+          <div className="decision__actions decision__actions--switch">
+            <button className="button button--switch" disabled={busy === decision.decision_id} onClick={() => onApprove(decision)}>
+              {busy === decision.decision_id ? <LoaderCircle className="spin" size={16} /> : <ArrowRight size={16} />}
+              Switch to {decision.target_plan_id}
+            </button>
+            <button className="button button--secondary" onClick={() => onDecline(decision)}>Keep current plan</button>
+          </div>
+        )}
+        {decision.execution_status === "AWAITING_APPROVAL" && decision.action === "RENEW" && (
+          <div className="decision__actions">
+            <button className="button button--renew" disabled={busy === decision.decision_id} onClick={() => onApprove(decision)}>
+              {busy === decision.decision_id ? <LoaderCircle className="spin" size={16} /> : <ShieldCheck size={16} />}
+              Approve renewal
+            </button>
+          </div>
+        )}
+        {decision.execution_status === "AWAITING_APPROVAL" && decision.action === "DECLINE" && (
+          <div className="decision__actions">
+            <button className="button button--decline" disabled={busy === decision.decision_id} onClick={() => onApprove(decision)}>
+              {busy === decision.decision_id ? <LoaderCircle className="spin" size={16} /> : <X size={16} />}
+              Confirm decline
+            </button>
+          </div>
+        )}
         {decision.evidence_ids.length > 0 && <div className="evidence-links">{decision.evidence_ids.map((evidenceId) => <button data-evidence-id={evidenceId} className="evidence-link" key={evidenceId}><FileCheck2 size={14} />{shortId(evidenceId)}</button>)}</div>}
       </div>
     </article>

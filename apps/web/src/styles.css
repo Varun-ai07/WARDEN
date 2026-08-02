@@ -107,9 +107,22 @@ td small { display: block; color: var(--muted); font-family: "IBM Plex Mono", mo
 .decision__facts { display: flex; flex-wrap: wrap; gap: 12px 20px; color: var(--muted); font-size: 11px; }
 .decision__facts strong { color: var(--ink); font-family: "IBM Plex Mono", monospace; font-weight: 500; }
 .decision__actions { display: flex; gap: 8px; margin-top: 14px; }
+.decision__actions--switch { flex-direction: column; }
+.button--renew { color: white; background: #e65100; border: 1px solid #e65100; }
+.button--renew:hover:not(:disabled) { background: #bf360c; }
+.button--switch { color: white; background: var(--success); border: 1px solid var(--success); }
+.button--switch:hover:not(:disabled) { background: #0d5c3f; }
+.button--decline { color: white; background: var(--error); border: 1px solid var(--error); }
+.button--decline:hover:not(:disabled) { background: #8b2320; }
+.decision__auto-decline { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; padding: 8px 10px; background: #fce4ec; border-left: 3px solid var(--error); color: var(--error); font-size: 12px; }
 .status { display: inline-flex; align-items: center; gap: 6px; font-family: "IBM Plex Mono", monospace; font-size: 9px; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
 .status__dot { width: 7px; height: 7px; background: currentColor; }
-.status--success { color: var(--success); }.status--warning { color: var(--warning); }.status--error { color: var(--error); }.status--unknown { color: var(--unknown); }.status--info { color: var(--cobalt); }.status--neutral { color: var(--muted); }
+.status--success { color: var(--success); }
+.status--warning { color: #e65100; }
+.status--error { color: var(--error); }
+.status--unknown { color: var(--unknown); }
+.status--info { color: var(--cobalt); }
+.status--neutral { color: var(--muted); }
 .evidence-links { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
 .evidence-link { border: 1px solid var(--rule); background: transparent; padding: 5px 7px; border-radius: 3px; display: inline-flex; align-items: center; gap: 5px; color: var(--success); font-family: "IBM Plex Mono", monospace; font-size: 9px; }
 .ledger-list { max-height: 610px; overflow: auto; }
