@@ -104,6 +104,10 @@ export class WardenService {
     if (activePolicy.version !== policyVersion) throw new HttpError(409, "Policy version is stale", "POLICY_VERSION_CONFLICT");
     const currentPortfolioVersion = await this.portfolioVersion(userId);
     if (currentPortfolioVersion !== expectedPortfolioVersion) throw new HttpError(409, "Portfolio version is stale", "PORTFOLIO_VERSION_CONFLICT");
+
+    // Auto-expire stale AWAITING_APPROVAL decisions (>5 min old) so they never block new runs
+    await this.autoExpireStaleApprovals(userId);
+
     const blocking = await this.db.get<Row>(
       "SELECT run_id FROM runs WHERE user_id = $1 AND run_status IN ('CREATED','PLANNING','READY','EXECUTING') ORDER BY created_at DESC LIMIT 1",
       userId,
@@ -248,6 +252,43 @@ export class WardenService {
       }
     }
     return stuck.length;
+  }
+
+  /**
+   * Auto-expire AWAITING_APPROVAL decisions that have been waiting >5 minutes.
+   * This prevents stale approvals from blocking new runs forever.
+   */
+  private async autoExpireStaleApprovals(userId: string) {
+    const staleRuns = await this.db.all<Row>(
+      "SELECT DISTINCT r.run_id FROM runs r JOIN decisions d ON d.run_id = r.run_id WHERE r.user_id = $1 AND r.run_status = 'EXECUTING' AND d.execution_status = 'AWAITING_APPROVAL' AND r.created_at < $2",
+      userId,
+      new Date(Date.now() - 5 * 60_000).toISOString(),
+    );
+    for (const row of staleRuns) {
+      const runId = String(row.run_id);
+      const correlationId = id("corr");
+      try {
+        await this.db.transaction(async () => {
+          for (const decision of await this.db.all<Row>(
+            "SELECT decision_id FROM decisions WHERE run_id = $1 AND execution_status = 'AWAITING_APPROVAL'", runId,
+          )) {
+            await this.db.run(
+              "UPDATE decisions SET execution_status='EXPIRED', outcome_type=NULL, failure_code='APPROVAL_TIMEOUT' WHERE decision_id=$1",
+              String(decision.decision_id),
+            );
+            await this.db.run(
+              "UPDATE execution_attempts SET execution_status='EXPIRED', failure_code='APPROVAL_TIMEOUT', updated_at=$1 WHERE decision_id=$2 AND execution_status='AWAITING_APPROVAL'",
+              now(), String(decision.decision_id),
+            );
+          }
+          await this.refreshRunStatus(runId);
+          await this.appendEvent(runId, null, correlationId, "run_completed", { run_status: "EXPIRED" });
+        });
+        logger.warn("stale_approvals_expired", { userId, correlationId }, { runId });
+      } catch (error) {
+        logger.error("stale_approval_expiry_failed", { userId, correlationId }, error);
+      }
+    }
   }
 
   async createApprovalSession(userId: string, decisionId: string, idempotencyKey: string): Promise<ApprovalSession> {
@@ -463,8 +504,9 @@ export class WardenService {
       } else if (candidate.action === "DECLINE") {
         authorizedAmount = 0;
         effectiveCost = 0;
-        status = subscription.capability === "prevention" ? "AWAITING_APPROVAL" : "RECOMMENDED";
-        outcome = status === "RECOMMENDED" ? "decision_only" : null;
+        // DECLINE is always automatic — the AI agent prevents the charge without user approval
+        status = "RECOMMENDED";
+        outcome = "decision_only";
       }
 
       const dependsOn = candidate.action === "SWITCH" && firstEffectDecision ? firstEffectDecision : null;
