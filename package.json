@@ -1,0 +1,28 @@
+{
+  "name": "warden",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,magenta \"npm run dev -w @warden/api\" \"npm run dev -w @warden/web\"",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test -w @warden/api",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "playwright": "^1.62.1",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@prava-sdk/core": "^0.1.2"
+  }
+}
