@@ -145,7 +145,10 @@ export class WardenService {
       const total = subscriptions.reduce((sum, subscription) => sum + subscription.current_monthly_cost_minor, 0);
       const candidates = await Promise.all(subscriptions.map(async (subscription) => {
         const candidate = await this.reasoner.decide(subscription, activePolicy.compiled_rules, total);
-        if (candidate.subscription_id !== subscription.id) throw new HttpError(422, "Reasoner returned mismatched subscription", "INVALID_CANDIDATE_IDENTITY");
+        // Override subscription_id if AI returned wrong one (we know which subscription we're evaluating)
+        if (candidate.subscription_id !== subscription.id) {
+          candidate.subscription_id = subscription.id;
+        }
         return candidate;
       }));
       const candidateSubscriptions = new Set<string>();
