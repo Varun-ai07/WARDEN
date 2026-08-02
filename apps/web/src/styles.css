@@ -25,7 +25,7 @@ button:focus-visible, textarea:focus-visible { outline: 2px solid var(--cobalt);
 .app-shell { min-height: 100vh; }
 .command-strip { height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 36px; border-bottom: 1px solid var(--ink); background: var(--paper); position: sticky; top: 0; z-index: 20; }
 .brand { display: flex; align-items: center; gap: 12px; }
-.brand__mark { width: 34px; height: 34px; display: grid; place-items: center; flex-shrink: 0; }
+.brand__mark { width: 44px; height: 44px; display: grid; place-items: center; flex-shrink: 0; }
 .brand__mark svg { width: 100%; height: 100%; }
 .brand div { display: grid; line-height: 1.1; }
 .brand strong { font-size: 14px; letter-spacing: .08em; }

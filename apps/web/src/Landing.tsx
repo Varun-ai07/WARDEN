@@ -52,7 +52,7 @@ export function Landing({ onGetStarted }: Props) {
       <nav className={`landing__nav ${scrolled ? "landing__nav--scrolled" : ""} ${navVisible ? "" : "landing__nav--hidden"}`}>
         <div className="landing__nav-inner">
           <div className="landing__nav-brand">
-            <img src="/logo.svg" alt="Warden" width="28" height="28" />
+            <img src="/logo.svg" alt="Warden" width="36" height="36" />
             <strong>WARDEN</strong>
           </div>
           <div className="landing__nav-links">
@@ -323,7 +323,7 @@ export function Landing({ onGetStarted }: Props) {
       {/* CTA */}
       <section className="landing__cta-section">
         <div className="landing__cta-content">
-          <img src="/logo.svg" alt="Warden" width="48" height="48" className="landing__cta-logo" />
+          <img src="/logo.svg" alt="Warden" width="72" height="72" className="landing__cta-logo" />
           <h2>Ready to take control?</h2>
           <p>Stop losing money to forgotten subscriptions. Start enforcing your spending rules today.</p>
           <button className="button button--primary button--lg" onClick={onGetStarted}>
@@ -336,7 +336,7 @@ export function Landing({ onGetStarted }: Props) {
       <footer className="landing__footer">
         <div className="landing__footer-content">
           <div className="landing__footer-brand">
-            <img src="/logo.svg" alt="Warden" width="24" height="24" />
+            <img src="/logo.svg" alt="Warden" width="32" height="32" />
             <div>
               <strong>WARDEN</strong>
               <span>Policy engine for recurring commitments</span>

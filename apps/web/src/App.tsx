@@ -342,7 +342,7 @@ export function App() {
 
   return <div className="app-shell">
     <header className="command-strip">
-      <div className="brand"><span className="brand__mark"><img src="/logo.svg" alt="Warden" width="34" height="34" /></span><div><strong>WARDEN</strong><span>Your subscription guardian</span></div></div>
+      <div className="brand"><span className="brand__mark"><img src="/logo.svg" alt="Warden" width="44" height="44" /></span><div><strong>WARDEN</strong><span>Your subscription guardian</span></div></div>
       <div className="command-strip__meta">
         <span className="environment"><CircleDot size={12} />{session?.environment ?? "simulation"}</span>
         <span className="mono">policy v{policy?.version ?? "—"}</span>
