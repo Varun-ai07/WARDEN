@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="apps/web/public/logo.svg" width="100" height="100" alt="WARDEN Logo">
+  <img src="apps/web/public/logo-white.svg" width="100" height="100" alt="WARDEN Logo">
 </p>
 
 <h1 align="center">WARDEN</h1>
