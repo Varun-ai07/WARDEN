@@ -400,10 +400,12 @@ export function Landing({ onGetStarted }: Props) {
 
             <div className="policy-modal__subscriptions">
               <span className="policy-modal__subscriptions-label">Demo subscriptions:</span>
-              <div className="policy-modal__sub"><strong>AI Service</strong> $20/mo · Annual plan available</div>
-              <div className="policy-modal__sub"><strong>Gym</strong> $25/mo · Basic plan available</div>
-              <div className="policy-modal__sub"><strong>SaaS Trial</strong> $12/mo · Trial converting soon</div>
+              <div className="policy-modal__sub"><strong>Adobe Creative Cloud</strong> $55/mo · Unused 35 days</div>
+              <div className="policy-modal__sub"><strong>Equinox Gym</strong> $25/mo · Basic plan available</div>
+              <div className="policy-modal__sub"><strong>Spotify</strong> $17/mo · Actively used</div>
+              <div className="policy-modal__sub"><strong>Figma</strong> $15/mo · Annual plan saves 18%</div>
               <div className="policy-modal__sub"><strong>Notion</strong> $10/mo · Actively used</div>
+              <div className="policy-modal__sub"><strong>Coursera Plus</strong> $8/mo · Trial converting soon</div>
             </div>
 
             <button className="button button--primary button--wide" onClick={handleStartWithPolicy} disabled={isStarting || !policyText.trim()}>
