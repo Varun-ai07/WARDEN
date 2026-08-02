@@ -194,7 +194,7 @@ export class WardenDb {
       const policy: CompiledPolicy = {
         currency: "USD",
         rules: [
-          { rule_id: "monthly_cap", type: "MONTHLY_CAP", amount_minor: 10000 },
+          { rule_id: "monthly_cap", type: "MONTHLY_CAP", amount_minor: 12000 },
           { rule_id: "unused_threshold", type: "MAX_INACTIVE_DAYS", days: 30 },
           { rule_id: "annual_threshold", type: "MIN_ANNUAL_SAVINGS_BPS", basis_points: 1500 },
         ],
@@ -205,7 +205,7 @@ export class WardenDb {
         "policy_demo",
         "user_demo",
         1,
-        "Never let total subscriptions exceed $100/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.",
+        "Never let total subscriptions exceed $120/month. Cancel or downgrade anything unused 30+ days. Always take annual billing if it saves more than 15%.",
         JSON.stringify(policy),
         now(),
       );
