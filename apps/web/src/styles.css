@@ -69,7 +69,8 @@ main { padding: 28px 36px 56px; max-width: 1680px; margin: auto; }
 .eyebrow { margin: 0; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .11em; font-weight: 600; }
 .policy-panel { padding-bottom: 18px; }
 .policy-panel textarea { width: calc(100% - 36px); min-height: 116px; resize: vertical; margin: 18px; padding: 12px; border: 1px solid var(--rule); border-radius: 4px; background: #fffefb; line-height: 1.5; color: var(--ink); }
-.policy-panel > .button { margin: 16px 18px 0; }
+.policy-actions { display: flex; gap: 8px; padding: 16px 18px 0; }
+.policy-actions .button { flex: 1; }
 .draft-notice { margin: -6px 18px 14px; padding-left: 10px; border-left: 3px solid var(--warning); color: #765022; font-size: 11px; line-height: 1.45; }
 .rules { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
 .rule { min-height: 39px; padding: 8px 18px; display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px; border-bottom: 1px solid #ece7db; font-size: 12px; }
@@ -96,6 +97,9 @@ td small { display: block; color: var(--muted); font-family: "IBM Plex Mono", mo
 .decision__body { padding: 18px 0 20px; border-bottom: 1px solid var(--rule); min-width: 0; }
 .decision:last-child .decision__body { border-bottom: 0; }
 .decision--active .decision__line { background: var(--signal); }
+.decision--renew .decision__line { background: #e65100; }
+.decision--switch .decision__line { background: var(--success); }
+.decision--decline .decision__line { background: var(--error); }
 .decision--recommendation .decision__body { background: #f8f7f3; border-left: 3px solid var(--cobalt); padding-left: 15px; }
 .decision--recommendation .decision__line { background: var(--cobalt); }
 .decision__recommendation { margin: 10px 0 0; padding: 8px 10px; background: #f0f3ff; border-left: 3px solid var(--cobalt); color: #333; font-size: 12px; line-height: 1.4; }

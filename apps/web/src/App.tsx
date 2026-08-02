@@ -80,7 +80,7 @@ function RuleLabel({ rule }: { rule: PolicyRecord["compiled_rules"]["rules"][num
 function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { decisions: Decision[]; onApprove: (decision: Decision) => void; onDecline: (decision: Decision) => void; busy: string | null; environment?: SessionResponse["environment"] }) {
   if (decisions.length === 0) return <div className="empty"><CircleDot size={18} /><p>Run the active policy to create a versioned decision plan.</p></div>;
   return <div className="decision-rail">{decisions.map((decision, index) => (
-    <article className={`decision ${decision.execution_status === "AWAITING_APPROVAL" ? "decision--active" : ""} ${decision.outcome_type === "decision_only" ? "decision--recommendation" : ""}`} key={decision.decision_id}>
+    <article className={`decision decision--${decision.action.toLowerCase()} ${decision.execution_status === "AWAITING_APPROVAL" ? "decision--active" : ""} ${decision.outcome_type === "decision_only" ? "decision--recommendation" : ""}`} key={decision.decision_id}>
       <div className="decision__index">{String(index + 1).padStart(2, "0")}</div>
       <div className="decision__line" aria-hidden="true" />
       <div className="decision__body">
@@ -96,8 +96,8 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
         </div>
         {decision.outcome_type === "decision_only" && decision.action === "DECLINE" && (
           <div className="decision__auto-decline">
-            <AlertTriangle size={14} />
-            <span>Agent will automatically decline this charge — no payment required.</span>
+            <Check size={14} />
+            <span>Agent automatically declined this charge — no payment required.</span>
           </div>
         )}
         {decision.outcome_type === "decision_only" && decision.action !== "DECLINE" && (
@@ -397,7 +397,6 @@ export function App() {
       <div className="command-strip__meta">
         <span className="environment"><CircleDot size={12} />{session?.environment ?? "simulation"}</span>
         <span className="mono">policy v{policy?.version ?? "—"}</span>
-        <button className="button button--primary" disabled={busy === "run" || pendingCount > 0 || policyDirty} onClick={startRun}>{busy === "run" ? <LoaderCircle className="spin" size={16} /> : <Play size={15} />}Run policy</button>
       </div>
     </header>
 
@@ -418,7 +417,10 @@ export function App() {
           <textarea aria-label="Policy text" value={policyText} onChange={(event) => setPolicyText(event.target.value)} />
           {policyDirty && <p className="draft-notice">Draft changes are not active. Compile and confirm them before running WARDEN.</p>}
           <div className="rules">{policy?.compiled_rules.rules.map((rule) => <div className="rule" key={rule.rule_id}><Check size={14} /><RuleLabel rule={rule} /><code>{rule.rule_id}</code></div>)}</div>
-          <button className="button button--secondary" disabled={busy === "policy" || policyText === policy?.policy_text} onClick={savePolicy}>{busy === "policy" ? <LoaderCircle className="spin" size={16} /> : <RefreshCw size={15} />}Compile and activate</button>
+          <div className="policy-actions">
+            <button className="button button--secondary" disabled={busy === "policy" || policyText === policy?.policy_text} onClick={savePolicy}>{busy === "policy" ? <LoaderCircle className="spin" size={16} /> : <RefreshCw size={15} />}Compile and activate</button>
+            <button className="button button--primary" disabled={busy === "run" || pendingCount > 0 || policyDirty} onClick={startRun}>{busy === "run" ? <LoaderCircle className="spin" size={16} /> : <Play size={15} />}Manage My Subscriptions</button>
+          </div>
         </div>
 
         <div className="portfolio-panel plane">
