@@ -790,3 +790,44 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+.policy-modal__subscriptions {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: var(--ground);
+  border: 1px solid var(--rule);
+}
+
+.policy-modal__subscriptions-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.policy-modal__sub {
+  padding: 6px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.policy-modal__sub:last-child {
+  border-bottom: 0;
+}
+
+.policy-modal__sub strong {
+  color: var(--ink);
+}
+
+.policy-modal__note {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  background: #fff8e1;
+  border: 1px solid #f0e68c;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #666;
+}

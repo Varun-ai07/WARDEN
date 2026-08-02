@@ -373,6 +373,7 @@ export function App() {
 
         <div className="portfolio-panel plane">
           <div className="section-head"><div><p className="eyebrow">Your subscriptions</p><h2>All recurring charges</h2></div><span>{subscriptions.length} items</span></div>
+          <div className="demo-note">Demo data — A production version would auto-discover subscriptions from your email/bank.</div>
           <div className="table-wrap"><table><thead><tr><th>Merchant</th><th>Plan</th><th>Monthly</th><th>Use</th><th>Health</th><th>Capability</th></tr></thead><tbody>{subscriptions.map((item) => <tr key={item.id}><td data-label="Merchant"><strong>{item.merchant_name}</strong><small>{item.id}</small></td><td data-label="Plan" className="mono">{item.plan_id}</td><td data-label="Monthly" className="mono">{money(item.current_monthly_cost_minor, item.currency)}</td><td data-label="Use">{item.last_used_days_ago === null ? "No data" : `${item.last_used_days_ago}d ago`}</td><td data-label="Health"><span className="health"><i style={{ width: `${item.health_score}%` }} />{item.health_score}</span></td><td data-label="Capability"><span className={`capability capability--${item.capability}`}>{item.capability}</span></td></tr>)}</tbody></table></div>
         </div>
       </section>

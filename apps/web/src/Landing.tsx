@@ -397,9 +397,23 @@ export function Landing({ onGetStarted }: Props) {
                 Annual Optimization
               </button>
             </div>
+
+            <div className="policy-modal__subscriptions">
+              <span className="policy-modal__subscriptions-label">Demo subscriptions:</span>
+              <div className="policy-modal__sub"><strong>AI Service</strong> $20/mo · Annual plan available</div>
+              <div className="policy-modal__sub"><strong>Gym</strong> $25/mo · Basic plan available</div>
+              <div className="policy-modal__sub"><strong>SaaS Trial</strong> $12/mo · Trial converting soon</div>
+              <div className="policy-modal__sub"><strong>Notion</strong> $10/mo · Actively used</div>
+            </div>
+
             <button className="button button--primary button--wide" onClick={handleStartWithPolicy} disabled={isStarting || !policyText.trim()}>
               {isStarting ? <><LoaderCircle className="spin" size={16} /> Setting up your policy...</> : <>Start WARDEN <ArrowRight size={16} /></>}
             </button>
+
+            <p className="policy-modal__note">
+              <strong>Note:</strong> This demo uses sample subscription data to showcase the policy engine and Prava integration.
+              A production version would connect to your email/bank to discover real subscriptions automatically.
+            </p>
           </div>
         </div>
       )}
