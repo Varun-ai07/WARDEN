@@ -1,59 +1,63 @@
 {
   "/home/vxrun/Projects/Warden/packages/shared/src/index.ts": {
-    "mtime": 1785652484.3042226,
-    "hash": "1a37d0a390ed2ec57f7bb4353ba04210"
-  },
-  "/home/vxrun/Projects/Warden/apps/api/src/config.ts": {
-    "mtime": 1785653384.71241,
-    "hash": "07286daddadfb7c6d2540197db2004de"
+    "mtime": 1785675052.4579155,
+    "hash": "565160559bbe88d2f52724c0b15c78d2"
   },
   "/home/vxrun/Projects/Warden/apps/api/src/domain.ts": {
     "mtime": 1785650184.3023496,
     "hash": "f35a678c5336d199658d5119cf50ee5b"
   },
   "/home/vxrun/Projects/Warden/apps/api/src/db.ts": {
-    "mtime": 1785649949.0238636,
-    "hash": "9264a740fa065d2a4a8b95e81bb5af1d"
-  },
-  "/home/vxrun/Projects/Warden/apps/api/src/reasoner.ts": {
-    "mtime": 1785654065.878108,
-    "hash": "dc9dcccf2e9506f90cb7f9f623bcb53a"
-  },
-  "/home/vxrun/Projects/Warden/apps/api/src/provider.ts": {
-    "mtime": 1785652923.1468017,
-    "hash": "1576646ed5283578418dc7c2d630340c"
-  },
-  "/home/vxrun/Projects/Warden/apps/api/src/service.ts": {
-    "mtime": 1785654797.4258597,
-    "hash": "6a31f21004d93c0121fcb5c09401ffcf"
+    "mtime": 1785697657.9022663,
+    "hash": "64138511df9dbbefb30f6268ae5f5496"
   },
   "/home/vxrun/Projects/Warden/apps/api/src/auth.ts": {
     "mtime": 1785647600.163514,
     "hash": "79a11f5a51a5f5346eea2a85a8b0c7e0"
   },
-  "/home/vxrun/Projects/Warden/apps/api/src/app.ts": {
-    "mtime": 1785654886.5798395,
-    "hash": "dc34dcb2237e0db151020ffb38a93350"
-  },
-  "/home/vxrun/Projects/Warden/apps/api/src/server.ts": {
-    "mtime": 1785647600.1755135,
-    "hash": "f8610ae30685481c421c4f6c107bdcd5"
-  },
   "/home/vxrun/Projects/Warden/apps/api/src/domain.test.ts": {
     "mtime": 1785647817.7981029,
     "hash": "984ed20715935868bdaa7e609d9bb8ca"
   },
-  "/home/vxrun/Projects/Warden/apps/api/src/service.test.ts": {
-    "mtime": 1785650342.1391418,
-    "hash": "ed8ccd41741aa7fa0af70ebf5135c4a2"
+  "/home/vxrun/Projects/Warden/apps/api/src/merchant-checkout.ts": {
+    "mtime": 1785674948.227611,
+    "hash": "c91a66c13d9917ac1336a966f5246500"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/logger.ts": {
+    "mtime": 1785676824.1742256,
+    "hash": "5469d613eecc527145df220eeed117a7"
   },
   "/home/vxrun/Projects/Warden/apps/api/src/app.test.ts": {
-    "mtime": 1785653090.7211876,
-    "hash": "f95ab3a6410884e5ca7a1cd543bd077a"
+    "mtime": 1785706496.9315794,
+    "hash": "532cbf83699bd7b35748388c50b238ee"
   },
-  "/home/vxrun/Projects/Warden/apps/api/src/prava-provider.ts": {
-    "mtime": 1785652161.2918103,
-    "hash": "61d062f107042af12996c2fa2225ad82"
+  "/home/vxrun/Projects/Warden/apps/api/src/app.ts": {
+    "mtime": 1785706496.9315794,
+    "hash": "9bd0486bd44cd4e34337f42a0c299b8f"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/config.ts": {
+    "mtime": 1785706496.9315794,
+    "hash": "e73df728327cbdc60e53a3bdcd6ba7bd"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/provider.ts": {
+    "mtime": 1785706496.9315794,
+    "hash": "ecd4b1b11aa6c89929ad2fbbbe6a0def"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/reasoner.ts": {
+    "mtime": 1785706496.9315794,
+    "hash": "8293e95dfc8f9930b1aba46c99c2412f"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/server.ts": {
+    "mtime": 1785706496.9315794,
+    "hash": "6f90dd9bdc7956b88bdf751005376e15"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/service.test.ts": {
+    "mtime": 1785706496.9315794,
+    "hash": "c9334917512b5fdd0022f199874bda28"
+  },
+  "/home/vxrun/Projects/Warden/apps/api/src/service.ts": {
+    "mtime": 1785706496.9318228,
+    "hash": "708c88f7829976e809f343b64078a048"
   },
   "/home/vxrun/Projects/Warden/apps/web/vite.config.ts": {
     "mtime": 1785647696.2338867,
@@ -64,12 +68,24 @@
     "hash": "bbe9541c4e5f8ebf4280d10ad8505dc4"
   },
   "/home/vxrun/Projects/Warden/apps/web/src/api.ts": {
-    "mtime": 1785652540.0166395,
-    "hash": "e52dfc5ae988489a867ed08f6d07006a"
+    "mtime": 1785676729.0314767,
+    "hash": "89823835cdadeb99a936d1121a28efc5"
   },
   "/home/vxrun/Projects/Warden/apps/web/src/App.tsx": {
-    "mtime": 1785655146.5803337,
-    "hash": "250768791d1368f3006aeb84d8db45c8"
+    "mtime": 1785698565.9331787,
+    "hash": "a7056e4a4d53485dd7e86cc1d801e4ff"
+  },
+  "/home/vxrun/Projects/Warden/apps/web/src/CommandPalette.tsx": {
+    "mtime": 1785676432.0317988,
+    "hash": "4cf3756fe4c3107e7480bdef9983fdac"
+  },
+  "/home/vxrun/Projects/Warden/apps/web/src/Landing.tsx": {
+    "mtime": 1785706496.9318228,
+    "hash": "823b22ea63dc3059bf7e1a5c8fc7917f"
+  },
+  "/home/vxrun/Projects/Warden/apps/web/src/prava/PravaCardCheckout.tsx": {
+    "mtime": 1785658386.4393349,
+    "hash": "9d5c8ff0e4fa938d0e81a6351ebf1a6c"
   },
   "/home/vxrun/Projects/Warden/warden-team-split.md": {
     "mtime": 1785644324.5218189,
@@ -112,35 +128,131 @@
     "hash": "3eb620908bd9b90cd98ac3fbe0b06d99"
   },
   "/home/vxrun/Projects/Warden/README.md": {
-    "mtime": 1785655085.5739188,
-    "hash": "f8b9bdc42dde4fa090956e13837c84e4"
+    "mtime": 1785694136.0794437,
+    "hash": "5341bcc827ee7643f0b883e29768e4dc"
+  },
+  "/home/vxrun/Projects/Warden/SUBMISSION.md": {
+    "mtime": 1785689781.0418856,
+    "hash": "24258e74e73f5b9adb6178b22cac9132"
   },
   "/home/vxrun/Projects/Warden/apps/web/index.html": {
-    "mtime": 1785647696.2343056,
-    "hash": "f5b2585bcfa3ba4ab45df48b119447af"
+    "mtime": 1785675510.9073107,
+    "hash": "55d5d2f6bff12dfd8bef1be72833071f"
   },
-  "/home/vxrun/Projects/Warden/artifacts/warden-dashboard.png": {
-    "mtime": 1785648025.2180254,
-    "hash": "e822cf19a730a552a4d8fab6a5c636df"
+  "/home/vxrun/Projects/Warden/logo.png": {
+    "mtime": 1785668816.9316843,
+    "hash": "fde116515d45eb5d72c264b37549a9c0"
   },
-  "/home/vxrun/Projects/Warden/artifacts/warden-dashboard-mobile.png": {
-    "mtime": 1785648026.206969,
-    "hash": "97a153c53bcfddfa6cec305d07e74298"
+  "/home/vxrun/Projects/Warden/apps/web/public/logo.svg": {
+    "mtime": 1785674561.653908,
+    "hash": "fefa2f59a27ac1ac88a353a153308176"
   },
-  "/home/vxrun/Projects/Warden/artifacts/warden-evidence-flow.png": {
-    "mtime": 1785648121.5317707,
-    "hash": "64be18b35cba5400e5cb1314d66434af"
+  "/home/vxrun/Projects/Warden/apps/web/public/logo-white.svg": {
+    "mtime": 1785691430.3837812,
+    "hash": "ba16188afa2e78d311703e6708bc12d3"
   },
-  "/home/vxrun/Projects/Warden/artifacts/warden-dashboard-mobile-final.png": {
-    "mtime": 1785648825.1671336,
-    "hash": "3712248be0dc31568e9dfb4767e54dcc"
+  "/home/vxrun/Projects/Warden/artifacts/01-dashboard-with-run.png": {
+    "mtime": 1785678547.6535609,
+    "hash": "ad45bb51badcc12f979b935ae57b71bd"
   },
-  "/home/vxrun/Projects/Warden/artifacts/warden-dashboard-final.png": {
-    "mtime": 1785650923.550057,
-    "hash": "cd23320c8751f056f5a73361d1982606"
+  "/home/vxrun/Projects/Warden/artifacts/03-command-palette.png": {
+    "mtime": 1785678548.8679123,
+    "hash": "6897c02c55158b65d5b7b4c21f245348"
   },
-  "/home/vxrun/Projects/Warden/artifacts/warden-evidence-flow-final.png": {
-    "mtime": 1785650924.021062,
-    "hash": "cc5bf5d8be17b402f2aa76d9e880edb0"
+  "/home/vxrun/Projects/Warden/artifacts/05-mobile-view.png": {
+    "mtime": 1785678552.5588923,
+    "hash": "1d64a2d98ca7f6506220976fcf4714d6"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/06-dashboard-clean.png": {
+    "mtime": 1785678555.7418752,
+    "hash": "37cd5cb261287dfc33c9440a2a3e2592"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/02-approval-panel.png": {
+    "mtime": 1785678588.5696962,
+    "hash": "1109af7a03d47720db6b60a493bf2d2d"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/10-landing-hero.png": {
+    "mtime": 1785680897.550004,
+    "hash": "089e6532fdcc3538a98e76306097dc16"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/11-landing-full.png": {
+    "mtime": 1785680897.8549526,
+    "hash": "150a6912f63b0dffb8d419aa9051b1ac"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/14-landing-mobile.png": {
+    "mtime": 1785680906.3675325,
+    "hash": "f9e2c86b98c1118e71bac4f312c36ec8"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/20-landing-navbar.png": {
+    "mtime": 1785686065.4745984,
+    "hash": "68cd7218d52ad8923bda908ee4971dd0"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/21-landing-scrolled.png": {
+    "mtime": 1785686066.0407856,
+    "hash": "f3986aae315ae18c94748afd15291e45"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/22-landing-nav-visible.png": {
+    "mtime": 1785686066.5929677,
+    "hash": "68cd7218d52ad8923bda908ee4971dd0"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/23-landing-full.png": {
+    "mtime": 1785686066.8460512,
+    "hash": "a5ed9a0ff72aa1bf4984b0599eadb538"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/24-problem-section.png": {
+    "mtime": 1785686068.3935592,
+    "hash": "4c5976a81beed23be4f7308e461808ec"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/25-how-it-works.png": {
+    "mtime": 1785686069.9390645,
+    "hash": "b191dd696d1e8b5a5672a3817a1827b0"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/26-cta-section.png": {
+    "mtime": 1785686070.9854052,
+    "hash": "d0ff63500851c51ba86d75a881dc3bd2"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/27-footer.png": {
+    "mtime": 1785686072.0377464,
+    "hash": "d0ff63500851c51ba86d75a881dc3bd2"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/28-landing-mobile.png": {
+    "mtime": 1785686074.239457,
+    "hash": "c299d5541c5fd298510c7468a569967f"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/30-transaction-completion.png": {
+    "mtime": 1785688340.8029954,
+    "hash": "15232e781ccabb9924f8655ff568bef1"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/31-after-approval.png": {
+    "mtime": 1785688344.5566566,
+    "hash": "9eeb0a0c4a9ca92a9d19326259a3eda4"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/40-sandbox-all-actions.png": {
+    "mtime": 1785688830.475132,
+    "hash": "8696f95f16394231a5a36fe987e98990"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/41-sandbox-after-approval.png": {
+    "mtime": 1785688834.2250106,
+    "hash": "bec32f85b4b042f20af11a64d0152ab7"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/50-prava-approval-panel.png": {
+    "mtime": 1785689540.5811923,
+    "hash": "e70d4a1b19e15ad96d8f0b6bab68cd6b"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/8_dashboard-improved.png": {
+    "mtime": 1785680901.065415,
+    "hash": "37ff45012c1e0cc21d23d2258ee3f73d"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/1_landing1.png": {
+    "mtime": 1785687439.5965056,
+    "hash": "a05c8dcd238acd15fe2890929eab646d"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/3_landing3.png": {
+    "mtime": 1785687511.7049768,
+    "hash": "8f414f11d43fc563aefb1092a16d0b45"
+  },
+  "/home/vxrun/Projects/Warden/artifacts/6_QuickStart.png": {
+    "mtime": 1785687659.1583982,
+    "hash": "45253ce493ba416f8b20734f4b736257"
   }
 }

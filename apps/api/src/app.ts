@@ -34,7 +34,7 @@ export function createApp(service = new WardenService()) {
     res.setHeader("Access-Control-Allow-Origin", config.appOrigin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Idempotency-Key, If-Match, X-CSRF-Token, Last-Event-ID");
-    res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,OPTIONS,PATCH");
     if (req.method === "OPTIONS") return res.sendStatus(204);
     next();
   });
@@ -61,106 +61,100 @@ export function createApp(service = new WardenService()) {
       user_id: session.userId,
       csrf_token: session.csrfToken,
       environment: config.environment,
-      prava_environment: config.paymentProviderMode === "prava" ? "sandbox" : "simulation",
-      prava_publishable_key: config.pravaPublishableKey ?? null,
-      prava_publishable_key_error: !config.pravaPublishableKey ? "Set PRAVA_PUBLISHABLE_KEY locally to enable the embedded sandbox card flow." : null,
+      prava_environment: config.environment,
+      prava_publishable_key: config.pravaPublishableKey,
+      prava_publishable_key_error: null,
     });
   });
 
-  app.post("/api/v1/provider-callbacks/:provider", (req, res) => {
-    if (!config.pravaWebhookSecret || req.header("x-provider-signature") !== config.pravaWebhookSecret) {
-      res.status(401).json({ error: { code: "CALLBACK_SIGNATURE_INVALID", message: "Provider callback authentication failed." } });
-      return;
-    }
-    res.status(501).json({ error: { code: "PROVIDER_CALLBACK_NOT_CONFIGURED", message: "The live provider callback mapper requires the current Prava sandbox contract." } });
-  });
-
-  app.get("/api/v1/integrations/prava", (_req, res) => {
-    res.json({
-      mode: config.paymentProviderMode,
-      environment: config.paymentProviderMode === "prava" ? "sandbox" : "simulation",
-      publishable_key: config.pravaPublishableKey ?? null,
-    });
-  });
-
-  app.use("/api/v1", requireSession);
-
-  app.get("/api/v1/subscriptions", (req, res) => {
-    res.json({ subscriptions: service.subscriptions(req.userId!), portfolio_version: service.portfolioVersion(req.userId!) });
-  });
-  app.get("/api/v1/policies/current", (req, res) => res.json(service.activePolicy(req.userId!)));
-  app.put("/api/v1/policies/current", asyncRoute(async (req, res) => {
-    const body = updatePolicySchema.parse(req.body);
-    const ifMatch = Number(req.header("if-match"));
-    if (!Number.isInteger(ifMatch)) throw new HttpError(400, "If-Match policy version is required", "IF_MATCH_REQUIRED");
-    res.json(await service.draftPolicy(req.userId!, body.policy_text, ifMatch));
+  app.get("/api/v1/subscriptions", requireSession, asyncRoute(async (req, res) => {
+    res.json({ subscriptions: await service.subscriptions(req.userId!), portfolio_version: await service.portfolioVersion(req.userId!) });
   }));
-  app.post("/api/v1/policies/:policyId/activate", (req, res) => {
+
+  app.get("/api/v1/policies/current", requireSession, asyncRoute(async (req, res) => {
+    res.json(await service.activePolicy(req.userId!));
+  }));
+
+  app.put("/api/v1/policies/current", requireSession, asyncRoute(async (req, res) => {
+    const body = updatePolicySchema.parse(req.body);
+    const current = await service.activePolicy(req.userId!);
+    res.json(await service.draftPolicy(req.userId!, body.policy_text, Number(req.header("if-match") ?? current.version)));
+  }));
+
+  app.post("/api/v1/policies/:policyId/activate", requireSession, asyncRoute(async (req, res) => {
     requiredIdempotencyKey(req);
     const version = z.object({ version: z.number().int().positive() }).parse(req.body).version;
-    res.json(service.activatePolicy(req.userId!, req.params.policyId!, version));
-  });
+    const policyId = String(req.params.policyId);
+    res.json(await service.activatePolicy(req.userId!, policyId, version));
+  }));
 
-  app.post("/api/v1/runs", asyncRoute(async (req, res) => {
+  app.post("/api/v1/runs", requireSession, asyncRoute(async (req, res) => {
     const key = requiredIdempotencyKey(req);
     const body = createRunSchema.parse(req.body);
     const run = await service.createRun(req.userId!, key, body.policy_version, body.expected_portfolio_version);
     res.status(202).json(run);
   }));
-  app.get("/api/v1/runs/latest", (req, res) => res.json({ run: service.latestRun(req.userId!) }));
-
-  app.post("/api/v1/dev/test-run", asyncRoute(async (req, res) => {
-    const key = req.header("idempotency-key") ?? `dev-test-${Date.now()}`;
-    const run = await service.createTestRun(req.userId!, key);
-    res.status(202).json(run);
+  app.get("/api/v1/runs/latest", requireSession, asyncRoute(async (req, res) => {
+    res.json({ run: await service.latestRun(req.userId!) });
   }));
-  app.get("/api/v1/runs/:runId", (req, res) => res.json(service.run(req.params.runId!, req.userId!)));
-  app.get("/api/v1/runs/:runId/events", (req, res) => {
-    const after = Number(req.query.after_sequence ?? 0);
-    res.json({ events: service.events(req.params.runId!, req.userId!, Number.isFinite(after) ? after : 0) });
-  });
-  app.get("/api/v1/runs/:runId/stream", (req, res) => {
-    service.run(req.params.runId!, req.userId!);
+
+  app.get("/api/v1/runs/:runId", requireSession, asyncRoute(async (req, res) => {
+    res.json(await service.run(String(req.params.runId), req.userId!));
+  }));
+  app.patch("/api/v1/runs/:runId", requireSession, asyncRoute(async (req, res) => {
+    res.json(await service.run(String(req.params.runId), req.userId!));
+  }));
+  app.get("/api/v1/runs/:runId/events", requireSession, asyncRoute(async (req, res) => {
+    const after = Number(String(req.query.after_sequence ?? 0));
+    res.json({ events: await service.events(String(req.params.runId), req.userId!, Number.isFinite(after) ? after : 0) });
+  }));
+  app.get("/api/v1/runs/:runId/stream", requireSession, asyncRoute(async (req, res) => {
+    const runId = String(req.params.runId);
+    await service.run(runId, req.userId!);
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache, no-transform");
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders();
     const lastEventId = req.header("last-event-id");
-    const lastEvent = lastEventId ? service.db.get<Record<string, unknown>>("SELECT sequence FROM ledger_events WHERE event_id=? AND run_id=?", lastEventId, req.params.runId!) : undefined;
+    const lastEvent = lastEventId ? await service.db.get<Record<string, unknown>>("SELECT sequence FROM ledger_events WHERE event_id=$1 AND run_id=$2", lastEventId, runId) : undefined;
     let cursor = Number(lastEvent?.sequence ?? req.query.after_sequence ?? 0);
-    const send = () => {
-      for (const event of service.events(req.params.runId!, req.userId!, cursor)) {
+    const send = async () => {
+      for (const event of await service.events(runId, req.userId!, cursor)) {
         res.write(`id: ${event.event_id}\nevent: run_event\ndata: ${JSON.stringify(event)}\n\n`);
         cursor = event.sequence;
       }
     };
-    send();
-    const poll = setInterval(send, 500);
+    await send();
+    const poll = setInterval(() => { send().catch(() => {}); }, 500);
     const heartbeat = setInterval(() => res.write(": heartbeat\n\n"), 15_000);
     req.on("close", () => {
       clearInterval(poll);
       clearInterval(heartbeat);
     });
-  });
+  }));
 
-  app.post("/api/v1/decisions/:decisionId/approval-session", asyncRoute(async (req, res) => {
+  app.post("/api/v1/decisions/:decisionId/approval-session", requireSession, asyncRoute(async (req, res) => {
     res.json(await service.createApprovalSession(req.userId!, String(req.params.decisionId), requiredIdempotencyKey(req)));
   }));
-  app.post("/api/v1/decisions/:decisionId/attempts", asyncRoute(async (req, res) => {
+  app.post("/api/v1/decisions/:decisionId/attempts", requireSession, asyncRoute(async (req, res) => {
     const body = attemptSchema.parse(req.body);
     res.json(await service.executeAttempt(req.userId!, String(req.params.decisionId), body.execution_attempt_id, requiredIdempotencyKey(req)));
   }));
-  app.post("/api/v1/decisions/:decisionId/cancel", (req, res) => {
-    res.json(service.declineApproval(req.userId!, String(req.params.decisionId), requiredIdempotencyKey(req)));
-  });
-  app.get("/api/v1/savings", (req, res) => res.json(service.savings(req.userId!)));
-  app.get("/api/v1/prava/sessions/:sessionId/payment-result", asyncRoute(async (req, res) => {
+  app.post("/api/v1/decisions/:decisionId/cancel", requireSession, asyncRoute(async (req, res) => {
+    res.json(await service.declineApproval(req.userId!, String(req.params.decisionId), requiredIdempotencyKey(req)));
+  }));
+  app.get("/api/v1/savings", requireSession, asyncRoute(async (req, res) => {
+    res.json(await service.savings(req.userId!));
+  }));
+  app.get("/api/v1/prava/sessions/:sessionId/payment-result", requireSession, asyncRoute(async (req, res) => {
     res.json(await service.pravaPaymentResult(req.userId!, String(req.params.sessionId)));
   }));
-  app.post("/api/v1/prava/sessions/:sessionId/finalize", asyncRoute(async (req, res) => {
+  app.post("/api/v1/prava/sessions/:sessionId/finalize", requireSession, asyncRoute(async (req, res) => {
     res.json(await service.finalizePravaSession(req.userId!, String(req.params.sessionId)));
   }));
-  app.get("/api/v1/evidence/:evidenceId", (req, res) => res.json(service.evidence(req.userId!, String(req.params.evidenceId))));
+  app.get("/api/v1/evidence/:evidenceId", requireSession, asyncRoute(async (req, res) => {
+    res.json(await service.evidence(req.userId!, String(req.params.evidenceId)));
+  }));
 
   app.use((error: unknown, req: Request, res: Response, _next: (error?: unknown) => void) => {
     const correlationId = (req as any).correlationId;

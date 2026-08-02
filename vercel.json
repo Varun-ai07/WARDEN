@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "apps/web/dist",
+  "installCommand": "npm install",
+  "framework": null,
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 30,
+      "runtime": "@vercel/node@3"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.ts" }
+  ],
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
-import OpenAI from "openai";
-import { actionSchema, compiledPolicySchema, type Action, type CompiledPolicy, type Subscription } from "@warden/shared";
+import { type Action, type CompiledPolicy, type Subscription, actionSchema, compiledPolicySchema } from "@warden/shared";
 import { z } from "zod";
+import OpenAI from "openai";
 import { config } from "./config.js";
-import { annualSavingsBps, compilePolicyDeterministically, getRule } from "./domain.js";
+import { compilePolicyDeterministically, getRule } from "./domain.js";
 
 export interface CandidateDecision {
   subscription_id: string;
@@ -11,6 +11,8 @@ export interface CandidateDecision {
   policy_rule_reference: string;
   reasoning: string;
 }
+
+export type { CompiledPolicy, Subscription };
 
 export interface Reasoner {
   compilePolicy(text: string): Promise<CompiledPolicy>;
@@ -22,20 +24,44 @@ const candidateSchema = z.object({
   action: actionSchema,
   target_plan: z.string().nullable(),
   policy_rule_reference: z.string(),
-  reasoning: z.string().min(10).max(1_000),
+  reasoning: z.string().min(1),
 });
 
-export class FakeReasoner implements Reasoner {
-  async compilePolicy(text: string) {
-    return compilePolicyDeterministically(text);
+/**
+ * Deterministic reasoner.
+ *
+ * The policy language is intentionally small and fully machine-compilable, so the
+ * decision engine needs no LLM call. Every decision is derived from structured policy
+ * rules and subscription facts, which makes runs reproducible, auditable, and bootable
+ * without any external API key. There is deliberately no silent fallback path: if the
+ * input cannot be compiled or decided, the call throws instead of substituting a fake plan.
+ */
+export class DeterministicReasoner implements Reasoner {
+  async compilePolicy(text: string): Promise<CompiledPolicy> {
+    const compiled = compilePolicyDeterministically(text);
+    try {
+      return compiledPolicySchema.parse(compiled);
+    } catch (error) {
+      throw new Error(`Policy compiled to an invalid structure: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   async decide(subscription: Subscription, policy: CompiledPolicy, portfolioMonthlyMinor: number): Promise<CandidateDecision> {
+    const candidate = this.decideInternal(subscription, policy, portfolioMonthlyMinor);
+    const parsed = candidateSchema.safeParse(candidate);
+    if (!parsed.success) {
+      throw new Error(`Decision for ${subscription.id} failed validation: ${parsed.error.message}`);
+    }
+    return parsed.data as CandidateDecision;
+  }
+
+  private decideInternal(subscription: Subscription, policy: CompiledPolicy, portfolioMonthlyMinor: number): CandidateDecision {
     const annualRule = getRule(policy, "MIN_ANNUAL_SAVINGS_BPS");
     const unusedRule = getRule(policy, "MAX_INACTIVE_DAYS");
-    const capRule = getRule(policy, "MONTHLY_CAP");
+    const monthlyCap = getRule(policy, "MONTHLY_CAP");
     const annual = subscription.alt_plans.find((plan) => plan.plan_id === "annual");
 
+    // Already cancelled / no recurring charge: nothing to do.
     if (subscription.plan_id === "cancelled" || subscription.current_monthly_cost_minor === 0) {
       return {
         subscription_id: subscription.id,
@@ -46,16 +72,23 @@ export class FakeReasoner implements Reasoner {
       };
     }
 
-    if (annual && annual.plan_id !== subscription.plan_id && annualRule && annualSavingsBps(subscription.current_monthly_cost_minor, annual.authorized_amount_minor) >= annualRule.basis_points) {
+    // Annual billing saves more than the threshold: switch to annual.
+    if (
+      annual &&
+      annual.plan_id !== subscription.plan_id &&
+      annualRule &&
+      annualSavingsBps(subscription.current_monthly_cost_minor, annual.authorized_amount_minor) >= annualRule.basis_points
+    ) {
       return {
         subscription_id: subscription.id,
         action: "SWITCH",
         target_plan: annual.plan_id,
         policy_rule_reference: annualRule.rule_id,
-        reasoning: `The annual plan reduces effective monthly cost from ${subscription.current_monthly_cost_minor} to ${annual.effective_monthly_cost_minor} minor units and exceeds the active annual-savings threshold.`,
+        reasoning: `The annual plan reduces the effective monthly cost from $${(subscription.current_monthly_cost_minor / 100).toFixed(2)} to $${(annual.effective_monthly_cost_minor / 100).toFixed(2)} and exceeds the active annual-savings threshold of ${(annualRule.basis_points / 100).toFixed(0)}%.`,
       };
     }
 
+    // Inactive beyond the threshold: switch to the cheapest available plan, or decline.
     if (unusedRule && subscription.last_used_days_ago !== null && subscription.last_used_days_ago >= unusedRule.days) {
       const cheaper = [...subscription.alt_plans].sort((a, b) => a.effective_monthly_cost_minor - b.effective_monthly_cost_minor)[0];
       return {
@@ -67,6 +100,7 @@ export class FakeReasoner implements Reasoner {
       };
     }
 
+    // Trial that has never been used: prevent the paid conversion.
     if (subscription.billing_cycle === "trial" && unusedRule && subscription.last_used_days_ago === null) {
       return {
         subscription_id: subscription.id,
@@ -77,26 +111,52 @@ export class FakeReasoner implements Reasoner {
       };
     }
 
+    // Over the monthly cap: prefer the cheapest alternative, else decline.
+    if (monthlyCap && portfolioMonthlyMinor > monthlyCap.amount_minor) {
+      const cheaper = [...subscription.alt_plans].sort((a, b) => a.effective_monthly_cost_minor - b.effective_monthly_cost_minor)[0];
+      if (cheaper && cheaper.effective_monthly_cost_minor < subscription.current_monthly_cost_minor) {
+        return {
+          subscription_id: subscription.id,
+          action: "SWITCH",
+          target_plan: cheaper.plan_id,
+          policy_rule_reference: monthlyCap.rule_id,
+          reasoning: `Total portfolio $${(portfolioMonthlyMinor / 100).toFixed(2)}/month exceeds the $${(monthlyCap.amount_minor / 100).toFixed(2)} cap; switching to the cheaper ${cheaper.plan_id} plan reduces this subscription to $${(cheaper.effective_monthly_cost_minor / 100).toFixed(2)}/month.`,
+        };
+      }
+      return {
+        subscription_id: subscription.id,
+        action: "DECLINE",
+        target_plan: null,
+        policy_rule_reference: monthlyCap.rule_id,
+        reasoning: `Total portfolio $${(portfolioMonthlyMinor / 100).toFixed(2)}/month exceeds the $${(monthlyCap.amount_minor / 100).toFixed(2)} cap and no cheaper plan is available; recommending cancellation.`,
+      };
+    }
+
     return {
       subscription_id: subscription.id,
       action: "RENEW",
       target_plan: null,
-      policy_rule_reference: capRule?.rule_id ?? policy.rules[0]?.rule_id ?? "policy_default",
-      reasoning: `${subscription.merchant_name} remains within the projected portfolio policy and has no validated lower-cost action. Current portfolio cost is ${portfolioMonthlyMinor} minor units.`,
+      policy_rule_reference: unusedRule?.rule_id ?? policy.rules[0]?.rule_id ?? "policy_default",
+      reasoning: `${subscription.merchant_name} remains within the projected portfolio policy and has no validated lower-cost action. Current portfolio cost is $${(portfolioMonthlyMinor / 100).toFixed(2)}/month.`,
     };
   }
+}
+
+function annualSavingsBps(currentMonthlyMinor: number, annualMinor: number): number {
+  const annualized = currentMonthlyMinor * 12;
+  if (annualized <= 0) return 0;
+  return Math.floor(((annualized - annualMinor) * 10_000) / annualized);
 }
 
 export class OpenAIReasoner implements Reasoner {
   private readonly client: OpenAI;
   private readonly model: string;
-  private readonly isResponsesEndpoint: boolean;
 
   constructor() {
-    if (!config.openaiApiKey && !config.openrouterApiKey) {
-      throw new Error("OPENAI_API_KEY or OPENROUTER_API_KEY is required for API reasoning");
-    }
-    if (config.openrouterApiKey) {
+    if (config.openaiApiKey) {
+      this.client = new OpenAI({ apiKey: config.openaiApiKey, baseURL: config.openaiBaseUrl ?? undefined });
+      this.model = config.openaiModel;
+    } else if (config.openrouterApiKey) {
       this.client = new OpenAI({
         apiKey: config.openrouterApiKey,
         baseURL: config.openrouterBaseUrl,
@@ -107,11 +167,8 @@ export class OpenAIReasoner implements Reasoner {
         },
       });
       this.model = config.openrouterModel;
-      this.isResponsesEndpoint = true;
     } else {
-      this.client = new OpenAI({ apiKey: config.openaiApiKey ?? undefined, baseURL: config.openaiBaseUrl ?? undefined });
-      this.model = config.openaiModel;
-      this.isResponsesEndpoint = true;
+      throw new Error("OPENAI_API_KEY or OPENROUTER_API_KEY is required for API reasoning");
     }
   }
 
@@ -279,26 +336,26 @@ Evaluate each policy rule against this subscription:
 
   private async callFunction(name: string, tool: object, input: string): Promise<unknown> {
     try {
-      const response = await this.client.responses.create({
+      const response = await this.client.chat.completions.create({
         model: this.model,
-        reasoning: { effort: "none" },
-        input,
+        messages: [{ role: "user", content: input }],
         tools: [tool as never],
-        tool_choice: { type: "function", name },
+        tool_choice: { type: "function", function: { name } },
         parallel_tool_calls: false,
       } as any);
-      const call = response.output.find((item) => item.type === "function_call" && item.name === name);
-      if (call && call.type === "function_call") return JSON.parse(call.arguments) as unknown;
+      const call = (response.choices?.[0]?.message?.tool_calls as any)?.[0];
+      if (call?.function?.name === name) return JSON.parse(call.function.arguments) as unknown;
     } catch { /* tool calling failed, fall back to structured output */ }
 
     const schema = (tool as { parameters?: unknown }).parameters;
-    const fallbackResponse = await (this.client as any).responses.create({
+    const fallbackResponse = await this.client.chat.completions.create({
       model: this.model,
-      reasoning: { effort: "none" },
-      input: `${input}\n\nReturn ONLY valid JSON matching this schema. Do not wrap in markdown. Do not add commentary.\nSchema: ${JSON.stringify(schema)}`,
-      max_output_tokens: 500,
-    });
-    const text = fallbackResponse.output_text ?? fallbackResponse.choices?.[0]?.message?.content ?? "";
+      messages: [
+        { role: "user", content: `${input}\n\nReturn ONLY valid JSON matching this schema. Do not wrap in markdown. Do not add commentary.\nSchema: ${JSON.stringify(schema)}` },
+      ],
+      max_tokens: 500,
+    } as any);
+    const text = fallbackResponse.choices?.[0]?.message?.content ?? "";
     if (!text) throw new Error(`No response from ${name}`);
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error(`No JSON in response from ${name}: ${text.slice(0, 200)}`);
@@ -307,5 +364,40 @@ Evaluate each policy rule against this subscription:
 }
 
 export function createReasoner(): Reasoner {
-  return config.reasonerMode === "openai" ? new OpenAIReasoner() : new FakeReasoner();
+  if (config.reasonerMode === "openai" && config.openaiApiKey) {
+    try {
+      return new OpenAIReasoner();
+    } catch {
+      console.warn("[reasoner] Failed to create OpenAI reasoner, falling back to deterministic");
+    }
+  }
+  return new DeterministicReasoner();
+}
+
+/**
+ * Creates a reasoner with automatic fallback: tries OpenAI first, falls back
+ * to deterministic on API errors (rate limits, timeouts, etc).
+ */
+export function createResilientReasoner(): Reasoner {
+  const primary = createReasoner();
+  if (primary instanceof DeterministicReasoner) return primary;
+  const fallback = new DeterministicReasoner();
+  return {
+    compilePolicy: async (text: string) => {
+      try {
+        return await primary.compilePolicy(text);
+      } catch (err) {
+        console.warn(`[reasoner] API compilePolicy failed, falling back to deterministic: ${err instanceof Error ? err.message : String(err)}`);
+        return fallback.compilePolicy(text);
+      }
+    },
+    decide: async (sub: Subscription, policy: CompiledPolicy, portfolio: number) => {
+      try {
+        return await primary.decide(sub, policy, portfolio);
+      } catch (err) {
+        console.warn(`[reasoner] API decide failed for ${sub.id}, falling back to deterministic: ${err instanceof Error ? err.message : String(err)}`);
+        return fallback.decide(sub, policy, portfolio);
+      }
+    },
+  };
 }

@@ -14,7 +14,7 @@ import { WardenDb } from "./db.js";
 import { assertTransition, getRule, id, now, sha256, stableJson } from "./domain.js";
 import { logger } from "./logger.js";
 import { createExecutionProvider, PravaExecutionProvider, type ApprovalSession, type ExecutionProvider, type ProviderExecutionResult } from "./provider.js";
-import { createReasoner, type CandidateDecision, type Reasoner } from "./reasoner.js";
+import { createResilientReasoner, type CandidateDecision, type Reasoner } from "./reasoner.js";
 
 class HttpError extends Error {
   constructor(readonly status: number, message: string, readonly code: string) {
@@ -42,30 +42,30 @@ interface PlannedDecision {
 export class WardenService {
   constructor(
     readonly db = new WardenDb(),
-    readonly reasoner: Reasoner = createReasoner(),
+    readonly reasoner: Reasoner = createResilientReasoner(),
     readonly provider: ExecutionProvider = createExecutionProvider(),
   ) {}
 
-  subscriptions(userId: string) {
+  async subscriptions(userId: string) {
     return this.db.subscriptions(userId);
   }
 
-  activePolicy(userId: string) {
+  async activePolicy(userId: string) {
     return this.db.activePolicy(userId);
   }
 
-  portfolioVersion(userId: string): number {
-    return Number(this.db.get<Row>("SELECT version FROM portfolio_meta WHERE user_id = ?", userId)?.version ?? 1);
+  async portfolioVersion(userId: string): Promise<number> {
+    return Number((await this.db.get<Row>("SELECT version FROM portfolio_meta WHERE user_id = $1", userId))?.version ?? 1);
   }
 
   async draftPolicy(userId: string, text: string, expectedVersion: number): Promise<PolicyRecord> {
-    const current = this.activePolicy(userId);
+    const current = await this.activePolicy(userId);
     if (current.version !== expectedVersion) throw new HttpError(409, "Policy version is stale", "POLICY_VERSION_CONFLICT");
     const compiled = compiledPolicySchema.parse(await this.reasoner.compilePolicy(text));
     const nextVersion = current.version + 1;
-    this.db.transaction(() => {
-      this.db.run(
-        "INSERT OR REPLACE INTO policies VALUES (?, ?, ?, 'DRAFT', ?, ?, ?)",
+    await this.db.transaction(async () => {
+      await this.db.run(
+        "INSERT INTO policies (policy_id, user_id, version, status, policy_text, compiled_json, created_at) VALUES ($1, $2, $3, 'DRAFT', $4, $5, $6) ON CONFLICT (policy_id, version) DO UPDATE SET status='DRAFT', policy_text=EXCLUDED.policy_text, compiled_json=EXCLUDED.compiled_json, created_at=EXCLUDED.created_at",
         current.policy_id,
         userId,
         nextVersion,
@@ -77,9 +77,9 @@ export class WardenService {
     return { policy_id: current.policy_id, version: nextVersion, status: "DRAFT", policy_text: text, compiled_rules: compiled };
   }
 
-  activatePolicy(userId: string, policyId: string, version: number): PolicyRecord {
-    const draft = this.db.get<Row>(
-      "SELECT * FROM policies WHERE policy_id = ? AND user_id = ? AND version = ? AND status = 'DRAFT'",
+  async activatePolicy(userId: string, policyId: string, version: number): Promise<PolicyRecord> {
+    const draft = await this.db.get<Row>(
+      "SELECT * FROM policies WHERE policy_id = $1 AND user_id = $2 AND version = $3 AND status = 'DRAFT'",
       policyId,
       userId,
       version,
@@ -89,37 +89,37 @@ export class WardenService {
     if (compiled.unsupported_clauses.length > 0) {
       throw new HttpError(422, "Unsupported policy clauses must be resolved before activation", "POLICY_UNSUPPORTED_CLAUSES");
     }
-    this.db.transaction(() => {
-      this.db.run("UPDATE policies SET status = 'DRAFT' WHERE user_id = ? AND status = 'ACTIVE'", userId);
-      this.db.run("UPDATE policies SET status = 'ACTIVE' WHERE policy_id = ? AND user_id = ? AND version = ?", policyId, userId, version);
+    await this.db.transaction(async () => {
+      await this.db.run("UPDATE policies SET status = 'DRAFT' WHERE user_id = $1 AND status = 'ACTIVE'", userId);
+      await this.db.run("UPDATE policies SET status = 'ACTIVE' WHERE policy_id = $1 AND user_id = $2 AND version = $3", policyId, userId, version);
     });
     return { policy_id: policyId, version, status: "ACTIVE", policy_text: String(draft.policy_text), compiled_rules: compiled };
   }
 
   async createRun(userId: string, idempotencyKey: string, policyVersion: number, expectedPortfolioVersion: number): Promise<RunRecord> {
-    const existing = this.db.get<Row>("SELECT run_id FROM runs WHERE user_id = ? AND idempotency_key = ?", userId, idempotencyKey);
+    const existing = await this.db.get<Row>("SELECT run_id FROM runs WHERE user_id = $1 AND idempotency_key = $2", userId, idempotencyKey);
     if (existing) return this.requireRun(String(existing.run_id), userId);
 
-    const activePolicy = this.activePolicy(userId);
+    const activePolicy = await this.activePolicy(userId);
     if (activePolicy.version !== policyVersion) throw new HttpError(409, "Policy version is stale", "POLICY_VERSION_CONFLICT");
-    const currentPortfolioVersion = this.portfolioVersion(userId);
+    const currentPortfolioVersion = await this.portfolioVersion(userId);
     if (currentPortfolioVersion !== expectedPortfolioVersion) throw new HttpError(409, "Portfolio version is stale", "PORTFOLIO_VERSION_CONFLICT");
-    const blocking = this.db.get<Row>(
-      "SELECT run_id FROM runs WHERE user_id = ? AND run_status IN ('CREATED','PLANNING','READY','EXECUTING') ORDER BY created_at DESC LIMIT 1",
+    const blocking = await this.db.get<Row>(
+      "SELECT run_id FROM runs WHERE user_id = $1 AND run_status IN ('CREATED','PLANNING','READY','EXECUTING') ORDER BY created_at DESC LIMIT 1",
       userId,
     );
     if (blocking) throw new HttpError(409, `Run ${String(blocking.run_id)} is still active`, "ACTIVE_RUN_EXISTS");
 
     logger.info("run_created", { userId }, { policyVersion, expectedPortfolioVersion });
 
-    const subscriptions = this.subscriptions(userId);
+    const subscriptions = await this.subscriptions(userId);
     const runId = id("run");
     const snapshotId = id("snapshot");
     const correlationId = id("corr");
     const createdAt = now();
-    this.db.transaction(() => {
-      this.db.run(
-        "INSERT INTO portfolio_snapshots VALUES (?, ?, ?, ?, ?, ?)",
+    await this.db.transaction(async () => {
+      await this.db.run(
+        "INSERT INTO portfolio_snapshots VALUES ($1, $2, $3, $4, $5, $6)",
         snapshotId,
         userId,
         currentPortfolioVersion,
@@ -127,8 +127,8 @@ export class WardenService {
         JSON.stringify(subscriptions),
         createdAt,
       );
-      this.db.run(
-        "INSERT INTO runs VALUES (?, ?, ?, 'PLANNING', ?, ?, ?, ?, ?)",
+      await this.db.run(
+        "INSERT INTO runs VALUES ($1, $2, $3, 'PLANNING', $4, $5, $6, $7, $8)",
         runId,
         userId,
         idempotencyKey,
@@ -138,19 +138,19 @@ export class WardenService {
         createdAt,
         createdAt,
       );
-      this.appendEvent(runId, null, correlationId, "run_started", { policy_version: policyVersion, portfolio_version: currentPortfolioVersion });
+      await this.appendEvent(runId, null, correlationId, "run_started", { policy_version: policyVersion, portfolio_version: currentPortfolioVersion });
     });
 
     try {
       const total = subscriptions.reduce((sum, subscription) => sum + subscription.current_monthly_cost_minor, 0);
       const candidates = await Promise.all(subscriptions.map(async (subscription) => {
         const candidate = await this.reasoner.decide(subscription, activePolicy.compiled_rules, total);
-        // Override subscription_id if AI returned wrong one (we know which subscription we're evaluating)
         if (candidate.subscription_id !== subscription.id) {
           candidate.subscription_id = subscription.id;
         }
         return candidate;
       }));
+
       const candidateSubscriptions = new Set<string>();
       for (const candidate of candidates) {
         if (candidateSubscriptions.has(candidate.subscription_id)) {
@@ -158,13 +158,14 @@ export class WardenService {
         }
         candidateSubscriptions.add(candidate.subscription_id);
       }
+
       const plan = this.plan(candidates, subscriptions, activePolicy.compiled_rules);
-      this.db.transaction(() => {
-        const currentVersion = this.portfolioVersion(userId);
+      await this.db.transaction(async () => {
+        const currentVersion = await this.portfolioVersion(userId);
         if (currentVersion !== currentPortfolioVersion) throw new HttpError(409, "Portfolio changed while planning", "PORTFOLIO_VERSION_CONFLICT");
         for (const [index, item] of plan.entries()) {
-          this.db.run(
-            `INSERT INTO decisions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          await this.db.run(
+            `INSERT INTO decisions VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
             item.decisionId,
             runId,
             item.subscription.id,
@@ -183,7 +184,7 @@ export class WardenService {
             index,
             item.dependsOnDecisionId,
           );
-          this.appendEvent(runId, item.decisionId, correlationId, "decision_recorded", {
+          await this.appendEvent(runId, item.decisionId, correlationId, "decision_recorded", {
             subscription_id: item.subscription.id,
             action: item.candidate.action,
             target_plan_id: item.candidate.target_plan,
@@ -192,40 +193,70 @@ export class WardenService {
           });
         }
         const needsApproval = plan.some((decision) => decision.status === "AWAITING_APPROVAL");
-        this.db.run("UPDATE runs SET run_status = ?, updated_at = ? WHERE run_id = ?", needsApproval ? "EXECUTING" : "COMPLETED", now(), runId);
-        this.appendEvent(runId, null, correlationId, needsApproval ? "run_ready" : "run_completed", { decisions: plan.length });
+        await this.db.run("UPDATE runs SET run_status = $1, updated_at = $2 WHERE run_id = $3", needsApproval ? "EXECUTING" : "COMPLETED", now(), runId);
+        await this.appendEvent(runId, null, correlationId, needsApproval ? "run_ready" : "run_completed", { decisions: plan.length });
       });
       return this.requireRun(runId, userId);
     } catch (error) {
-      this.db.transaction(() => {
-        this.db.run("UPDATE runs SET run_status = 'FAILED', updated_at = ? WHERE run_id = ?", now(), runId);
-        this.appendEvent(runId, null, correlationId, "run_failed", { code: error instanceof HttpError ? error.code : "PLANNING_FAILED" });
+      await this.db.transaction(async () => {
+        await this.db.run("UPDATE runs SET run_status = 'FAILED', updated_at = $1 WHERE run_id = $2", now(), runId);
+        await this.appendEvent(runId, null, correlationId, "run_failed", { code: error instanceof HttpError ? error.code : "PLANNING_FAILED" });
       });
       throw error;
     }
   }
 
-  latestRun(userId: string): RunRecord | null {
-    const row = this.db.get<Row>("SELECT run_id FROM runs WHERE user_id = ? ORDER BY created_at DESC LIMIT 1", userId);
+  async latestRun(userId: string): Promise<RunRecord | null> {
+    const row = await this.db.get<Row>("SELECT run_id FROM runs WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1", userId);
     return row ? this.requireRun(String(row.run_id), userId) : null;
   }
 
-  run(runId: string, userId: string): RunRecord {
+  async run(runId: string, userId: string): Promise<RunRecord> {
     return this.requireRun(runId, userId);
   }
 
-  events(runId: string, userId: string, afterSequence = 0): LedgerEvent[] {
-    this.requireRun(runId, userId);
+  async events(runId: string, userId: string, afterSequence = 0): Promise<LedgerEvent[]> {
+    await this.requireRun(runId, userId);
     return this.db.events(runId, afterSequence);
   }
 
+  async recoverStuckRuns(): Promise<number> {
+    const stuck = await this.db.all<Row>(
+      "SELECT run_id, user_id, run_status FROM runs WHERE run_status IN ('CREATED','PLANNING','READY','EXECUTING')",
+    );
+    for (const row of stuck) {
+      const runId = String(row.run_id);
+      const userId = String(row.user_id);
+      const priorStatus = String(row.run_status);
+      const correlationId = id("corr");
+      try {
+        await this.db.transaction(async () => {
+          await this.db.run("UPDATE runs SET run_status='FAILED', updated_at=$1 WHERE run_id=$2", now(), runId);
+          for (const decision of await this.db.all<Row>("SELECT decision_id, execution_status FROM decisions WHERE run_id=$1", runId)) {
+            const status = String(decision.execution_status);
+            if (["AWAITING_APPROVAL", "AUTHORIZED", "EXECUTING", "RECONCILING", "UNKNOWN"].includes(status)) {
+              await this.db.run("UPDATE decisions SET execution_status='FAILED', failure_code='RUN_RECOVERED', outcome_type=NULL WHERE decision_id=$1", String(decision.decision_id));
+              await this.db.run("UPDATE execution_attempts SET execution_status='FAILED', failure_code='RUN_RECOVERED', updated_at=$1 WHERE decision_id=$2 AND execution_status IN ('AWAITING_APPROVAL','AUTHORIZED','EXECUTING','RECONCILING','UNKNOWN')", now(), String(decision.decision_id));
+            }
+          }
+          await this.appendEvent(runId, null, correlationId, "run_failed", { code: "RUN_RECOVERED", prior_status: priorStatus });
+          await this.appendEvent(runId, null, correlationId, "run_completed", { run_status: "FAILED" });
+        });
+        logger.warn("run_recovered", { userId, correlationId }, { runId, priorStatus });
+      } catch (error) {
+        logger.error("run_recovery_failed", { userId, correlationId }, error);
+      }
+    }
+    return stuck.length;
+  }
+
   async createApprovalSession(userId: string, decisionId: string, idempotencyKey: string): Promise<ApprovalSession> {
-    const cached = this.idempotencyResponse<ApprovalSession>(userId, `approval:${decisionId}`, idempotencyKey);
+    const cached = await this.idempotencyResponse<ApprovalSession>(userId, `approval:${decisionId}`, idempotencyKey);
     if (cached) return cached;
-    const decision = this.requireDecision(decisionId, userId);
+    const decision = await this.requireDecision(decisionId, userId);
     if (decision.execution_status !== "AWAITING_APPROVAL") throw new HttpError(422, "Decision is not awaiting approval", "INVALID_EXECUTION_STATE");
-    const activeAttempt = this.db.get<Row>(
-      "SELECT execution_attempt_id FROM execution_attempts WHERE decision_id = ? AND execution_status IN ('AWAITING_APPROVAL','AUTHORIZED','EXECUTING','RECONCILING','UNKNOWN')",
+    const activeAttempt = await this.db.get<Row>(
+      "SELECT execution_attempt_id FROM execution_attempts WHERE decision_id = $1 AND execution_status IN ('AWAITING_APPROVAL','AUTHORIZED','EXECUTING','RECONCILING','UNKNOWN')",
       decisionId,
     );
     if (activeAttempt) {
@@ -234,9 +265,9 @@ export class WardenService {
     const attemptId = id("attempt");
     const provisionalExpiry = new Date(Date.now() + 5 * 60_000).toISOString();
     try {
-      this.db.transaction(() => {
-        this.db.run(
-          "INSERT INTO execution_attempts VALUES (?, ?, ?, ?, 'AWAITING_APPROVAL', ?, NULL, NULL, ?, ?)",
+      await this.db.transaction(async () => {
+        await this.db.run(
+          "INSERT INTO execution_attempts VALUES ($1, $2, $3, $4, 'AWAITING_APPROVAL', $5, NULL, NULL, $6, $7)",
           attemptId,
           decisionId,
           this.provider.name,
@@ -247,29 +278,29 @@ export class WardenService {
         );
       });
     } catch (error) {
-      if (String(error).includes("UNIQUE constraint failed")) throw new HttpError(409, "An execution attempt is already active", "ACTIVE_ATTEMPT_EXISTS");
+      if (String(error).includes("unique constraint")) throw new HttpError(409, "An execution attempt is already active", "ACTIVE_ATTEMPT_EXISTS");
       throw error;
     }
     try {
       const session = await this.provider.createApproval(decision, attemptId);
       const pravaSessionId = session.payload?.provider_session_id ?? attemptId;
-      this.db.transaction(() => {
-        this.db.run("UPDATE execution_attempts SET provider_idempotency_key=?, approval_expires_at=?, updated_at=? WHERE execution_attempt_id=?", pravaSessionId, session.expires_at, now(), attemptId);
-        this.appendEvent(decision.run_id, decisionId, id("corr"), "approval_required", { execution_attempt_id: attemptId, provider_session_id: pravaSessionId, mode: session.mode, expires_at: session.expires_at });
-        this.storeIdempotency(userId, `approval:${decisionId}`, idempotencyKey, session);
+      await this.db.transaction(async () => {
+        await this.db.run("UPDATE execution_attempts SET provider_idempotency_key=$1, approval_expires_at=$2, updated_at=$3 WHERE execution_attempt_id=$4", pravaSessionId, session.expires_at, now(), attemptId);
+        await this.appendEvent(decision.run_id, decisionId, id("corr"), "approval_required", { execution_attempt_id: attemptId, provider_session_id: pravaSessionId, mode: session.mode, expires_at: session.expires_at });
+        await this.storeIdempotency(userId, `approval:${decisionId}`, idempotencyKey, session);
       });
       return session;
     } catch (error) {
-      this.markReconciling(decision, attemptId, "APPROVAL_SESSION_RESULT_UNCERTAIN");
+      await this.markReconciling(decision, attemptId, "APPROVAL_SESSION_RESULT_UNCERTAIN");
       throw error;
     }
   }
 
   async executeAttempt(userId: string, decisionId: string, attemptId: string, idempotencyKey: string): Promise<RunRecord> {
-    const cached = this.idempotencyResponse<RunRecord>(userId, `attempt:${attemptId}`, idempotencyKey);
+    const cached = await this.idempotencyResponse<RunRecord>(userId, `attempt:${attemptId}`, idempotencyKey);
     if (cached) return cached;
-    const decision = this.requireDecision(decisionId, userId);
-    const attempt = this.db.get<Row>("SELECT * FROM execution_attempts WHERE execution_attempt_id = ? AND decision_id = ?", attemptId, decisionId);
+    const decision = await this.requireDecision(decisionId, userId);
+    const attempt = await this.db.get<Row>("SELECT * FROM execution_attempts WHERE execution_attempt_id = $1 AND decision_id = $2", attemptId, decisionId);
     if (!attempt) throw new HttpError(404, "Execution attempt was not found", "ATTEMPT_NOT_FOUND");
     if (decision.execution_status !== "AWAITING_APPROVAL" || String(attempt.execution_status) !== "AWAITING_APPROVAL") {
       throw new HttpError(422, "Execution attempt is not awaiting approval", "INVALID_EXECUTION_STATE");
@@ -277,44 +308,45 @@ export class WardenService {
 
     logger.info("attempt_executing", { userId }, { decisionId, attemptId, action: decision.action, merchant: decision.merchant_name });
     if (new Date(String(attempt.approval_expires_at)).getTime() <= Date.now()) {
-      this.db.transaction(() => {
-        this.db.run("UPDATE execution_attempts SET execution_status='EXPIRED', failure_code='APPROVAL_EXPIRED', updated_at=? WHERE execution_attempt_id=?", now(), attemptId);
-        this.transitionDecisionInTransaction(decision, "EXPIRED", null, "APPROVAL_EXPIRED");
-        this.refreshRunStatus(decision.run_id);
+      await this.db.transaction(async () => {
+        await this.db.run("UPDATE execution_attempts SET execution_status='EXPIRED', failure_code='APPROVAL_EXPIRED', updated_at=$1 WHERE execution_attempt_id=$2", now(), attemptId);
+        await this.transitionDecisionInTransaction(decision, "EXPIRED", null, "APPROVAL_EXPIRED");
+        await this.refreshRunStatus(decision.run_id);
       });
       throw new HttpError(422, "Approval session expired", "APPROVAL_EXPIRED");
     }
-    this.assertDependencySatisfied(decisionId);
-    const subscription = this.subscriptions(userId).find((item) => item.id === decision.subscription_id);
+    await this.assertDependencySatisfied(decisionId);
+    const subs = await this.subscriptions(userId);
+    const subscription = subs.find((item) => item.id === decision.subscription_id);
     if (!subscription) throw new HttpError(404, "Subscription was not found", "SUBSCRIPTION_NOT_FOUND");
 
-    this.db.transaction(() => {
-      this.transitionDecisionInTransaction(decision, "AUTHORIZED", null, null);
+    await this.db.transaction(async () => {
+      await this.transitionDecisionInTransaction(decision, "AUTHORIZED", null, null);
       const authorized = { ...decision, execution_status: "AUTHORIZED" as const };
-      this.transitionDecisionInTransaction(authorized, "EXECUTING", null, null);
-      this.db.run("UPDATE execution_attempts SET execution_status='EXECUTING', updated_at=? WHERE execution_attempt_id=?", now(), attemptId);
+      await this.transitionDecisionInTransaction(authorized, "EXECUTING", null, null);
+      await this.db.run("UPDATE execution_attempts SET execution_status='EXECUTING', updated_at=$1 WHERE execution_attempt_id=$2", now(), attemptId);
     });
 
-    const current = this.requireDecision(decisionId, userId);
+    const current = await this.requireDecision(decisionId, userId);
     let result: ProviderExecutionResult;
     try {
       result = await this.provider.execute(current, subscription, attemptId, String(attempt.provider_idempotency_key));
     } catch (error) {
-      this.markReconciling(current, attemptId, "PROVIDER_RESULT_UNCERTAIN");
+      await this.markReconciling(current, attemptId, "PROVIDER_RESULT_UNCERTAIN");
       throw error;
     }
     try {
-      this.db.transaction(() => {
-        for (const evidence of result.evidence) this.insertEvidence(evidence);
+      await this.db.transaction(async () => {
+        for (const evidence of result.evidence) await this.insertEvidence(evidence);
         if (result.terminalStatus === "RECONCILING") {
-          this.db.run(
-            "UPDATE execution_attempts SET execution_status='RECONCILING', failure_code=?, reconciliation_deadline_at=?, updated_at=? WHERE execution_attempt_id=?",
+          await this.db.run(
+            "UPDATE execution_attempts SET execution_status='RECONCILING', failure_code=$1, reconciliation_deadline_at=$2, updated_at=$3 WHERE execution_attempt_id=$4",
             "PROVIDER_REFERENCE_CAPTURED",
             new Date(Date.now() + 5 * 60_000).toISOString(),
             now(),
             attemptId,
           );
-          this.appendEvent(current.run_id, current.decision_id, id("corr"), "execution_state_changed", { from: current.execution_status, to: "RECONCILING", outcome_type: null, failure_code: "PROVIDER_REFERENCE_CAPTURED" });
+          await this.appendEvent(current.run_id, current.decision_id, id("corr"), "execution_state_changed", { from: current.execution_status, to: "RECONCILING", outcome_type: null, failure_code: "PROVIDER_REFERENCE_CAPTURED" });
         } else {
           const outcome = result.terminalStatus === "COMPLETED" ? "transaction_completed" : "action_avoided";
           const recurringSavings = result.terminalStatus === "AVOIDED"
@@ -322,48 +354,48 @@ export class WardenService {
             : current.recurring_monthly_savings_minor;
           const oneTimeAvoided = result.terminalStatus === "AVOIDED" && recurringSavings === 0 ? subscription.current_monthly_cost_minor : 0;
           const executing = { ...current, execution_status: "EXECUTING" as const };
-          this.transitionDecisionInTransaction(executing, result.terminalStatus, outcome, null, recurringSavings, oneTimeAvoided);
-          this.db.run("UPDATE execution_attempts SET execution_status=?, updated_at=? WHERE execution_attempt_id=?", result.terminalStatus, now(), attemptId);
-          this.applySubscriptionEffect(current, subscription, recurringSavings, userId, result.terminalStatus);
+          await this.transitionDecisionInTransaction(executing, result.terminalStatus, outcome, null, recurringSavings, oneTimeAvoided);
+          await this.db.run("UPDATE execution_attempts SET execution_status=$1, updated_at=$2 WHERE execution_attempt_id=$3", result.terminalStatus, now(), attemptId);
+          await this.applySubscriptionEffect(current, subscription, recurringSavings, userId, result.terminalStatus);
         }
-        this.refreshRunStatus(current.run_id);
-        const response = this.requireRun(current.run_id, userId);
-        this.storeIdempotency(userId, `attempt:${attemptId}`, idempotencyKey, response);
+        await this.refreshRunStatus(current.run_id);
+        const response = await this.requireRun(current.run_id, userId);
+        await this.storeIdempotency(userId, `attempt:${attemptId}`, idempotencyKey, response);
       });
       return this.requireRun(decision.run_id, userId);
     } catch (error) {
-      this.markReconciling(current, attemptId, "LOCAL_COMMIT_AFTER_PROVIDER_RESULT");
+      await this.markReconciling(current, attemptId, "LOCAL_COMMIT_AFTER_PROVIDER_RESULT");
       throw error;
     }
   }
 
-  declineApproval(userId: string, decisionId: string, idempotencyKey: string): RunRecord {
-    const cached = this.idempotencyResponse<RunRecord>(userId, `decline:${decisionId}`, idempotencyKey);
+  async declineApproval(userId: string, decisionId: string, idempotencyKey: string): Promise<RunRecord> {
+    const cached = await this.idempotencyResponse<RunRecord>(userId, `decline:${decisionId}`, idempotencyKey);
     if (cached) return cached;
-    const decision = this.requireDecision(decisionId, userId);
+    const decision = await this.requireDecision(decisionId, userId);
     if (decision.execution_status !== "AWAITING_APPROVAL") throw new HttpError(422, "Decision is not awaiting approval", "INVALID_EXECUTION_STATE");
-    this.db.transaction(() => {
-      this.db.run("UPDATE execution_attempts SET execution_status='APPROVAL_DECLINED', failure_code='USER_DECLINED', updated_at=? WHERE decision_id=? AND execution_status='AWAITING_APPROVAL'", now(), decisionId);
-      this.transitionDecisionInTransaction(decision, "APPROVAL_DECLINED", null, "USER_DECLINED");
-      this.refreshRunStatus(decision.run_id);
+    await this.db.transaction(async () => {
+      await this.db.run("UPDATE execution_attempts SET execution_status='APPROVAL_DECLINED', failure_code='USER_DECLINED', updated_at=$1 WHERE decision_id=$2 AND execution_status='AWAITING_APPROVAL'", now(), decisionId);
+      await this.transitionDecisionInTransaction(decision, "APPROVAL_DECLINED", null, "USER_DECLINED");
+      await this.refreshRunStatus(decision.run_id);
     });
-    const response = this.requireRun(decision.run_id, userId);
-    this.db.transaction(() => this.storeIdempotency(userId, `decline:${decisionId}`, idempotencyKey, response));
+    const response = await this.requireRun(decision.run_id, userId);
+    await this.db.transaction(async () => this.storeIdempotency(userId, `decline:${decisionId}`, idempotencyKey, response));
     return response;
   }
 
-  savings(userId: string): SavingsSummary {
-    const row = this.db.get<Row>(
-      `SELECT COALESCE(SUM(d.recurring_monthly_savings_minor),0) AS recurring, COALESCE(SUM(d.one_time_avoided_minor),0) AS avoided FROM decisions d JOIN runs r ON r.run_id=d.run_id WHERE r.user_id=? AND d.outcome_type IN ('transaction_completed','action_avoided')`,
+  async savings(userId: string): Promise<SavingsSummary> {
+    const row = await this.db.get<Row>(
+      `SELECT COALESCE(SUM(d.recurring_monthly_savings_minor),0) AS recurring, COALESCE(SUM(d.one_time_avoided_minor),0) AS avoided FROM decisions d JOIN runs r ON r.run_id=d.run_id WHERE r.user_id=$1 AND d.outcome_type IN ('transaction_completed','action_avoided')`,
       userId,
     );
     return { currency: "USD", recurring_monthly_saved_minor: Number(row?.recurring ?? 0), one_time_avoided_minor: Number(row?.avoided ?? 0) };
   }
 
-  evidence(userId: string, evidenceId: string): EvidenceRecord {
-    const evidence = this.db.evidence(evidenceId, userId);
-    if (!evidence) throw new HttpError(404, "Evidence was not found", "EVIDENCE_NOT_FOUND");
-    return evidence;
+  async evidence(userId: string, evidenceId: string): Promise<EvidenceRecord> {
+    const ev = await this.db.evidence(evidenceId, userId);
+    if (!ev) throw new HttpError(404, "Evidence was not found", "EVIDENCE_NOT_FOUND");
+    return ev;
   }
 
   async pravaPaymentResult(userId: string, sessionId: string) {
@@ -377,8 +409,8 @@ export class WardenService {
     if (!(this.provider instanceof PravaExecutionProvider)) {
       throw new HttpError(409, "Prava integration is not active in this environment", "PRAVA_NOT_ACTIVE");
     }
-    const row = this.db.get<Row>(
-      "SELECT a.execution_attempt_id, d.decision_id, d.run_id, d.execution_status FROM execution_attempts a JOIN decisions d ON d.decision_id = a.decision_id JOIN runs r ON r.run_id = d.run_id WHERE r.user_id = ? AND a.provider_idempotency_key = ?",
+    const row = await this.db.get<Row>(
+      "SELECT a.execution_attempt_id, d.decision_id, d.run_id, d.execution_status FROM execution_attempts a JOIN decisions d ON d.decision_id = a.decision_id JOIN runs r ON r.run_id = d.run_id WHERE r.user_id = $1 AND a.provider_idempotency_key = $2",
       userId,
       providerSessionId,
     );
@@ -393,43 +425,6 @@ export class WardenService {
 
     logger.info("prava_session_finalizing", { userId }, { providerSessionId, decisionId: row.decision_id, attemptId: row.execution_attempt_id });
     return this.executeAttempt(userId, String(row.decision_id), String(row.execution_attempt_id), `reconcile-${providerSessionId}`);
-  }
-
-  async createTestRun(userId: string, idempotencyKey: string): Promise<RunRecord> {
-    const existing = this.db.get<Row>("SELECT run_id FROM runs WHERE user_id = ? AND idempotency_key = ?", userId, idempotencyKey);
-    if (existing) return this.requireRun(String(existing.run_id), userId);
-
-    const activePolicy = this.activePolicy(userId);
-    const subscriptions = this.subscriptions(userId);
-    const runId = id("run");
-    const snapshotId = id("snapshot");
-    const correlationId = id("corr");
-    const createdAt = now();
-    const currentPortfolioVersion = this.portfolioVersion(userId);
-
-    this.db.transaction(() => {
-      this.db.run("INSERT INTO portfolio_snapshots VALUES (?, ?, ?, ?, ?, ?)", snapshotId, userId, currentPortfolioVersion, activePolicy.version, JSON.stringify(subscriptions), createdAt);
-      this.db.run("INSERT INTO runs VALUES (?, ?, ?, 'PLANNING', ?, ?, ?, ?, ?)", runId, userId, idempotencyKey, activePolicy.version, snapshotId, currentPortfolioVersion, createdAt, createdAt);
-      this.appendEvent(runId, null, correlationId, "run_started", { policy_version: activePolicy.version, portfolio_version: currentPortfolioVersion });
-    });
-
-    const candidates = subscriptions.map((sub): CandidateDecision => {
-      if (sub.billing_cycle === "trial") return { subscription_id: sub.id, action: "DECLINE", target_plan: null, policy_rule_reference: "unused_threshold", reasoning: "Trial never opened." };
-      if (sub.id === "sub_ai_service") return { subscription_id: sub.id, action: "SWITCH", target_plan: "annual", policy_rule_reference: "annual_threshold", reasoning: "Annual saves >15%." };
-      if (sub.id === "sub_gym") return { subscription_id: sub.id, action: "SWITCH", target_plan: "basic", policy_rule_reference: "unused_threshold", reasoning: "Unused 42 days." };
-      return { subscription_id: sub.id, action: "RENEW", target_plan: null, policy_rule_reference: "monthly_cap", reasoning: "Within budget." };
-    });
-
-    const planned = this.plan(candidates, subscriptions, activePolicy.compiled_rules);
-    this.db.transaction(() => {
-      for (const [i, item] of planned.entries()) {
-        this.db.run("INSERT INTO decisions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", item.decisionId, runId, item.subscription.id, item.candidate.action, item.candidate.target_plan, item.candidate.policy_rule_reference, item.candidate.reasoning, item.status, item.outcome, item.authorizedAmountMinor, item.effectiveMonthlyCostMinor, item.recurringMonthlySavingsMinor, item.oneTimeAvoidedMinor, item.subscription.currency, null, i, item.dependsOnDecisionId);
-        this.appendEvent(runId, item.decisionId, correlationId, "decision_recorded", { subscription_id: item.subscription.id, action: item.candidate.action, execution_status: item.status });
-      }
-      this.db.run("UPDATE runs SET run_status='EXECUTING', updated_at=? WHERE run_id=?", now(), runId);
-      this.appendEvent(runId, null, correlationId, "run_ready", { decisions: planned.length });
-    });
-    return this.requireRun(runId, userId);
   }
 
   private plan(candidates: CandidateDecision[], subscriptions: Subscription[], policy: CompiledPolicy): PlannedDecision[] {
@@ -452,7 +447,6 @@ export class WardenService {
       if (candidate.action === "SWITCH") {
         const target = subscription.alt_plans.find((plan) => plan.plan_id === candidate.target_plan);
         if (!target) {
-          // Target plan invalid - use FakeReasoner logic as fallback
           const cheapest = [...subscription.alt_plans].sort((a, b) => a.effective_monthly_cost_minor - b.effective_monthly_cost_minor)[0];
           if (cheapest) {
             candidate = { ...candidate, action: "SWITCH", target_plan: cheapest.plan_id, reasoning: `${subscription.merchant_name} is unused ${subscription.last_used_days_ago}+ days. Switching to cheapest available plan: ${cheapest.plan_id}.` };
@@ -500,15 +494,15 @@ export class WardenService {
     return value.replace(/[<>\u0000-\u001F]/g, " ").replace(/\s+/g, " ").trim().slice(0, 1_000);
   }
 
-  private requireRun(runId: string, userId: string): RunRecord {
-    const run = this.db.runRecord(runId, userId);
+  private async requireRun(runId: string, userId: string): Promise<RunRecord> {
+    const run = await this.db.runRecord(runId, userId);
     if (!run) throw new HttpError(404, "Run was not found", "RUN_NOT_FOUND");
     return run;
   }
 
-  private requireDecision(decisionId: string, userId: string): Decision {
-    const row = this.db.get<Row>(
-      `SELECT d.*, s.merchant_name FROM decisions d JOIN runs r ON r.run_id=d.run_id JOIN subscriptions s ON s.subscription_id=d.subscription_id WHERE d.decision_id=? AND r.user_id=?`,
+  private async requireDecision(decisionId: string, userId: string): Promise<Decision> {
+    const row = await this.db.get<Row>(
+      `SELECT d.*, s.merchant_name FROM decisions d JOIN runs r ON r.run_id=d.run_id JOIN subscriptions s ON s.subscription_id=d.subscription_id WHERE d.decision_id=$1 AND r.user_id=$2`,
       decisionId,
       userId,
     );
@@ -524,7 +518,7 @@ export class WardenService {
     };
   }
 
-  private transitionDecisionInTransaction(
+  private async transitionDecisionInTransaction(
     decision: Decision,
     next: ExecutionStatus,
     outcome: Decision["outcome_type"],
@@ -533,8 +527,8 @@ export class WardenService {
     oneTimeAvoided = decision.one_time_avoided_minor,
   ) {
     assertTransition(decision.execution_status, next);
-    this.db.run(
-      "UPDATE decisions SET execution_status=?, outcome_type=?, failure_code=?, recurring_monthly_savings_minor=?, one_time_avoided_minor=? WHERE decision_id=?",
+    await this.db.run(
+      "UPDATE decisions SET execution_status=$1, outcome_type=$2, failure_code=$3, recurring_monthly_savings_minor=$4, one_time_avoided_minor=$5 WHERE decision_id=$6",
       next,
       outcome,
       failureCode,
@@ -542,75 +536,75 @@ export class WardenService {
       oneTimeAvoided,
       decision.decision_id,
     );
-    this.appendEvent(decision.run_id, decision.decision_id, id("corr"), "execution_state_changed", {
+    await this.appendEvent(decision.run_id, decision.decision_id, id("corr"), "execution_state_changed", {
       from: decision.execution_status,
       to: next,
       outcome_type: outcome,
       failure_code: failureCode,
     });
-    if (outcome) this.appendEvent(decision.run_id, decision.decision_id, id("corr"), "outcome_recorded", { outcome_type: outcome });
+    if (outcome) await this.appendEvent(decision.run_id, decision.decision_id, id("corr"), "outcome_recorded", { outcome_type: outcome });
     if (["VALIDATION_FAILED", "STALE", "APPROVAL_DECLINED", "EXPIRED", "FAILED", "UNKNOWN"].includes(next)) {
-      this.appendEvent(decision.run_id, decision.decision_id, id("corr"), "execution_failed", { execution_status: next, failure_code: failureCode });
-      this.staleDependentsInTransaction(decision.decision_id, decision.run_id);
+      await this.appendEvent(decision.run_id, decision.decision_id, id("corr"), "execution_failed", { execution_status: next, failure_code: failureCode });
+      await this.staleDependentsInTransaction(decision.decision_id, decision.run_id);
     }
   }
 
-  private markReconciling(decision: Decision, attemptId: string, failureCode: string) {
-    this.db.transaction(() => {
-      const row = this.db.get<Row>("SELECT execution_status FROM decisions WHERE decision_id=?", decision.decision_id);
+  private async markReconciling(decision: Decision, attemptId: string, failureCode: string) {
+    await this.db.transaction(async () => {
+      const row = await this.db.get<Row>("SELECT execution_status FROM decisions WHERE decision_id=$1", decision.decision_id);
       const status = String(row?.execution_status ?? decision.execution_status) as ExecutionStatus;
       if (!["AWAITING_APPROVAL", "EXECUTING"].includes(status)) return;
       const current = { ...decision, execution_status: status };
-      this.transitionDecisionInTransaction(current, "RECONCILING", null, failureCode);
-      this.db.run(
-        "UPDATE execution_attempts SET execution_status='RECONCILING', failure_code=?, reconciliation_deadline_at=?, updated_at=? WHERE execution_attempt_id=?",
+      await this.transitionDecisionInTransaction(current, "RECONCILING", null, failureCode);
+      await this.db.run(
+        "UPDATE execution_attempts SET execution_status='RECONCILING', failure_code=$1, reconciliation_deadline_at=$2, updated_at=$3 WHERE execution_attempt_id=$4",
         failureCode,
         new Date(Date.now() + 5 * 60_000).toISOString(),
         now(),
         attemptId,
       );
-      this.refreshRunStatus(decision.run_id);
+      await this.refreshRunStatus(decision.run_id);
     });
   }
 
-  private staleDependentsInTransaction(failedDecisionId: string, runId: string) {
+  private async staleDependentsInTransaction(failedDecisionId: string, runId: string) {
     const queue = [failedDecisionId];
     while (queue.length > 0) {
       const dependencyId = queue.shift()!;
-      const dependents = this.db.all<Row>(
-        "SELECT decision_id, execution_status FROM decisions WHERE depends_on_decision_id=? AND execution_status='AWAITING_APPROVAL'",
+      const dependents = await this.db.all<Row>(
+        "SELECT decision_id, execution_status FROM decisions WHERE depends_on_decision_id=$1 AND execution_status='AWAITING_APPROVAL'",
         dependencyId,
       );
       for (const dependent of dependents) {
         const dependentId = String(dependent.decision_id);
         assertTransition(String(dependent.execution_status) as ExecutionStatus, "STALE");
-        this.db.run("UPDATE decisions SET execution_status='STALE', outcome_type=NULL, failure_code='DEPENDENCY_NOT_SATISFIED' WHERE decision_id=?", dependentId);
-        this.db.run("UPDATE execution_attempts SET execution_status='STALE', failure_code='DEPENDENCY_NOT_SATISFIED', updated_at=? WHERE decision_id=? AND execution_status='AWAITING_APPROVAL'", now(), dependentId);
-        this.appendEvent(runId, dependentId, id("corr"), "execution_state_changed", { from: dependent.execution_status, to: "STALE", outcome_type: null, failure_code: "DEPENDENCY_NOT_SATISFIED" });
+        await this.db.run("UPDATE decisions SET execution_status='STALE', outcome_type=NULL, failure_code='DEPENDENCY_NOT_SATISFIED' WHERE decision_id=$1", dependentId);
+        await this.db.run("UPDATE execution_attempts SET execution_status='STALE', failure_code='DEPENDENCY_NOT_SATISFIED', updated_at=$1 WHERE decision_id=$2 AND execution_status='AWAITING_APPROVAL'", now(), dependentId);
+        await this.appendEvent(runId, dependentId, id("corr"), "execution_state_changed", { from: dependent.execution_status, to: "STALE", outcome_type: null, failure_code: "DEPENDENCY_NOT_SATISFIED" });
         queue.push(dependentId);
       }
     }
   }
 
-  private applySubscriptionEffect(decision: Decision, subscription: Subscription, recurringSavings: number, userId: string, terminalStatus: "COMPLETED" | "AVOIDED") {
+  private async applySubscriptionEffect(decision: Decision, subscription: Subscription, recurringSavings: number, userId: string, terminalStatus: "COMPLETED" | "AVOIDED") {
     if (terminalStatus === "COMPLETED" && decision.action === "SWITCH" && decision.target_plan_id) {
-      this.db.run(
-        "UPDATE subscriptions SET plan_id=?, current_monthly_cost_minor=?, version=version+1 WHERE subscription_id=?",
+      await this.db.run(
+        "UPDATE subscriptions SET plan_id=$1, current_monthly_cost_minor=$2, version=version+1 WHERE subscription_id=$3",
         decision.target_plan_id,
         decision.effective_monthly_cost_minor,
         subscription.id,
       );
     } else if (terminalStatus === "AVOIDED" && decision.action === "DECLINE") {
-      this.db.run("UPDATE subscriptions SET plan_id='cancelled', current_monthly_cost_minor=0, version=version+1 WHERE subscription_id=?", subscription.id);
+      await this.db.run("UPDATE subscriptions SET plan_id='cancelled', current_monthly_cost_minor=0, version=version+1 WHERE subscription_id=$1", subscription.id);
     }
     if (decision.action !== "RENEW" || recurringSavings > 0) {
-      this.db.run("UPDATE portfolio_meta SET version=version+1 WHERE user_id=?", userId);
+      await this.db.run("UPDATE portfolio_meta SET version=version+1 WHERE user_id=$1", userId);
     }
   }
 
-  private insertEvidence(evidence: EvidenceRecord) {
-    this.db.run(
-      "INSERT INTO execution_evidence VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  private async insertEvidence(evidence: EvidenceRecord) {
+    await this.db.run(
+      "INSERT INTO execution_evidence VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
       evidence.evidence_id,
       evidence.execution_attempt_id,
       evidence.evidence_type,
@@ -627,34 +621,34 @@ export class WardenService {
     );
   }
 
-  private assertDependencySatisfied(decisionId: string) {
-    const row = this.db.get<Row>("SELECT depends_on_decision_id FROM decisions WHERE decision_id=?", decisionId);
+  private async assertDependencySatisfied(decisionId: string) {
+    const row = await this.db.get<Row>("SELECT depends_on_decision_id FROM decisions WHERE decision_id=$1", decisionId);
     if (!row?.depends_on_decision_id) return;
-    const dependency = this.db.get<Row>("SELECT execution_status FROM decisions WHERE decision_id=?", String(row.depends_on_decision_id));
+    const dependency = await this.db.get<Row>("SELECT execution_status FROM decisions WHERE decision_id=$1", String(row.depends_on_decision_id));
     if (!dependency || !["COMPLETED", "AVOIDED", "NO_ACTION_REQUIRED"].includes(String(dependency.execution_status))) {
       throw new HttpError(409, "A prerequisite decision is not complete", "DEPENDENCY_NOT_SATISFIED");
     }
   }
 
-  private refreshRunStatus(runId: string) {
-    const statuses = this.db.all<Row>("SELECT execution_status FROM decisions WHERE run_id=?", runId).map((row) => String(row.execution_status));
+  private async refreshRunStatus(runId: string) {
+    const statuses = (await this.db.all<Row>("SELECT execution_status FROM decisions WHERE run_id=$1", runId)).map((row) => String(row.execution_status));
     const pending = statuses.some((status) => ["AWAITING_APPROVAL", "AUTHORIZED", "EXECUTING", "RECONCILING", "UNKNOWN"].includes(status));
     const succeeded = statuses.some((status) => ["COMPLETED", "AVOIDED"].includes(status));
     const failed = statuses.some((status) => ["VALIDATION_FAILED", "STALE", "APPROVAL_DECLINED", "EXPIRED", "FAILED"].includes(status));
     const runStatus = pending ? "EXECUTING" : succeeded && failed ? "PARTIALLY_COMPLETED" : failed ? "FAILED" : "COMPLETED";
-    this.db.run("UPDATE runs SET run_status=?, updated_at=? WHERE run_id=?", runStatus, now(), runId);
-    if (!pending) this.appendEvent(runId, null, id("corr"), "run_completed", { run_status: runStatus });
+    await this.db.run("UPDATE runs SET run_status=$1, updated_at=$2 WHERE run_id=$3", runStatus, now(), runId);
+    if (!pending) await this.appendEvent(runId, null, id("corr"), "run_completed", { run_status: runStatus });
   }
 
-  private appendEvent(runId: string, decisionId: string | null, correlationId: string, eventType: string, payload: unknown) {
-    const last = this.db.get<Row>("SELECT sequence, payload_hash FROM ledger_events WHERE run_id=? ORDER BY sequence DESC LIMIT 1", runId);
+  private async appendEvent(runId: string, decisionId: string | null, correlationId: string, eventType: string, payload: unknown) {
+    const last = await this.db.get<Row>("SELECT sequence, payload_hash FROM ledger_events WHERE run_id=$1 ORDER BY sequence DESC LIMIT 1", runId);
     const sequence = Number(last?.sequence ?? 0) + 1;
     const previousHash = last ? String(last.payload_hash) : null;
     const eventId = id("evt");
     const occurredAt = now();
     const payloadHash = sha256({ event_id: eventId, run_id: runId, sequence, event_type: eventType, occurred_at: occurredAt, payload, previous_event_hash: previousHash });
-    this.db.run(
-      "INSERT INTO ledger_events VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    await this.db.run(
+      "INSERT INTO ledger_events VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
       eventId,
       correlationId,
       runId,
@@ -668,12 +662,15 @@ export class WardenService {
     );
   }
 
-  private idempotencyResponse<T>(userId: string, scope: string, key: string): T | null {
-    const row = this.db.get<Row>("SELECT response_json FROM idempotency_keys WHERE user_id=? AND scope=? AND key=?", userId, scope, key);
+  private async idempotencyResponse<T>(userId: string, scope: string, key: string): Promise<T | null> {
+    const row = await this.db.get<Row>("SELECT response_json FROM idempotency_keys WHERE user_id=$1 AND scope=$2 AND key=$3", userId, scope, key);
     return row ? JSON.parse(String(row.response_json)) as T : null;
   }
 
-  private storeIdempotency(userId: string, scope: string, key: string, response: unknown) {
-    this.db.run("INSERT OR REPLACE INTO idempotency_keys VALUES (?, ?, ?, ?, ?)", userId, scope, key, JSON.stringify(response), now());
+  private async storeIdempotency(userId: string, scope: string, key: string, response: unknown) {
+    await this.db.run(
+      "INSERT INTO idempotency_keys (user_id, scope, key, response_json, created_at) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id, scope, key) DO UPDATE SET response_json=EXCLUDED.response_json, created_at=EXCLUDED.created_at",
+      userId, scope, key, JSON.stringify(response), now(),
+    );
   }
 }

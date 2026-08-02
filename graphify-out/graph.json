@@ -58,17 +58,8 @@
       "source_file": "packages/shared/src/index.ts",
       "source_location": "L1",
       "id": "packages_shared_src_index_ts",
-      "community": 10,
+      "community": 11,
       "norm_label": "index.ts"
-    },
-    {
-      "label": "config.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/config.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_config_ts",
-      "community": 1,
-      "norm_label": "config.ts"
     },
     {
       "label": "domain.ts",
@@ -76,7 +67,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L1",
       "id": "apps_api_src_domain_ts",
-      "community": 1,
+      "community": 3,
       "norm_label": "domain.ts"
     },
     {
@@ -85,7 +76,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L9",
       "id": "src_domain_now",
-      "community": 2,
+      "community": 1,
       "norm_label": "now()"
     },
     {
@@ -94,7 +85,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L10",
       "id": "src_domain_id",
-      "community": 2,
+      "community": 1,
       "norm_label": "id()"
     },
     {
@@ -103,7 +94,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L12",
       "id": "src_domain_stablejson",
-      "community": 2,
+      "community": 3,
       "norm_label": "stablejson()"
     },
     {
@@ -112,7 +103,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L22",
       "id": "src_domain_sha256",
-      "community": 2,
+      "community": 1,
       "norm_label": "sha256()"
     },
     {
@@ -121,7 +112,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L26",
       "id": "src_domain_conservativemonthlycost",
-      "community": 1,
+      "community": 3,
       "norm_label": "conservativemonthlycost()"
     },
     {
@@ -130,7 +121,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L33",
       "id": "src_domain_annualsavingsbps",
-      "community": 1,
+      "community": 3,
       "norm_label": "annualsavingsbps()"
     },
     {
@@ -139,7 +130,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L39",
       "id": "src_domain_healthscore",
-      "community": 1,
+      "community": 3,
       "norm_label": "healthscore()"
     },
     {
@@ -148,7 +139,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L51",
       "id": "src_domain_getrule",
-      "community": 1,
+      "community": 3,
       "norm_label": "getrule()"
     },
     {
@@ -157,7 +148,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L75",
       "id": "src_domain_asserttransition",
-      "community": 1,
+      "community": 3,
       "norm_label": "asserttransition()"
     },
     {
@@ -166,7 +157,7 @@
       "source_file": "apps/api/src/domain.ts",
       "source_location": "L81",
       "id": "src_domain_compilepolicydeterministically",
-      "community": 1,
+      "community": 3,
       "norm_label": "compilepolicydeterministically()"
     },
     {
@@ -175,7 +166,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L1",
       "id": "apps_api_src_db_ts",
-      "community": 1,
+      "community": 3,
       "norm_label": "db.ts"
     },
     {
@@ -184,7 +175,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L10",
       "id": "src_db_wardendb",
-      "community": 5,
+      "community": 6,
       "norm_label": "wardendb"
     },
     {
@@ -193,7 +184,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L13",
       "id": "src_db_wardendb_constructor",
-      "community": 5,
+      "community": 6,
       "norm_label": ".constructor()"
     },
     {
@@ -202,7 +193,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L21",
       "id": "src_db_wardendb_close",
-      "community": 5,
+      "community": 6,
       "norm_label": ".close()"
     },
     {
@@ -211,7 +202,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L25",
       "id": "src_db_wardendb_transaction",
-      "community": 5,
+      "community": 6,
       "norm_label": ".transaction()"
     },
     {
@@ -220,7 +211,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L37",
       "id": "src_db_wardendb_run",
-      "community": 5,
+      "community": 6,
       "norm_label": ".run()"
     },
     {
@@ -229,7 +220,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L41",
       "id": "src_db_wardendb_get",
-      "community": 5,
+      "community": 6,
       "norm_label": ".get()"
     },
     {
@@ -238,7 +229,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L45",
       "id": "src_db_wardendb_all",
-      "community": 5,
+      "community": 6,
       "norm_label": ".all()"
     },
     {
@@ -247,7 +238,7 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L49",
       "id": "src_db_wardendb_migrate",
-      "community": 5,
+      "community": 6,
       "norm_label": ".migrate()"
     },
     {
@@ -256,143 +247,377 @@
       "source_file": "apps/api/src/db.ts",
       "source_location": "L184",
       "id": "src_db_wardendb_seed",
-      "community": 5,
+      "community": 6,
       "norm_label": ".seed()"
     },
     {
       "label": ".subscriptions()",
       "file_type": "code",
       "source_file": "apps/api/src/db.ts",
-      "source_location": "L240",
+      "source_location": "L242",
       "id": "src_db_wardendb_subscriptions",
-      "community": 5,
+      "community": 6,
       "norm_label": ".subscriptions()"
     },
     {
       "label": ".activePolicy()",
       "file_type": "code",
       "source_file": "apps/api/src/db.ts",
-      "source_location": "L263",
+      "source_location": "L265",
       "id": "src_db_wardendb_activepolicy",
-      "community": 5,
+      "community": 6,
       "norm_label": ".activepolicy()"
     },
     {
       "label": ".runRecord()",
       "file_type": "code",
       "source_file": "apps/api/src/db.ts",
-      "source_location": "L275",
+      "source_location": "L277",
       "id": "src_db_wardendb_runrecord",
-      "community": 5,
+      "community": 6,
       "norm_label": ".runrecord()"
     },
     {
       "label": ".events()",
       "file_type": "code",
       "source_file": "apps/api/src/db.ts",
-      "source_location": "L319",
+      "source_location": "L321",
       "id": "src_db_wardendb_events",
-      "community": 5,
+      "community": 6,
       "norm_label": ".events()"
     },
     {
       "label": ".evidence()",
       "file_type": "code",
       "source_file": "apps/api/src/db.ts",
-      "source_location": "L334",
+      "source_location": "L336",
       "id": "src_db_wardendb_evidence",
-      "community": 5,
+      "community": 6,
       "norm_label": ".evidence()"
     },
     {
-      "label": "reasoner.ts",
+      "label": "auth.ts",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
+      "source_file": "apps/api/src/auth.ts",
       "source_location": "L1",
-      "id": "apps_api_src_reasoner_ts",
-      "community": 1,
-      "norm_label": "reasoner.ts"
+      "id": "apps_api_src_auth_ts",
+      "community": 4,
+      "norm_label": "auth.ts"
     },
     {
-      "label": "FakeReasoner",
+      "label": "sign()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L28",
-      "id": "src_reasoner_fakereasoner",
-      "community": 1,
-      "norm_label": "fakereasoner"
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L7",
+      "id": "src_auth_sign",
+      "community": 4,
+      "norm_label": "sign()"
     },
     {
-      "label": ".compilePolicy()",
+      "label": "safeEqual()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L11",
+      "id": "src_auth_safeequal",
+      "community": 4,
+      "norm_label": "safeequal()"
+    },
+    {
+      "label": "issueSession()",
+      "file_type": "code",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L17",
+      "id": "src_auth_issuesession",
+      "community": 4,
+      "norm_label": "issuesession()"
+    },
+    {
+      "label": "readSession()",
+      "file_type": "code",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L30",
+      "id": "src_auth_readsession",
+      "community": 4,
+      "norm_label": "readsession()"
+    },
+    {
+      "label": "requireSession()",
+      "file_type": "code",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L51",
+      "id": "src_auth_requiresession",
+      "community": 4,
+      "norm_label": "requiresession()"
+    },
+    {
+      "label": "requireCsrf()",
+      "file_type": "code",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L62",
+      "id": "src_auth_requirecsrf",
+      "community": 4,
+      "norm_label": "requirecsrf()"
+    },
+    {
+      "label": "domain.test.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/domain.test.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_domain_test_ts",
+      "community": 3,
+      "norm_label": "domain.test.ts"
+    },
+    {
+      "label": "merchant-checkout.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_merchant_checkout_ts",
+      "community": 1,
+      "norm_label": "merchant-checkout.ts"
+    },
+    {
+      "label": "NotionCheckoutAdapter",
+      "file_type": "code",
+      "source_file": "apps/api/src/merchant-checkout.ts",
       "source_location": "L29",
-      "id": "src_reasoner_fakereasoner_compilepolicy",
+      "id": "src_merchant_checkout_notioncheckoutadapter",
       "community": 1,
-      "norm_label": ".compilepolicy()"
+      "norm_label": "notioncheckoutadapter"
     },
     {
-      "label": ".decide()",
+      "label": ".checkout()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
+      "source_file": "apps/api/src/merchant-checkout.ts",
       "source_location": "L33",
-      "id": "src_reasoner_fakereasoner_decide",
+      "id": "src_merchant_checkout_notioncheckoutadapter_checkout",
       "community": 1,
-      "norm_label": ".decide()"
+      "norm_label": ".checkout()"
     },
     {
-      "label": "OpenAIReasoner",
+      "label": "GenericMerchantCheckoutAdapter",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L90",
-      "id": "src_reasoner_openaireasoner",
-      "community": 8,
-      "norm_label": "openaireasoner"
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L68",
+      "id": "src_merchant_checkout_genericmerchantcheckoutadapter",
+      "community": 1,
+      "norm_label": "genericmerchantcheckoutadapter"
     },
     {
       "label": ".constructor()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L95",
-      "id": "src_reasoner_openaireasoner_constructor",
-      "community": 8,
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L72",
+      "id": "src_merchant_checkout_genericmerchantcheckoutadapter_constructor",
+      "community": 1,
       "norm_label": ".constructor()"
+    },
+    {
+      "label": ".checkout()",
+      "file_type": "code",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L77",
+      "id": "src_merchant_checkout_genericmerchantcheckoutadapter_checkout",
+      "community": 1,
+      "norm_label": ".checkout()"
+    },
+    {
+      "label": "getAdapter()",
+      "file_type": "code",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L98",
+      "id": "src_merchant_checkout_getadapter",
+      "community": 1,
+      "norm_label": "getadapter()"
+    },
+    {
+      "label": "executeMerchantCheckout()",
+      "file_type": "code",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L115",
+      "id": "src_merchant_checkout_executemerchantcheckout",
+      "community": 1,
+      "norm_label": "executemerchantcheckout()"
+    },
+    {
+      "label": "buildCheckoutEvidence()",
+      "file_type": "code",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L120",
+      "id": "src_merchant_checkout_buildcheckoutevidence",
+      "community": 1,
+      "norm_label": "buildcheckoutevidence()"
+    },
+    {
+      "label": "logger.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_logger_ts",
+      "community": 4,
+      "norm_label": "logger.ts"
+    },
+    {
+      "label": "Logger",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L9",
+      "id": "src_logger_logger",
+      "community": 7,
+      "norm_label": "logger"
+    },
+    {
+      "label": ".format()",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L10",
+      "id": "src_logger_logger_format",
+      "community": 7,
+      "norm_label": ".format()"
+    },
+    {
+      "label": ".info()",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L21",
+      "id": "src_logger_logger_info",
+      "community": 7,
+      "norm_label": ".info()"
+    },
+    {
+      "label": ".warn()",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L25",
+      "id": "src_logger_logger_warn",
+      "community": 7,
+      "norm_label": ".warn()"
+    },
+    {
+      "label": ".error()",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L29",
+      "id": "src_logger_logger_error",
+      "community": 7,
+      "norm_label": ".error()"
+    },
+    {
+      "label": ".debug()",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L36",
+      "id": "src_logger_logger_debug",
+      "community": 7,
+      "norm_label": ".debug()"
+    },
+    {
+      "label": "generateCorrelationId()",
+      "file_type": "code",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L45",
+      "id": "src_logger_generatecorrelationid",
+      "community": 4,
+      "norm_label": "generatecorrelationid()"
+    },
+    {
+      "label": "app.test.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_app_test_ts",
+      "community": 4,
+      "norm_label": "app.test.ts"
+    },
+    {
+      "label": "DeterministicReasoner",
+      "file_type": "code",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L11",
+      "id": "src_app_test_deterministicreasoner",
+      "community": 4,
+      "norm_label": "deterministicreasoner"
     },
     {
       "label": ".compilePolicy()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L118",
-      "id": "src_reasoner_openaireasoner_compilepolicy",
-      "community": 8,
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L12",
+      "id": "src_app_test_deterministicreasoner_compilepolicy",
+      "community": 4,
       "norm_label": ".compilepolicy()"
     },
     {
       "label": ".decide()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L170",
-      "id": "src_reasoner_openaireasoner_decide",
-      "community": 8,
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L41",
+      "id": "src_app_test_deterministicreasoner_decide",
+      "community": 4,
       "norm_label": ".decide()"
     },
     {
-      "label": ".callFunction()",
+      "label": "annualSavingsBps()",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L197",
-      "id": "src_reasoner_openaireasoner_callfunction",
-      "community": 8,
-      "norm_label": ".callfunction()"
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L97",
+      "id": "src_app_test_annualsavingsbps",
+      "community": 4,
+      "norm_label": "annualsavingsbps()"
     },
     {
-      "label": "createReasoner()",
+      "label": "app.ts",
       "file_type": "code",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L212",
-      "id": "src_reasoner_createreasoner",
-      "community": 1,
-      "norm_label": "createreasoner()"
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_app_ts",
+      "community": 4,
+      "norm_label": "app.ts"
+    },
+    {
+      "label": "asyncRoute()",
+      "file_type": "code",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L14",
+      "id": "src_app_asyncroute",
+      "community": 4,
+      "norm_label": "asyncroute()"
+    },
+    {
+      "label": "requiredIdempotencyKey()",
+      "file_type": "code",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L20",
+      "id": "src_app_requiredidempotencykey",
+      "community": 4,
+      "norm_label": "requiredidempotencykey()"
+    },
+    {
+      "label": "createApp()",
+      "file_type": "code",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L26",
+      "id": "src_app_createapp",
+      "community": 4,
+      "norm_label": "createapp()"
+    },
+    {
+      "label": "config.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/config.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_config_ts",
+      "community": 4,
+      "norm_label": "config.ts"
+    },
+    {
+      "label": "loadEnvFiles()",
+      "file_type": "code",
+      "source_file": "apps/api/src/config.ts",
+      "source_location": "L7",
+      "id": "src_config_loadenvfiles",
+      "community": 4,
+      "norm_label": "loadenvfiles()"
     },
     {
       "label": "provider.ts",
@@ -404,118 +629,370 @@
       "norm_label": "provider.ts"
     },
     {
+      "label": "LocalExecutionProvider",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L46",
+      "id": "src_provider_localexecutionprovider",
+      "community": 1,
+      "norm_label": "localexecutionprovider"
+    },
+    {
+      "label": ".createApproval()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L49",
+      "id": "src_provider_localexecutionprovider_createapproval",
+      "community": 1,
+      "norm_label": ".createapproval()"
+    },
+    {
+      "label": ".execute()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L58",
+      "id": "src_provider_localexecutionprovider_execute",
+      "community": 1,
+      "norm_label": ".execute()"
+    },
+    {
+      "label": "PravaExecutionProvider",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L154",
+      "id": "src_provider_pravaexecutionprovider",
+      "community": 1,
+      "norm_label": "pravaexecutionprovider"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L157",
+      "id": "src_provider_pravaexecutionprovider_constructor",
+      "community": 1,
+      "norm_label": ".constructor()"
+    },
+    {
+      "label": ".createApproval()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L163",
+      "id": "src_provider_pravaexecutionprovider_createapproval",
+      "community": 1,
+      "norm_label": ".createapproval()"
+    },
+    {
+      "label": ".execute()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L180",
+      "id": "src_provider_pravaexecutionprovider_execute",
+      "community": 1,
+      "norm_label": ".execute()"
+    },
+    {
+      "label": ".createSession()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L279",
+      "id": "src_provider_pravaexecutionprovider_createsession",
+      "community": 1,
+      "norm_label": ".createsession()"
+    },
+    {
+      "label": ".pollPaymentResult()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L311",
+      "id": "src_provider_pravaexecutionprovider_pollpaymentresult",
+      "community": 1,
+      "norm_label": ".pollpaymentresult()"
+    },
+    {
+      "label": ".reportStatus()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L315",
+      "id": "src_provider_pravaexecutionprovider_reportstatus",
+      "community": 1,
+      "norm_label": ".reportstatus()"
+    },
+    {
+      "label": ".requestJson()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L322",
+      "id": "src_provider_pravaexecutionprovider_requestjson",
+      "community": 1,
+      "norm_label": ".requestjson()"
+    },
+    {
+      "label": "createExecutionProvider()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L339",
+      "id": "src_provider_createexecutionprovider",
+      "community": 3,
+      "norm_label": "createexecutionprovider()"
+    },
+    {
+      "label": "formatAmount()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L343",
+      "id": "src_provider_formatamount",
+      "community": 1,
+      "norm_label": "formatamount()"
+    },
+    {
+      "label": "sanitizeMerchantName()",
+      "file_type": "code",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L347",
+      "id": "src_provider_sanitizemerchantname",
+      "community": 1,
+      "norm_label": "sanitizemerchantname()"
+    },
+    {
+      "label": "reasoner.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_reasoner_ts",
+      "community": 3,
+      "norm_label": "reasoner.ts"
+    },
+    {
+      "label": "DeterministicReasoner",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L37",
+      "id": "src_reasoner_deterministicreasoner",
+      "community": 3,
+      "norm_label": "deterministicreasoner"
+    },
+    {
+      "label": ".compilePolicy()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L38",
+      "id": "src_reasoner_deterministicreasoner_compilepolicy",
+      "community": 3,
+      "norm_label": ".compilepolicy()"
+    },
+    {
+      "label": ".decide()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L47",
+      "id": "src_reasoner_deterministicreasoner_decide",
+      "community": 3,
+      "norm_label": ".decide()"
+    },
+    {
+      "label": ".decideInternal()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L56",
+      "id": "src_reasoner_deterministicreasoner_decideinternal",
+      "community": 3,
+      "norm_label": ".decideinternal()"
+    },
+    {
+      "label": "server.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/server.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_server_ts",
+      "community": 4,
+      "norm_label": "server.ts"
+    },
+    {
+      "label": "service.test.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L1",
+      "id": "apps_api_src_service_test_ts",
+      "community": 3,
+      "norm_label": "service.test.ts"
+    },
+    {
+      "label": "DeterministicReasoner",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L7",
+      "id": "src_service_test_deterministicreasoner",
+      "community": 3,
+      "norm_label": "deterministicreasoner"
+    },
+    {
+      "label": ".compilePolicy()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L8",
+      "id": "src_service_test_deterministicreasoner_compilepolicy",
+      "community": 3,
+      "norm_label": ".compilepolicy()"
+    },
+    {
+      "label": ".decide()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L34",
+      "id": "src_service_test_deterministicreasoner_decide",
+      "community": 3,
+      "norm_label": ".decide()"
+    },
+    {
+      "label": "annualSavingsBps()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L90",
+      "id": "src_service_test_annualsavingsbps",
+      "community": 3,
+      "norm_label": "annualsavingsbps()"
+    },
+    {
+      "label": "serviceFixture()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L96",
+      "id": "src_service_test_servicefixture",
+      "community": 3,
+      "norm_label": "servicefixture()"
+    },
+    {
+      "label": "AvoidingProvider",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L249",
+      "id": "src_service_test_avoidingprovider",
+      "community": 3,
+      "norm_label": "avoidingprovider"
+    },
+    {
+      "label": ".execute()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L250",
+      "id": "src_service_test_avoidingprovider_execute",
+      "community": 3,
+      "norm_label": ".execute()"
+    },
+    {
       "label": "service.ts",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
       "source_location": "L1",
       "id": "apps_api_src_service_ts",
-      "community": 1,
+      "community": 3,
       "norm_label": "service.ts"
     },
     {
       "label": "HttpError",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "id": "src_service_httperror",
-      "community": 6,
+      "community": 4,
       "norm_label": "httperror"
     },
     {
       "label": ".constructor()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L19",
+      "source_location": "L20",
       "id": "src_service_httperror_constructor",
-      "community": 6,
+      "community": 4,
       "norm_label": ".constructor()"
     },
     {
       "label": "WardenService",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L41",
+      "source_location": "L42",
       "id": "src_service_wardenservice",
-      "community": 3,
+      "community": 2,
       "norm_label": "wardenservice"
     },
     {
       "label": ".constructor()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L42",
+      "source_location": "L43",
       "id": "src_service_wardenservice_constructor",
-      "community": 3,
+      "community": 2,
       "norm_label": ".constructor()"
     },
     {
       "label": ".subscriptions()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L48",
+      "source_location": "L49",
       "id": "src_service_wardenservice_subscriptions",
-      "community": 3,
+      "community": 2,
       "norm_label": ".subscriptions()"
     },
     {
       "label": ".activePolicy()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L52",
+      "source_location": "L53",
       "id": "src_service_wardenservice_activepolicy",
-      "community": 3,
+      "community": 2,
       "norm_label": ".activepolicy()"
     },
     {
       "label": ".portfolioVersion()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L56",
+      "source_location": "L57",
       "id": "src_service_wardenservice_portfolioversion",
-      "community": 3,
+      "community": 2,
       "norm_label": ".portfolioversion()"
     },
     {
       "label": ".draftPolicy()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L60",
+      "source_location": "L61",
       "id": "src_service_wardenservice_draftpolicy",
-      "community": 3,
+      "community": 2,
       "norm_label": ".draftpolicy()"
     },
     {
       "label": ".activatePolicy()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L79",
+      "source_location": "L80",
       "id": "src_service_wardenservice_activatepolicy",
-      "community": 3,
+      "community": 2,
       "norm_label": ".activatepolicy()"
     },
     {
       "label": ".createRun()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L98",
+      "source_location": "L99",
       "id": "src_service_wardenservice_createrun",
-      "community": 3,
+      "community": 2,
       "norm_label": ".createrun()"
     },
     {
       "label": ".latestRun()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L200",
+      "source_location": "L209",
       "id": "src_service_wardenservice_latestrun",
-      "community": 3,
+      "community": 2,
       "norm_label": ".latestrun()"
     },
     {
       "label": ".run()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L205",
+      "source_location": "L214",
       "id": "src_service_wardenservice_run",
       "community": 2,
       "norm_label": ".run()"
@@ -524,106 +1001,124 @@
       "label": ".events()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L209",
+      "source_location": "L218",
       "id": "src_service_wardenservice_events",
-      "community": 3,
+      "community": 2,
       "norm_label": ".events()"
+    },
+    {
+      "label": ".recoverStuckRuns()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L228",
+      "id": "src_service_wardenservice_recoverstuckruns",
+      "community": 2,
+      "norm_label": ".recoverstuckruns()"
     },
     {
       "label": ".createApprovalSession()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L214",
+      "source_location": "L258",
       "id": "src_service_wardenservice_createapprovalsession",
-      "community": 3,
+      "community": 2,
       "norm_label": ".createapprovalsession()"
     },
     {
       "label": ".executeAttempt()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L259",
+      "source_location": "L304",
       "id": "src_service_wardenservice_executeattempt",
-      "community": 3,
+      "community": 2,
       "norm_label": ".executeattempt()"
     },
     {
       "label": ".declineApproval()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L329",
+      "source_location": "L376",
       "id": "src_service_wardenservice_declineapproval",
-      "community": 3,
+      "community": 2,
       "norm_label": ".declineapproval()"
     },
     {
       "label": ".savings()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L344",
+      "source_location": "L391",
       "id": "src_service_wardenservice_savings",
-      "community": 3,
+      "community": 2,
       "norm_label": ".savings()"
     },
     {
       "label": ".evidence()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L352",
+      "source_location": "L399",
       "id": "src_service_wardenservice_evidence",
-      "community": 3,
+      "community": 2,
       "norm_label": ".evidence()"
     },
     {
       "label": ".pravaPaymentResult()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L358",
+      "source_location": "L405",
       "id": "src_service_wardenservice_pravapaymentresult",
-      "community": 3,
+      "community": 2,
       "norm_label": ".pravapaymentresult()"
+    },
+    {
+      "label": ".finalizePravaSession()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L412",
+      "id": "src_service_wardenservice_finalizepravasession",
+      "community": 2,
+      "norm_label": ".finalizepravasession()"
     },
     {
       "label": ".plan()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L365",
+      "source_location": "L434",
       "id": "src_service_wardenservice_plan",
-      "community": 3,
+      "community": 2,
       "norm_label": ".plan()"
     },
     {
       "label": ".sanitizeReasoning()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L420",
+      "source_location": "L500",
       "id": "src_service_wardenservice_sanitizereasoning",
-      "community": 3,
+      "community": 2,
       "norm_label": ".sanitizereasoning()"
     },
     {
       "label": ".requireRun()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L424",
+      "source_location": "L504",
       "id": "src_service_wardenservice_requirerun",
-      "community": 3,
+      "community": 2,
       "norm_label": ".requirerun()"
     },
     {
       "label": ".requireDecision()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L430",
+      "source_location": "L510",
       "id": "src_service_wardenservice_requiredecision",
-      "community": 3,
+      "community": 2,
       "norm_label": ".requiredecision()"
     },
     {
       "label": ".transitionDecisionInTransaction()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L448",
+      "source_location": "L528",
       "id": "src_service_wardenservice_transitiondecisionintransaction",
       "community": 2,
       "norm_label": ".transitiondecisionintransaction()"
@@ -632,16 +1127,16 @@
       "label": ".markReconciling()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L479",
+      "source_location": "L559",
       "id": "src_service_wardenservice_markreconciling",
-      "community": 3,
+      "community": 2,
       "norm_label": ".markreconciling()"
     },
     {
       "label": ".staleDependentsInTransaction()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L497",
+      "source_location": "L577",
       "id": "src_service_wardenservice_staledependentsintransaction",
       "community": 2,
       "norm_label": ".staledependentsintransaction()"
@@ -650,16 +1145,16 @@
       "label": ".applySubscriptionEffect()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L516",
+      "source_location": "L596",
       "id": "src_service_wardenservice_applysubscriptioneffect",
-      "community": 3,
+      "community": 2,
       "norm_label": ".applysubscriptioneffect()"
     },
     {
       "label": ".insertEvidence()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L532",
+      "source_location": "L612",
       "id": "src_service_wardenservice_insertevidence",
       "community": 2,
       "norm_label": ".insertevidence()"
@@ -668,16 +1163,16 @@
       "label": ".assertDependencySatisfied()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L551",
+      "source_location": "L631",
       "id": "src_service_wardenservice_assertdependencysatisfied",
-      "community": 3,
+      "community": 2,
       "norm_label": ".assertdependencysatisfied()"
     },
     {
       "label": ".refreshRunStatus()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L560",
+      "source_location": "L640",
       "id": "src_service_wardenservice_refreshrunstatus",
       "community": 2,
       "norm_label": ".refreshrunstatus()"
@@ -686,7 +1181,7 @@
       "label": ".appendEvent()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L570",
+      "source_location": "L650",
       "id": "src_service_wardenservice_appendevent",
       "community": 2,
       "norm_label": ".appendevent()"
@@ -695,316 +1190,19 @@
       "label": ".idempotencyResponse()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L592",
+      "source_location": "L672",
       "id": "src_service_wardenservice_idempotencyresponse",
-      "community": 3,
+      "community": 2,
       "norm_label": ".idempotencyresponse()"
     },
     {
       "label": ".storeIdempotency()",
       "file_type": "code",
       "source_file": "apps/api/src/service.ts",
-      "source_location": "L597",
+      "source_location": "L677",
       "id": "src_service_wardenservice_storeidempotency",
       "community": 2,
       "norm_label": ".storeidempotency()"
-    },
-    {
-      "label": "auth.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_auth_ts",
-      "community": 6,
-      "norm_label": "auth.ts"
-    },
-    {
-      "label": "sign()",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L7",
-      "id": "src_auth_sign",
-      "community": 6,
-      "norm_label": "sign()"
-    },
-    {
-      "label": "safeEqual()",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L11",
-      "id": "src_auth_safeequal",
-      "community": 6,
-      "norm_label": "safeequal()"
-    },
-    {
-      "label": "issueSession()",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L17",
-      "id": "src_auth_issuesession",
-      "community": 6,
-      "norm_label": "issuesession()"
-    },
-    {
-      "label": "readSession()",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L30",
-      "id": "src_auth_readsession",
-      "community": 6,
-      "norm_label": "readsession()"
-    },
-    {
-      "label": "requireSession()",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L51",
-      "id": "src_auth_requiresession",
-      "community": 6,
-      "norm_label": "requiresession()"
-    },
-    {
-      "label": "requireCsrf()",
-      "file_type": "code",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L62",
-      "id": "src_auth_requirecsrf",
-      "community": 6,
-      "norm_label": "requirecsrf()"
-    },
-    {
-      "label": "app.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_app_ts",
-      "community": 6,
-      "norm_label": "app.ts"
-    },
-    {
-      "label": "asyncRoute()",
-      "file_type": "code",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L13",
-      "id": "src_app_asyncroute",
-      "community": 6,
-      "norm_label": "asyncroute()"
-    },
-    {
-      "label": "requiredIdempotencyKey()",
-      "file_type": "code",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L19",
-      "id": "src_app_requiredidempotencykey",
-      "community": 6,
-      "norm_label": "requiredidempotencykey()"
-    },
-    {
-      "label": "createApp()",
-      "file_type": "code",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L25",
-      "id": "src_app_createapp",
-      "community": 6,
-      "norm_label": "createapp()"
-    },
-    {
-      "label": "server.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/server.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_server_ts",
-      "community": 6,
-      "norm_label": "server.ts"
-    },
-    {
-      "label": "domain.test.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/domain.test.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_domain_test_ts",
-      "community": 1,
-      "norm_label": "domain.test.ts"
-    },
-    {
-      "label": "service.test.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_service_test_ts",
-      "community": 1,
-      "norm_label": "service.test.ts"
-    },
-    {
-      "label": "serviceFixture()",
-      "file_type": "code",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L9",
-      "id": "src_service_test_servicefixture",
-      "community": 1,
-      "norm_label": "servicefixture()"
-    },
-    {
-      "label": "AvoidingProvider",
-      "file_type": "code",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L154",
-      "id": "src_service_test_avoidingprovider",
-      "community": 1,
-      "norm_label": "avoidingprovider"
-    },
-    {
-      "label": ".execute()",
-      "file_type": "code",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L155",
-      "id": "src_service_test_avoidingprovider_execute",
-      "community": 1,
-      "norm_label": ".execute()"
-    },
-    {
-      "label": "app.test.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_app_test_ts",
-      "community": 1,
-      "norm_label": "app.test.ts"
-    },
-    {
-      "label": "prava-provider.ts",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L1",
-      "id": "apps_api_src_prava_provider_ts",
-      "community": 2,
-      "norm_label": "prava-provider.ts"
-    },
-    {
-      "label": "FakeExecutionProvider",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L67",
-      "id": "src_prava_provider_fakeexecutionprovider",
-      "community": 2,
-      "norm_label": "fakeexecutionprovider"
-    },
-    {
-      "label": ".createApproval()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L70",
-      "id": "src_prava_provider_fakeexecutionprovider_createapproval",
-      "community": 2,
-      "norm_label": ".createapproval()"
-    },
-    {
-      "label": ".execute()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L79",
-      "id": "src_prava_provider_fakeexecutionprovider_execute",
-      "community": 2,
-      "norm_label": ".execute()"
-    },
-    {
-      "label": "PravaExecutionProvider",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L112",
-      "id": "src_prava_provider_pravaexecutionprovider",
-      "community": 2,
-      "norm_label": "pravaexecutionprovider"
-    },
-    {
-      "label": ".constructor()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L115",
-      "id": "src_prava_provider_pravaexecutionprovider_constructor",
-      "community": 2,
-      "norm_label": ".constructor()"
-    },
-    {
-      "label": ".createApproval()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L121",
-      "id": "src_prava_provider_pravaexecutionprovider_createapproval",
-      "community": 2,
-      "norm_label": ".createapproval()"
-    },
-    {
-      "label": ".execute()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L138",
-      "id": "src_prava_provider_pravaexecutionprovider_execute",
-      "community": 2,
-      "norm_label": ".execute()"
-    },
-    {
-      "label": ".createSession()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L166",
-      "id": "src_prava_provider_pravaexecutionprovider_createsession",
-      "community": 2,
-      "norm_label": ".createsession()"
-    },
-    {
-      "label": ".pollPaymentResult()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L197",
-      "id": "src_prava_provider_pravaexecutionprovider_pollpaymentresult",
-      "community": 2,
-      "norm_label": ".pollpaymentresult()"
-    },
-    {
-      "label": ".reportStatus()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L201",
-      "id": "src_prava_provider_pravaexecutionprovider_reportstatus",
-      "community": 2,
-      "norm_label": ".reportstatus()"
-    },
-    {
-      "label": ".requestJson()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L208",
-      "id": "src_prava_provider_pravaexecutionprovider_requestjson",
-      "community": 2,
-      "norm_label": ".requestjson()"
-    },
-    {
-      "label": "createExecutionProvider()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L222",
-      "id": "src_prava_provider_createexecutionprovider",
-      "community": 2,
-      "norm_label": "createexecutionprovider()"
-    },
-    {
-      "label": "formatAmount()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L226",
-      "id": "src_prava_provider_formatamount",
-      "community": 2,
-      "norm_label": "formatamount()"
-    },
-    {
-      "label": "sanitizeMerchantName()",
-      "file_type": "code",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L230",
-      "id": "src_prava_provider_sanitizemerchantname",
-      "community": 2,
-      "norm_label": "sanitizemerchantname()"
     },
     {
       "label": "vite.config.ts",
@@ -1012,7 +1210,7 @@
       "source_file": "apps/web/vite.config.ts",
       "source_location": "L1",
       "id": "apps_web_vite_config_ts",
-      "community": 11,
+      "community": 12,
       "norm_label": "vite.config.ts"
     },
     {
@@ -1021,7 +1219,7 @@
       "source_file": "apps/web/src/main.tsx",
       "source_location": "L1",
       "id": "apps_web_src_main_tsx",
-      "community": 12,
+      "community": 13,
       "norm_label": "main.tsx"
     },
     {
@@ -1030,7 +1228,7 @@
       "source_file": "apps/web/src/api.ts",
       "source_location": "L1",
       "id": "apps_web_src_api_ts",
-      "community": 9,
+      "community": 5,
       "norm_label": "api.ts"
     },
     {
@@ -1039,8 +1237,44 @@
       "source_file": "apps/web/src/api.ts",
       "source_location": "L15",
       "id": "src_api_request",
-      "community": 9,
+      "community": 5,
       "norm_label": "request()"
+    },
+    {
+      "label": "NetworkError",
+      "file_type": "code",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L38",
+      "id": "src_api_networkerror",
+      "community": 5,
+      "norm_label": "networkerror"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L40",
+      "id": "src_api_networkerror_constructor",
+      "community": 5,
+      "norm_label": ".constructor()"
+    },
+    {
+      "label": "ApiError",
+      "file_type": "code",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L46",
+      "id": "src_api_apierror",
+      "community": 5,
+      "norm_label": "apierror"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L49",
+      "id": "src_api_apierror_constructor",
+      "community": 5,
+      "norm_label": ".constructor()"
     },
     {
       "label": "App.tsx",
@@ -1048,98 +1282,413 @@
       "source_file": "apps/web/src/App.tsx",
       "source_location": "L1",
       "id": "apps_web_src_app_tsx",
-      "community": 7,
+      "community": 5,
       "norm_label": "app.tsx"
     },
     {
       "label": "money()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L18",
+      "source_location": "L21",
       "id": "src_app_money",
-      "community": 7,
+      "community": 5,
       "norm_label": "money()"
     },
     {
       "label": "shortId()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L19",
+      "source_location": "L22",
       "id": "src_app_shortid",
-      "community": 7,
+      "community": 5,
       "norm_label": "shortid()"
+    },
+    {
+      "label": "actionTypeLabel()",
+      "file_type": "code",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L25",
+      "id": "src_app_actiontypelabel",
+      "community": 5,
+      "norm_label": "actiontypelabel()"
+    },
+    {
+      "label": "RuleLabel()",
+      "file_type": "code",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L74",
+      "id": "src_app_rulelabel",
+      "community": 5,
+      "norm_label": "rulelabel()"
+    },
+    {
+      "label": "decisionStatusLabel()",
+      "file_type": "code",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L89",
+      "id": "src_app_decisionstatuslabel",
+      "community": 5,
+      "norm_label": "decisionstatuslabel()"
     },
     {
       "label": "handler()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L151",
+      "source_location": "L233",
       "id": "src_app_handler",
-      "community": 7,
+      "community": 5,
       "norm_label": "handler()"
     },
     {
       "label": "handleDialogKeys()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L165",
+      "source_location": "L247",
       "id": "src_app_handledialogkeys",
-      "community": 7,
+      "community": 5,
       "norm_label": "handledialogkeys()"
     },
     {
       "label": "handleDrawerKeys()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L186",
+      "source_location": "L268",
       "id": "src_app_handledrawerkeys",
-      "community": 7,
+      "community": 5,
       "norm_label": "handledrawerkeys()"
+    },
+    {
+      "label": "handleOnline()",
+      "file_type": "code",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L287",
+      "id": "src_app_handleonline",
+      "community": 5,
+      "norm_label": "handleonline()"
+    },
+    {
+      "label": "handleOffline()",
+      "file_type": "code",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L291",
+      "id": "src_app_handleoffline",
+      "community": 5,
+      "norm_label": "handleoffline()"
     },
     {
       "label": "startRun()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L209",
+      "source_location": "L324",
       "id": "src_app_startrun",
-      "community": 7,
+      "community": 5,
       "norm_label": "startrun()"
     },
     {
       "label": "savePolicy()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L217",
+      "source_location": "L332",
       "id": "src_app_savepolicy",
-      "community": 7,
+      "community": 5,
       "norm_label": "savepolicy()"
     },
     {
       "label": "reviewApproval()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L228",
+      "source_location": "L343",
       "id": "src_app_reviewapproval",
-      "community": 7,
+      "community": 5,
       "norm_label": "reviewapproval()"
     },
     {
       "label": "confirmApproval()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L236",
+      "source_location": "L363",
       "id": "src_app_confirmapproval",
-      "community": 7,
+      "community": 5,
       "norm_label": "confirmapproval()"
     },
     {
       "label": "decline()",
       "file_type": "code",
       "source_file": "apps/web/src/App.tsx",
-      "source_location": "L244",
+      "source_location": "L386",
       "id": "src_app_decline",
-      "community": 7,
+      "community": 5,
       "norm_label": "decline()"
+    },
+    {
+      "label": "CommandPalette.tsx",
+      "file_type": "code",
+      "source_file": "apps/web/src/CommandPalette.tsx",
+      "source_location": "L1",
+      "id": "apps_web_src_commandpalette_tsx",
+      "community": 14,
+      "norm_label": "commandpalette.tsx"
+    },
+    {
+      "label": "Landing.tsx",
+      "file_type": "code",
+      "source_file": "apps/web/src/Landing.tsx",
+      "source_location": "L1",
+      "id": "apps_web_src_landing_tsx",
+      "community": 9,
+      "norm_label": "landing.tsx"
+    },
+    {
+      "label": "handleScroll()",
+      "file_type": "code",
+      "source_file": "apps/web/src/Landing.tsx",
+      "source_location": "L36",
+      "id": "src_landing_handlescroll",
+      "community": 9,
+      "norm_label": "handlescroll()"
+    },
+    {
+      "label": "PravaCardCheckout.tsx",
+      "file_type": "code",
+      "source_file": "apps/web/src/prava/PravaCardCheckout.tsx",
+      "source_location": "L1",
+      "id": "apps_web_src_prava_pravacardcheckout_tsx",
+      "community": 10,
+      "norm_label": "pravacardcheckout.tsx"
+    },
+    {
+      "label": "PravaCardCheckout()",
+      "file_type": "code",
+      "source_file": "apps/web/src/prava/PravaCardCheckout.tsx",
+      "source_location": "L11",
+      "id": "prava_pravacardcheckout_pravacardcheckout",
+      "community": 10,
+      "norm_label": "pravacardcheckout()"
+    },
+    {
+      "label": "FakeReasoner",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L28",
+      "community": 3,
+      "norm_label": "fakereasoner",
+      "id": "src_reasoner_fakereasoner"
+    },
+    {
+      "label": ".compilePolicy()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L29",
+      "community": 3,
+      "norm_label": ".compilepolicy()",
+      "id": "src_reasoner_fakereasoner_compilepolicy"
+    },
+    {
+      "label": ".decide()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L33",
+      "community": 3,
+      "norm_label": ".decide()",
+      "id": "src_reasoner_fakereasoner_decide"
+    },
+    {
+      "label": "OpenAIReasoner",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L90",
+      "community": 8,
+      "norm_label": "openaireasoner",
+      "id": "src_reasoner_openaireasoner"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L95",
+      "community": 8,
+      "norm_label": ".constructor()",
+      "id": "src_reasoner_openaireasoner_constructor"
+    },
+    {
+      "label": ".compilePolicy()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L118",
+      "community": 8,
+      "norm_label": ".compilepolicy()",
+      "id": "src_reasoner_openaireasoner_compilepolicy"
+    },
+    {
+      "label": ".decide()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L200",
+      "community": 8,
+      "norm_label": ".decide()",
+      "id": "src_reasoner_openaireasoner_decide"
+    },
+    {
+      "label": ".callFunction()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L281",
+      "community": 8,
+      "norm_label": ".callfunction()",
+      "id": "src_reasoner_openaireasoner_callfunction"
+    },
+    {
+      "label": "createReasoner()",
+      "file_type": "code",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L310",
+      "community": 3,
+      "norm_label": "createreasoner()",
+      "id": "src_reasoner_createreasoner"
+    },
+    {
+      "label": ".createTestRun()",
+      "file_type": "code",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L398",
+      "community": 2,
+      "norm_label": ".createtestrun()",
+      "id": "src_service_wardenservice_createtestrun"
+    },
+    {
+      "label": "prava-provider.ts",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L1",
+      "community": 1,
+      "norm_label": "prava-provider.ts",
+      "id": "apps_api_src_prava_provider_ts"
+    },
+    {
+      "label": "FakeExecutionProvider",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L68",
+      "community": 1,
+      "norm_label": "fakeexecutionprovider",
+      "id": "src_prava_provider_fakeexecutionprovider"
+    },
+    {
+      "label": ".createApproval()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L71",
+      "community": 1,
+      "norm_label": ".createapproval()",
+      "id": "src_prava_provider_fakeexecutionprovider_createapproval"
+    },
+    {
+      "label": ".execute()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L80",
+      "community": 1,
+      "norm_label": ".execute()",
+      "id": "src_prava_provider_fakeexecutionprovider_execute"
+    },
+    {
+      "label": "PravaExecutionProvider",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L113",
+      "community": 1,
+      "norm_label": "pravaexecutionprovider",
+      "id": "src_prava_provider_pravaexecutionprovider"
+    },
+    {
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L116",
+      "community": 1,
+      "norm_label": ".constructor()",
+      "id": "src_prava_provider_pravaexecutionprovider_constructor"
+    },
+    {
+      "label": ".createApproval()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L122",
+      "community": 1,
+      "norm_label": ".createapproval()",
+      "id": "src_prava_provider_pravaexecutionprovider_createapproval"
+    },
+    {
+      "label": ".execute()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L139",
+      "community": 1,
+      "norm_label": ".execute()",
+      "id": "src_prava_provider_pravaexecutionprovider_execute"
+    },
+    {
+      "label": ".createSession()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L270",
+      "community": 1,
+      "norm_label": ".createsession()",
+      "id": "src_prava_provider_pravaexecutionprovider_createsession"
+    },
+    {
+      "label": ".pollPaymentResult()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L302",
+      "community": 1,
+      "norm_label": ".pollpaymentresult()",
+      "id": "src_prava_provider_pravaexecutionprovider_pollpaymentresult"
+    },
+    {
+      "label": ".reportStatus()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L306",
+      "community": 1,
+      "norm_label": ".reportstatus()",
+      "id": "src_prava_provider_pravaexecutionprovider_reportstatus"
+    },
+    {
+      "label": ".requestJson()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L313",
+      "community": 1,
+      "norm_label": ".requestjson()",
+      "id": "src_prava_provider_pravaexecutionprovider_requestjson"
+    },
+    {
+      "label": "createExecutionProvider()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L328",
+      "community": 1,
+      "norm_label": "createexecutionprovider()",
+      "id": "src_prava_provider_createexecutionprovider"
+    },
+    {
+      "label": "formatAmount()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L332",
+      "community": 1,
+      "norm_label": "formatamount()",
+      "id": "src_prava_provider_formatamount"
+    },
+    {
+      "label": "sanitizeMerchantName()",
+      "file_type": "code",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L336",
+      "community": 1,
+      "norm_label": "sanitizemerchantname()",
+      "id": "src_prava_provider_sanitizemerchantname"
     },
     {
       "label": "FakeExecutionProvider",
@@ -1164,54 +1713,9 @@
       "file_type": "code",
       "source_file": "apps/api/src/provider.ts",
       "source_location": "L35",
-      "community": 2,
+      "community": 1,
       "norm_label": ".execute()",
       "id": "src_provider_fakeexecutionprovider_execute"
-    },
-    {
-      "label": "PravaExecutionProvider",
-      "file_type": "code",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L83",
-      "community": 1,
-      "norm_label": "pravaexecutionprovider",
-      "id": "src_provider_pravaexecutionprovider"
-    },
-    {
-      "label": ".constructor()",
-      "file_type": "code",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L86",
-      "community": 1,
-      "norm_label": ".constructor()",
-      "id": "src_provider_pravaexecutionprovider_constructor"
-    },
-    {
-      "label": ".createApproval()",
-      "file_type": "code",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L92",
-      "community": 1,
-      "norm_label": ".createapproval()",
-      "id": "src_provider_pravaexecutionprovider_createapproval"
-    },
-    {
-      "label": ".execute()",
-      "file_type": "code",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L96",
-      "community": 1,
-      "norm_label": ".execute()",
-      "id": "src_provider_pravaexecutionprovider_execute"
-    },
-    {
-      "label": "createExecutionProvider()",
-      "file_type": "code",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L101",
-      "community": 1,
-      "norm_label": "createexecutionprovider()",
-      "id": "src_provider_createexecutionprovider"
     },
     {
       "label": "FINAL_WARDEN Single Source of Truth",
@@ -1235,7 +1739,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "recurring payment policy engine",
       "id": "final_warden_recurring_payment_policy_engine"
     },
@@ -1248,7 +1752,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "discover decide validate authorize or prevent record evidence loop",
       "id": "final_warden_canonical_loop"
     },
@@ -1261,7 +1765,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "narrow authority trust model",
       "id": "final_warden_narrow_authority_trust_model"
     },
@@ -1287,7 +1791,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "strict versioned compiled policy rules",
       "id": "final_warden_compiled_policy_rules"
     },
@@ -1300,7 +1804,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "explicit draft-to-active policy activation",
       "id": "final_warden_policy_draft_activation"
     },
@@ -1313,7 +1817,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "unsupported policy clauses",
       "id": "final_warden_unsupported_policy_clauses"
     },
@@ -1326,7 +1830,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "openai policy reasoner",
       "id": "final_warden_openai_policy_reasoner"
     },
@@ -1339,7 +1843,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "decision-to-compiled-rule grounding",
       "id": "final_warden_policy_rule_grounding"
     },
@@ -1352,7 +1856,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "strict structured decision interface",
       "id": "final_warden_strict_decision_interface"
     },
@@ -1365,7 +1869,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "immutable versioned portfolio snapshot",
       "id": "final_warden_immutable_portfolio_snapshot"
     },
@@ -1378,7 +1882,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "atomic portfolio planner",
       "id": "final_warden_atomic_portfolio_planner"
     },
@@ -1391,7 +1895,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "dependency-aware ordered action plan",
       "id": "final_warden_dependency_ordered_action_plan"
     },
@@ -1404,7 +1908,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "deterministic decision validator",
       "id": "final_warden_deterministic_decision_validator"
     },
@@ -1495,7 +1999,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "visible passkey approval",
       "id": "final_warden_visible_passkey_approval"
     },
@@ -1508,7 +2012,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "single-use merchant-and-amount-scoped mandate",
       "id": "final_warden_single_use_scoped_mandate"
     },
@@ -1521,7 +2025,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "merchant capability analyzer",
       "id": "final_warden_merchant_capability_analyzer"
     },
@@ -1534,7 +2038,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "honest recommendation fallback",
       "id": "final_warden_honest_recommendation_fallback"
     },
@@ -1833,7 +2337,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "untrusted model and merchant text boundary",
       "id": "final_warden_untrusted_model_and_merchant_text"
     },
@@ -1846,7 +2350,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "integer minor-unit accounting",
       "id": "final_warden_minor_unit_accounting"
     },
@@ -1859,7 +2363,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "authorized amount versus effective monthly cost",
       "id": "final_warden_authorized_vs_effective_cost"
     },
@@ -1976,7 +2480,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 4,
+      "community": 0,
       "norm_label": "runtime risk controls",
       "id": "warden_risks_and_solutions_runtime_risk_controls"
     },
@@ -2008,83 +2512,6 @@
     }
   ],
   "links": [
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/db.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_db_ts",
-      "target": "apps_api_src_config_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_reasoner_ts",
-      "target": "apps_api_src_config_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "apps_api_src_config_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "apps_api_src_config_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/server.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_server_ts",
-      "target": "apps_api_src_config_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_prava_provider_ts",
-      "target": "apps_api_src_config_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
-      "target": "apps_api_src_config_ts"
-    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -2200,6 +2627,39 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/domain.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_domain_test_ts",
+      "target": "apps_api_src_domain_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "apps_api_src_domain_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "apps_api_src_domain_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/reasoner.ts",
       "source_location": "L5",
       "weight": 1.0,
@@ -2222,33 +2682,11 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/domain.test.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_domain_test_ts",
-      "target": "apps_api_src_domain_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/prava-provider.ts",
       "source_location": "L3",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "apps_api_src_prava_provider_ts",
-      "target": "apps_api_src_domain_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
       "target": "apps_api_src_domain_ts"
     },
     {
@@ -2266,6 +2704,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_domain_now"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_domain_now"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
       "source_location": "L14",
       "weight": 1.0,
@@ -2274,14 +2734,36 @@
       "target": "src_domain_now"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L3",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L121",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_prava_provider_ts",
+      "source": "src_merchant_checkout_buildcheckoutevidence",
+      "target": "src_domain_now"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "src_provider_localexecutionprovider_execute",
+      "target": "src_domain_now"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L181",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
       "target": "src_domain_now"
     },
     {
@@ -2340,6 +2822,28 @@
       "target": "src_domain_now"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
+      "target": "src_domain_now"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L407",
+      "weight": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
+      "target": "src_domain_now"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
@@ -2362,17 +2866,6 @@
       "target": "src_domain_now"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
-      "target": "src_domain_now"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
@@ -2387,6 +2880,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
       "source_location": "L14",
       "weight": 1.0,
@@ -2395,14 +2910,58 @@
       "target": "src_domain_id"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L3",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L55",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_prava_provider_ts",
+      "source": "src_merchant_checkout_notioncheckoutadapter_checkout",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "src_merchant_checkout_genericmerchantcheckoutadapter_checkout",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "src_merchant_checkout_buildcheckoutevidence",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "src_provider_localexecutionprovider_execute",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
       "target": "src_domain_id"
     },
     {
@@ -2414,6 +2973,17 @@
       "source_location": "L113",
       "weight": 1.0,
       "source": "src_service_wardenservice_createrun",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L236",
+      "weight": 1.0,
+      "source": "src_service_wardenservice_recoverstuckruns",
       "target": "src_domain_id"
     },
     {
@@ -2472,6 +3042,28 @@
       "target": "src_domain_id"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
+      "target": "src_domain_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L404",
+      "weight": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
+      "target": "src_domain_id"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
@@ -2491,17 +3083,6 @@
       "source_location": "L161",
       "weight": 1.0,
       "source": "src_prava_provider_pravaexecutionprovider_execute",
-      "target": "src_domain_id"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
       "target": "src_domain_id"
     },
     {
@@ -2552,6 +3133,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_domain_sha256"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_domain_sha256"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
       "source_location": "L14",
       "weight": 1.0,
@@ -2560,14 +3163,36 @@
       "target": "src_domain_sha256"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/prava-provider.ts",
-      "source_location": "L3",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L135",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_prava_provider_ts",
+      "source": "src_merchant_checkout_buildcheckoutevidence",
+      "target": "src_domain_sha256"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "src_provider_localexecutionprovider_execute",
+      "target": "src_domain_sha256"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
       "target": "src_domain_sha256"
     },
     {
@@ -2579,6 +3204,17 @@
       "source_location": "L558",
       "weight": 1.0,
       "source": "src_service_wardenservice_appendevent",
+      "target": "src_domain_sha256"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
       "target": "src_domain_sha256"
     },
     {
@@ -2601,17 +3237,6 @@
       "source_location": "L161",
       "weight": 1.0,
       "source": "src_prava_provider_pravaexecutionprovider_execute",
-      "target": "src_domain_sha256"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
       "target": "src_domain_sha256"
     },
     {
@@ -2640,22 +3265,22 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L5",
+      "source_file": "apps/api/src/domain.test.ts",
+      "source_location": "L3",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_reasoner_ts",
+      "source": "apps_api_src_domain_test_ts",
       "target": "src_domain_annualsavingsbps"
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/domain.test.ts",
-      "source_location": "L3",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L5",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_domain_test_ts",
+      "source": "apps_api_src_reasoner_ts",
       "target": "src_domain_annualsavingsbps"
     },
     {
@@ -2719,9 +3344,9 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L34",
+      "source_location": "L57",
       "weight": 1.0,
-      "source": "src_reasoner_fakereasoner_decide",
+      "source": "src_reasoner_deterministicreasoner_decideinternal",
       "target": "src_domain_getrule"
     },
     {
@@ -2736,15 +3361,15 @@
       "target": "src_domain_getrule"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L14",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
-      "target": "src_domain_asserttransition"
+      "source": "src_reasoner_fakereasoner_decide",
+      "target": "src_domain_getrule"
     },
     {
       "relation": "imports",
@@ -2755,6 +3380,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "apps_api_src_domain_test_ts",
+      "target": "src_domain_asserttransition"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
       "target": "src_domain_asserttransition"
     },
     {
@@ -2783,6 +3419,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/domain.test.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_domain_test_ts",
+      "target": "src_domain_compilepolicydeterministically"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/reasoner.ts",
       "source_location": "L5",
       "weight": 1.0,
@@ -2791,14 +3438,14 @@
       "target": "src_domain_compilepolicydeterministically"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/domain.test.ts",
-      "source_location": "L3",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L39",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_domain_test_ts",
+      "source": "src_reasoner_deterministicreasoner_compilepolicy",
       "target": "src_domain_compilepolicydeterministically"
     },
     {
@@ -2811,6 +3458,17 @@
       "weight": 1.0,
       "source": "src_reasoner_fakereasoner_compilepolicy",
       "target": "src_domain_compilepolicydeterministically"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/db.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_db_ts",
+      "target": "apps_api_src_config_ts"
     },
     {
       "relation": "contains",
@@ -2826,11 +3484,11 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L13",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L5",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
+      "source": "apps_api_src_app_test_ts",
       "target": "apps_api_src_db_ts"
     },
     {
@@ -2848,11 +3506,11 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L5",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L13",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
+      "source": "apps_api_src_service_ts",
       "target": "apps_api_src_db_ts"
     },
     {
@@ -2989,11 +3647,11 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L13",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L5",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
+      "source": "apps_api_src_app_test_ts",
       "target": "src_db_wardendb"
     },
     {
@@ -3011,11 +3669,11 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L5",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L13",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
+      "source": "apps_api_src_service_ts",
       "target": "src_db_wardendb"
     },
     {
@@ -3140,6 +3798,1226 @@
       "target": "src_db_wardendb_all"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "src_auth_sign"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "src_auth_safeequal"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "src_auth_issuesession"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "src_auth_readsession"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L51",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "src_auth_requiresession"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L62",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_auth_ts",
+      "target": "src_auth_requirecsrf"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "apps_api_src_auth_ts"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_auth_issuesession",
+      "target": "src_auth_sign"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_auth_readsession",
+      "target": "src_auth_sign"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_auth_readsession",
+      "target": "src_auth_safeequal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_auth_requirecsrf",
+      "target": "src_auth_safeequal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_auth_issuesession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/auth.ts",
+      "source_location": "L52",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_auth_requiresession",
+      "target": "src_auth_readsession"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_auth_readsession"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_auth_requiresession"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_auth_requirecsrf"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_merchant_checkout_notioncheckoutadapter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L68",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_merchant_checkout_genericmerchantcheckoutadapter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L98",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_merchant_checkout_getadapter"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L115",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_merchant_checkout_executemerchantcheckout"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L120",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_merchant_checkout_ts",
+      "target": "src_merchant_checkout_buildcheckoutevidence"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "apps_api_src_merchant_checkout_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
+      "target": "apps_api_src_merchant_checkout_ts"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_merchant_checkout_notioncheckoutadapter",
+      "target": "src_merchant_checkout_notioncheckoutadapter_checkout"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L72",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_merchant_checkout_genericmerchantcheckoutadapter",
+      "target": "src_merchant_checkout_genericmerchantcheckoutadapter_constructor"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L77",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_merchant_checkout_genericmerchantcheckoutadapter",
+      "target": "src_merchant_checkout_genericmerchantcheckoutadapter_checkout"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L117",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_merchant_checkout_executemerchantcheckout",
+      "target": "src_merchant_checkout_genericmerchantcheckoutadapter_checkout"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/merchant-checkout.ts",
+      "source_location": "L116",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_merchant_checkout_executemerchantcheckout",
+      "target": "src_merchant_checkout_getadapter"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_merchant_checkout_executemerchantcheckout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "src_provider_localexecutionprovider_execute",
+      "target": "src_merchant_checkout_executemerchantcheckout"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L227",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
+      "target": "src_merchant_checkout_executemerchantcheckout"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
+      "target": "src_merchant_checkout_executemerchantcheckout"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "src_prava_provider_pravaexecutionprovider_execute",
+      "target": "src_merchant_checkout_executemerchantcheckout"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_merchant_checkout_buildcheckoutevidence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L257",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
+      "target": "src_merchant_checkout_buildcheckoutevidence"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
+      "target": "src_merchant_checkout_buildcheckoutevidence"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L237",
+      "weight": 1.0,
+      "source": "src_prava_provider_pravaexecutionprovider_execute",
+      "target": "src_merchant_checkout_buildcheckoutevidence"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_logger_ts",
+      "target": "src_logger_logger"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_logger_ts",
+      "target": "src_logger_generatecorrelationid"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "apps_api_src_logger_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "apps_api_src_logger_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
+      "target": "apps_api_src_logger_ts"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger",
+      "target": "src_logger_logger_format"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger",
+      "target": "src_logger_logger_info"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger",
+      "target": "src_logger_logger_warn"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger",
+      "target": "src_logger_logger_error"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger",
+      "target": "src_logger_logger_debug"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_logger_logger"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_logger_logger",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
+      "target": "src_logger_logger"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger_info",
+      "target": "src_logger_logger_format"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger_warn",
+      "target": "src_logger_logger_format"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger_error",
+      "target": "src_logger_logger_format"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/logger.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_logger_logger_debug",
+      "target": "src_logger_logger_format"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_logger_generatecorrelationid"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "apps_api_src_app_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_app_createapp"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "apps_api_src_provider_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_provider_localexecutionprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "apps_api_src_service_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_service_wardenservice"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "apps_api_src_reasoner_ts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_app_test_deterministicreasoner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_app_test_annualsavingsbps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_reasoner_fakereasoner"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_test_ts",
+      "target": "src_provider_fakeexecutionprovider"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "src_app_test_deterministicreasoner",
+      "target": "src_app_test_deterministicreasoner_compilepolicy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "src_app_test_deterministicreasoner",
+      "target": "src_app_test_deterministicreasoner_decide",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.test.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "src_app_test_deterministicreasoner_decide",
+      "target": "src_app_test_annualsavingsbps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "apps_api_src_service_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_service_httperror"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_service_wardenservice"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_app_asyncroute"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_app_requiredidempotencykey"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_app_ts",
+      "target": "src_app_createapp"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/server.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_server_ts",
+      "target": "apps_api_src_app_ts"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/app.ts",
+      "source_location": "L63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app_createapp",
+      "target": "src_app_asyncroute"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/server.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_server_ts",
+      "target": "src_app_createapp"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/config.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_config_ts",
+      "target": "src_config_loadenvfiles"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/server.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_server_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_reasoner_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_prava_provider_ts",
+      "target": "apps_api_src_config_ts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_provider_localexecutionprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_provider_pravaexecutionprovider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L101",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_provider_createexecutionprovider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L343",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_provider_formatamount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L347",
+      "weight": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_provider_sanitizemerchantname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_test_ts",
+      "target": "apps_api_src_provider_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
+      "target": "apps_api_src_provider_ts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_provider_ts",
+      "target": "src_provider_fakeexecutionprovider"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "src_provider_localexecutionprovider",
+      "target": "src_provider_localexecutionprovider_createapproval",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "src_provider_localexecutionprovider",
+      "target": "src_provider_localexecutionprovider_execute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_provider_localexecutionprovider",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L86",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_constructor"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L92",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_createapproval"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L96",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_execute"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L279",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_createsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L311",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_pollpaymentresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L315",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_reportstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L322",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider",
+      "target": "src_provider_pravaexecutionprovider_requestjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
+      "target": "src_provider_pravaexecutionprovider"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L164",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_createapproval",
+      "target": "src_provider_pravaexecutionprovider_createsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
+      "target": "src_provider_pravaexecutionprovider_pollpaymentresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L219",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_execute",
+      "target": "src_provider_pravaexecutionprovider_reportstatus",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L280",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_createsession",
+      "target": "src_provider_formatamount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_createsession",
+      "target": "src_provider_sanitizemerchantname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_createsession",
+      "target": "src_provider_pravaexecutionprovider_requestjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/provider.ts",
+      "source_location": "L312",
+      "weight": 1.0,
+      "source": "src_provider_pravaexecutionprovider_pollpaymentresult",
+      "target": "src_provider_pravaexecutionprovider_requestjson",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
+      "target": "src_provider_createexecutionprovider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "apps_api_src_reasoner_ts",
+      "target": "src_reasoner_deterministicreasoner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_ts",
+      "target": "apps_api_src_reasoner_ts"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/reasoner.ts",
@@ -3173,17 +5051,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
-      "target": "apps_api_src_reasoner_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.test.ts",
       "source_location": "L5",
       "weight": 1.0,
@@ -3192,35 +5059,107 @@
       "target": "apps_api_src_reasoner_ts"
     },
     {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "src_reasoner_deterministicreasoner",
+      "target": "src_reasoner_deterministicreasoner_compilepolicy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "src_reasoner_deterministicreasoner",
+      "target": "src_reasoner_deterministicreasoner_decide",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "src_reasoner_deterministicreasoner",
+      "target": "src_reasoner_deterministicreasoner_decideinternal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "src_reasoner_deterministicreasoner_decide",
+      "target": "src_reasoner_deterministicreasoner_decideinternal",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_test_ts",
+      "target": "apps_api_src_service_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_service_wardenservice"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.test.ts",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "apps_api_src_reasoner_ts"
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_service_test_deterministicreasoner",
+      "confidence_score": 1.0
     },
     {
-      "relation": "method",
+      "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L29",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L90",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_reasoner_fakereasoner",
-      "target": "src_reasoner_fakereasoner_compilepolicy"
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_service_test_annualsavingsbps",
+      "confidence_score": 1.0
     },
     {
-      "relation": "method",
+      "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L33",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L9",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "src_reasoner_fakereasoner",
-      "target": "src_reasoner_fakereasoner_decide"
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_service_test_servicefixture"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L154",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_service_test_avoidingprovider"
     },
     {
       "relation": "imports",
@@ -3237,74 +5176,53 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L7",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L4",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "src_reasoner_fakereasoner"
+      "source": "apps_api_src_service_test_ts",
+      "target": "src_provider_fakeexecutionprovider"
     },
     {
       "relation": "method",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L93",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_reasoner_openaireasoner",
-      "target": "src_reasoner_openaireasoner_constructor"
+      "source": "src_service_test_deterministicreasoner",
+      "target": "src_service_test_deterministicreasoner_compilepolicy",
+      "confidence_score": 1.0
     },
     {
       "relation": "method",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L98",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_reasoner_openaireasoner",
-      "target": "src_reasoner_openaireasoner_compilepolicy"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L150",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_reasoner_openaireasoner",
-      "target": "src_reasoner_openaireasoner_decide"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L177",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_reasoner_openaireasoner",
-      "target": "src_reasoner_openaireasoner_callfunction"
+      "source": "src_service_test_deterministicreasoner",
+      "target": "src_service_test_deterministicreasoner_decide",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L129",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L49",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_reasoner_openaireasoner_compilepolicy",
-      "target": "src_reasoner_openaireasoner_callfunction"
+      "source": "src_service_test_deterministicreasoner_decide",
+      "target": "src_service_test_annualsavingsbps",
+      "confidence_score": 1.0
     },
     {
-      "relation": "calls",
-      "context": "call",
+      "relation": "method",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/reasoner.ts",
-      "source_location": "L169",
+      "source_file": "apps/api/src/service.test.ts",
+      "source_location": "L155",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "src_reasoner_openaireasoner_decide",
-      "target": "src_reasoner_openaireasoner_callfunction"
+      "source": "src_service_test_avoidingprovider",
+      "target": "src_service_test_avoidingprovider_execute"
     },
     {
       "relation": "imports",
@@ -3316,91 +5234,6 @@
       "confidence_score": 1.0,
       "source": "apps_api_src_service_ts",
       "target": "src_reasoner_createreasoner"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
-      "target": "apps_api_src_provider_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_test_ts",
-      "target": "apps_api_src_provider_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "apps_api_src_provider_ts"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L23",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
-      "target": "src_provider_fakeexecutionprovider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L83",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
-      "target": "src_provider_pravaexecutionprovider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L101",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_provider_ts",
-      "target": "src_provider_createexecutionprovider"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
-      "target": "src_provider_createexecutionprovider"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.ts",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_ts",
-      "target": "src_provider_pravaexecutionprovider"
     },
     {
       "relation": "contains",
@@ -3423,39 +5256,6 @@
       "target": "src_service_wardenservice"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "apps_api_src_service_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_test_ts",
-      "target": "apps_api_src_service_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "apps_api_src_service_ts"
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
@@ -3464,17 +5264,6 @@
       "confidence_score": 1.0,
       "source": "src_service_httperror",
       "target": "src_service_httperror_constructor"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_service_httperror"
     },
     {
       "relation": "method",
@@ -3580,6 +5369,16 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
+      "source_location": "L228",
+      "weight": 1.0,
+      "source": "src_service_wardenservice",
+      "target": "src_service_wardenservice_recoverstuckruns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
       "source_location": "L214",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3632,9 +5431,19 @@
       "source_file": "apps/api/src/service.ts",
       "source_location": "L358",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_service_wardenservice",
-      "target": "src_service_wardenservice_pravapaymentresult",
-      "confidence_score": 1.0
+      "target": "src_service_wardenservice_pravapaymentresult"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L376",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice",
+      "target": "src_service_wardenservice_finalizepravasession"
     },
     {
       "relation": "method",
@@ -3777,37 +5586,14 @@
       "target": "src_service_wardenservice_storeidempotency"
     },
     {
-      "relation": "imports",
-      "context": "import",
+      "relation": "method",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L9",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L398",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_service_wardenservice"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_test_ts",
-      "target": "src_service_wardenservice"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "src_service_wardenservice"
+      "source": "src_service_wardenservice",
+      "target": "src_service_wardenservice_createtestrun"
     },
     {
       "relation": "calls",
@@ -3829,6 +5615,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_service_wardenservice_executeattempt",
+      "target": "src_service_wardenservice_subscriptions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L403",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
       "target": "src_service_wardenservice_subscriptions"
     },
     {
@@ -3858,10 +5655,32 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
+      "source_location": "L402",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
+      "target": "src_service_wardenservice_activepolicy"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
       "source_location": "L104",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_service_wardenservice_createrun",
+      "target": "src_service_wardenservice_portfolioversion"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L408",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
       "target": "src_service_wardenservice_portfolioversion"
     },
     {
@@ -4089,6 +5908,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/service.ts",
+      "source_location": "L395",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_finalizepravasession",
+      "target": "src_service_wardenservice_executeattempt"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
       "source_location": "L319",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -4115,6 +5945,39 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_service_wardenservice_declineapproval",
+      "target": "src_service_wardenservice_requirerun"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L388",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_finalizepravasession",
+      "target": "src_service_wardenservice_requirerun"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L423",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
+      "target": "src_service_wardenservice_plan"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/service.ts",
+      "source_location": "L400",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_service_wardenservice_createtestrun",
       "target": "src_service_wardenservice_requirerun"
     },
     {
@@ -4164,309 +6027,315 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "src_auth_sign"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "src_auth_safeequal"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "src_auth_issuesession"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "src_auth_readsession"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L51",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "src_auth_requiresession"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L62",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_auth_ts",
-      "target": "src_auth_requirecsrf"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "apps_api_src_auth_ts"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_auth_issuesession",
-      "target": "src_auth_sign"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L36",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_auth_readsession",
-      "target": "src_auth_sign"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L36",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_auth_readsession",
-      "target": "src_auth_safeequal"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L65",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_auth_requirecsrf",
-      "target": "src_auth_safeequal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_auth_issuesession"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/auth.ts",
-      "source_location": "L52",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_auth_requiresession",
-      "target": "src_auth_readsession"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_auth_readsession"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_auth_requiresession"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_auth_requirecsrf"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
+      "source_file": "apps/web/src/api.ts",
       "source_location": "L13",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_app_asyncroute"
+      "source": "apps_web_src_api_ts",
+      "target": "src_api_request"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L19",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L38",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_app_requiredidempotencykey"
+      "source": "apps_web_src_api_ts",
+      "target": "src_api_networkerror"
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L25",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L46",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_ts",
-      "target": "src_app_createapp"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/server.ts",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_server_ts",
-      "target": "apps_api_src_app_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "apps_api_src_app_ts"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.ts",
-      "source_location": "L63",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app_createapp",
-      "target": "src_app_asyncroute"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/server.ts",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_server_ts",
-      "target": "src_app_createapp"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "src_app_createapp"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_test_ts",
-      "target": "src_provider_fakeexecutionprovider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_test_ts",
-      "target": "src_service_test_servicefixture"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L154",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_api_src_service_test_ts",
-      "target": "src_service_test_avoidingprovider"
+      "source": "apps_web_src_api_ts",
+      "target": "src_api_apierror"
     },
     {
       "relation": "method",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/service.test.ts",
-      "source_location": "L155",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L40",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "src_service_test_avoidingprovider",
-      "target": "src_service_test_avoidingprovider_execute"
+      "source": "src_api_networkerror",
+      "target": "src_api_networkerror_constructor"
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/app.test.ts",
-      "source_location": "L6",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L16",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "apps_api_src_app_test_ts",
-      "target": "src_provider_fakeexecutionprovider"
+      "source": "apps_web_src_app_tsx",
+      "target": "src_api_networkerror"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/api.ts",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_api_apierror",
+      "target": "src_api_apierror_constructor"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_money"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_shortid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_actiontypelabel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L74",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_rulelabel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L89",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_decisionstatuslabel"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L144",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_handler"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L158",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_handledialogkeys"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L179",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_handledrawerkeys"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L287",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_handleonline"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L291",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_handleoffline"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L202",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_startrun"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L210",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_savepolicy"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L221",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_reviewapproval"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L229",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_confirmapproval"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/App.tsx",
+      "source_location": "L237",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_app_tsx",
+      "target": "src_app_decline"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/Landing.tsx",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_landing_tsx",
+      "target": "src_landing_handlescroll"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/web/src/prava/PravaCardCheckout.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "apps_web_src_prava_pravacardcheckout_tsx",
+      "target": "prava_pravacardcheckout_pravacardcheckout"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_fakereasoner",
+      "target": "src_reasoner_fakereasoner_compilepolicy"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_fakereasoner",
+      "target": "src_reasoner_fakereasoner_decide"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L93",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_openaireasoner",
+      "target": "src_reasoner_openaireasoner_constructor"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L98",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_openaireasoner",
+      "target": "src_reasoner_openaireasoner_compilepolicy"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L150",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_openaireasoner",
+      "target": "src_reasoner_openaireasoner_decide"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L177",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_openaireasoner",
+      "target": "src_reasoner_openaireasoner_callfunction"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L129",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_openaireasoner_compilepolicy",
+      "target": "src_reasoner_openaireasoner_callfunction"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/reasoner.ts",
+      "source_location": "L169",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_reasoner_openaireasoner_decide",
+      "target": "src_reasoner_openaireasoner_callfunction"
     },
     {
       "relation": "contains",
@@ -4624,6 +6493,28 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L183",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_prava_provider_pravaexecutionprovider_execute",
+      "target": "src_prava_provider_pravaexecutionprovider_pollpaymentresult"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
+      "source_location": "L193",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_prava_provider_pravaexecutionprovider_execute",
+      "target": "src_prava_provider_pravaexecutionprovider_reportstatus"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/api/src/prava-provider.ts",
       "source_location": "L167",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -4664,116 +6555,6 @@
       "target": "src_prava_provider_pravaexecutionprovider_requestjson"
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/api.ts",
-      "source_location": "L13",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_api_ts",
-      "target": "src_api_request"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L18",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_money"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_shortid"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L144",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_handler"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L158",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_handledialogkeys"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L179",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_handledrawerkeys"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L202",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_startrun"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L210",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_savepolicy"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L221",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_reviewapproval"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L229",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_confirmapproval"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/web/src/App.tsx",
-      "source_location": "L237",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "apps_web_src_app_tsx",
-      "target": "src_app_decline"
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "apps/api/src/provider.ts",
@@ -4792,36 +6573,6 @@
       "confidence_score": 1.0,
       "source": "src_provider_fakeexecutionprovider",
       "target": "src_provider_fakeexecutionprovider_execute"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L86",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_provider_pravaexecutionprovider",
-      "target": "src_provider_pravaexecutionprovider_constructor"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L92",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_provider_pravaexecutionprovider",
-      "target": "src_provider_pravaexecutionprovider_createapproval"
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "apps/api/src/provider.ts",
-      "source_location": "L96",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_provider_pravaexecutionprovider",
-      "target": "src_provider_pravaexecutionprovider_execute"
     },
     {
       "relation": "references",
@@ -6081,5 +7832,6 @@
       "confidence_score": 0.95,
       "source_file": "FINAL_WARDEN.md"
     }
-  ]
+  ],
+  "built_at_commit": "30d124989cffce06a60e7f6048f5b881d537b050"
 }
