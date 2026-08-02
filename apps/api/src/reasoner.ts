@@ -119,7 +119,7 @@ export class OpenAIReasoner implements Reasoner {
     const tool = {
       type: "function",
       name: "compile_policy",
-      description: "Compile policy prose into only the supported WARDEN rule types. Put unsupported meaning in unsupported_clauses.",
+      description: "Compile user-written spending rules into structured policy constraints. Extract only the three supported rule types. Any rules that cannot be expressed as these types go into unsupported_clauses.",
       strict: true,
       parameters: {
         type: "object",
@@ -146,7 +146,37 @@ export class OpenAIReasoner implements Reasoner {
         required: ["currency", "rules", "unsupported_clauses"],
       },
     };
-    const args = await this.callFunction("compile_policy", tool, `Compile this policy. Do not invent values:\n${text}`);
+    const args = await this.callFunction(
+      "compile_policy",
+      tool,
+      `You are a policy compiler for WARDEN, an AI subscription management agent.
+
+Your job: Convert the user's natural-language spending rules into structured constraints.
+
+## Supported Rule Types
+
+1. **MONTHLY_CAP** — Maximum total monthly spend across all subscriptions.
+   - Extract the dollar amount and convert to cents (minor units).
+   - Example: "$60/month" → amount_minor: 6000
+
+2. **MAX_INACTIVE_DAYS** — Number of days a subscription can be unused before action is taken.
+   - Extract the number of days.
+   - Example: "unused for 30 days" → days: 30
+
+3. **MIN_ANNUAL_SAVINGS_BPS** — Minimum percentage savings required to justify switching to annual billing.
+   - Convert percentage to basis points (1% = 100 bps).
+   - Example: "saves more than 15%" → basis_points: 1500
+
+## Rules
+- Each rule needs a unique, descriptive rule_id (snake_case).
+- Only extract rules that match the three types above.
+- If the user mentions something that cannot be expressed (e.g., "cancel if reviews drop below 4 stars"), put it in unsupported_clauses.
+- Always use currency "USD".
+- Do not invent values — only use what the user explicitly stated.
+
+## User Policy
+${text}`,
+    );
     const raw = z.object({
       currency: z.literal("USD"),
       rules: z.array(z.object({
@@ -172,7 +202,7 @@ export class OpenAIReasoner implements Reasoner {
     const tool = {
       type: "function",
       name: "decide_subscription_action",
-      description: "Return one policy-grounded candidate decision. Do not calculate totals or claim execution.",
+      description: "Decide what action to take for a subscription based on the user's spending policy. Choose RENEW, SWITCH, or DECLINE with clear reasoning.",
       strict: true,
       parameters: {
         type: "object",
@@ -190,18 +220,59 @@ export class OpenAIReasoner implements Reasoner {
     const args = await this.callFunction(
       "decide_subscription_action",
       tool,
-      `Return one candidate decision for this subscription.
+      `You are WARDEN's decision engine — an AI agent that manages recurring subscriptions on behalf of the user.
 
-RULES:
-- For SWITCH action: target_plan MUST be one of the available_plans listed below. If no alt plans exist, use RENEW or DECLINE instead.
-- For RENEW or DECLINE: set target_plan to null.
-- policy_rule_reference MUST be one of the rule_ids from the policy rules array.
-- Do not invent plan names that don't exist.
+Your job: Analyze one subscription against the user's spending policy and decide what action to take.
 
-Available plans for this subscription: ${availablePlans.length > 0 ? JSON.stringify(availablePlans) : "NONE - use RENEW or DECLINE"}
+## Context
 
-Subscription: ${JSON.stringify(subscription)}
-Policy rules: ${JSON.stringify(policy.rules)}`,
+**User's Spending Policy:**
+${JSON.stringify(policy.rules, null, 2)}
+
+**Current Portfolio:** $${(portfolioMonthlyMinor / 100).toFixed(2)}/month total
+
+## Subscription to Evaluate
+
+| Field | Value |
+|-------|-------|
+| Name | ${subscription.merchant_name} |
+| Current Plan | ${subscription.plan_id} |
+| Monthly Cost | $${(subscription.current_monthly_cost_minor / 100).toFixed(2)} |
+| Billing Cycle | ${subscription.billing_cycle} |
+| Last Used | ${subscription.last_used_days_ago !== null ? `${subscription.last_used_days_ago} days ago` : "No data"} |
+| Available Plans | ${availablePlans.length > 0 ? availablePlans.join(", ") : "None"} |
+
+## Decision Framework
+
+Evaluate each policy rule against this subscription:
+
+1. **MONTHLY_CAP rule**: Is the total portfolio (including this subscription) within the cap?
+   - If over cap: prefer SWITCH to a cheaper plan, or DECLINE if no cheaper option.
+
+2. **MAX_INACTIVE_DAYS rule**: Has the subscription been unused longer than the threshold?
+   - If yes and cheaper plan exists → SWITCH to cheapest available plan.
+   - If yes and no cheaper plan → DECLINE (cancel).
+
+3. **MIN_ANNUAL_SAVINGS_BPS rule**: Is there an annual plan that saves more than the threshold?
+   - If yes → SWITCH to annual plan.
+   - Note: Annual savings = (monthly_cost × 12 - annual_cost) / (monthly_cost × 12) × 10000 basis points.
+
+4. **Trial subscriptions**: If billing_cycle is "trial" and no usage data exists → DECLINE (prevent paid conversion).
+
+5. **Default**: If no rule triggers an action → RENEW (keep current plan).
+
+## Output
+
+- **action**: RENEW, SWITCH, or DECLINE
+- **target_plan**: For SWITCH, must be one of: ${availablePlans.length > 0 ? availablePlans.join(", ") : "N/A (use RENEW or DECLINE)"}
+- **policy_rule_reference**: The rule_id that triggered this decision
+- **reasoning**: Explain which rule triggered the action and why, in plain English. Be specific about numbers.
+
+## Critical Rules
+- target_plan MUST be from the available plans list. Never invent plan names.
+- If no alt plans exist and the subscription should change, use DECLINE instead of SWITCH.
+- policy_rule_reference MUST match a rule_id from the policy rules array.
+- Be decisive — every subscription needs a clear recommendation.`,
     );
     return candidateSchema.parse(args);
   }
