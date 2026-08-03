@@ -96,6 +96,28 @@ export default async function handler(req: any, res: any) {
     if (run) { for (const d of run.decisions) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; }
     return json(res, 200, run || {});
   }
+  if (path.match(/^\/api\/v1\/decisions\/[^/]+\/approval-session$/) && method === "POST") {
+    const sessionId = id("ses");
+    return json(res, 200, { execution_attempt_id: id("attempt"), mode: "simulation", label: "Approve WARDEN action", expires_at: new Date(Date.now() + 5 * 60000).toISOString(), payload: { provider_session_id: sessionId, provider_session_token: sign(sessionId), iframe_url: null, order_id: id("ord"), expires_at: new Date(Date.now() + 5 * 60000).toISOString() } });
+  }
+  if (path.match(/^\/api\/v1\/decisions\/[^/]+\/attempts$/) && method === "POST") {
+    const decisionId = path.split("/")[4];
+    const run = Object.values(runs).pop();
+    if (run) {
+      const d = run.decisions.find((x: any) => x.decision_id === decisionId);
+      if (d) { d.execution_status = "COMPLETED"; d.outcome_type = "decision_only"; }
+      if (run.decisions.every((d: any) => d.execution_status !== "AWAITING_APPROVAL")) run.run_status = "COMPLETED";
+    }
+    return json(res, 200, run || {});
+  }
+  if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
+    return json(res, 200, { status: "completed", transactions: [{ txn_id: id("txn"), status: "completed", line_items: [{ txn_ref_id: id("ref"), merchant_name: "Merchant", total_amount: "0.00", status: "completed", token: null, dynamic_cvv: null, expiry_month: null, expiry_year: null }] }] });
+  }
+  if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
+    const run = Object.values(runs).pop();
+    if (run) { if (run.decisions.some((d: any) => d.execution_status === "AWAITING_APPROVAL")) { for (const d of run.decisions) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "COMPLETED"; d.outcome_type = "decision_only"; } } run.run_status = "COMPLETED"; } }
+    return json(res, 200, run || {});
+  }
   if (path === "/api/v1/savings") return json(res, 200, { currency: "USD", recurring_monthly_saved_minor: 0, one_time_avoided_minor: 0 });
   if (path.match(/^\/api\/v1\/prava\//)) return json(res, 200, { status: "pending", transactions: [] });
 
