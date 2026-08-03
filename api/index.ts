@@ -4,7 +4,10 @@ const env = (k: string, d = "") => process.env[k] || d;
 const environment = env("PAYMENT_PROVIDER_MODE") === "prava" ? "sandbox" : "demo";
 const pravaKey = env("RAVA_PUBLISHABLE_KEY") || env("PRAVA_PUBLISHABLE_KEY");
 const openaiKey = env("OPENAI_API_KEY");
+const openrouterKey = env("OPENROUTER_API_KEY");
 const openaiModel = env("OPENAI_MODEL", "gpt-4.1");
+const openrouterModel = env("OPENROUTER_MODEL", "openrouter/free");
+const openrouterUrl = env("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1");
 const pgUrl = env("DATABASE_URL");
 const sessionSecret = env("SESSION_SECRET", "warden-local-dev");
 
@@ -28,10 +31,14 @@ async function pgQuery(sql: string, params: any[] = []): Promise<any[]> {
 
 // ─── AI reasoner via OpenAI ──────────────────────────────────────────────
 async function aiDecide(sub: any, policy: any, portfolioTotal: number): Promise<any> {
-  if (!openaiKey) return fallbackDecide(sub, policy, portfolioTotal);
-  try {
-    const availablePlans = sub.alt_plans.map((p: any) => p.plan_id).join(", ") || "None";
-    const prompt = `You are WARDEN's AI decision engine for subscription management.
+  // Try OpenAI first, then OpenRouter, then deterministic fallback
+  for (const [key, model, url] of [
+    openaiKey ? [openaiKey, openaiModel, "https://api.openai.com/v1/chat/completions"] : null,
+    openrouterKey ? [openrouterKey, openrouterModel, `${openrouterUrl}/chat/completions`] : null,
+  ].filter(Boolean) as [string, string, string][]) {
+    try {
+      const availablePlans = sub.alt_plans.map((p: any) => p.plan_id).join(", ") || "None";
+      const prompt = `You are WARDEN's AI decision engine for subscription management.
 
 ## Policy Rules
 ${JSON.stringify(policy.rules, null, 2)}
@@ -47,32 +54,23 @@ ${JSON.stringify(policy.rules, null, 2)}
 - Last used: ${sub.last_used_days_ago !== null ? sub.last_used_days_ago + " days ago" : "No data"}
 - Available plans: ${availablePlans}
 
-Decide the action (RENEW, SWITCH, or DECLINE). For SWITCH, specify target_plan from available plans. Cite the exact rule that triggered your decision. Be specific about numbers.`;
+Decide the action (RENEW, SWITCH, or DECLINE). For SWITCH, specify target_plan from available plans. Cite the exact rule that triggered your decision. Be specific about numbers.
 
-    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + openaiKey },
-      body: JSON.stringify({
-        model: openaiModel,
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },
-        temperature: 0.1,
-      }),
-    });
-    const data = await resp.json();
-    const content = data.choices?.[0]?.message?.content || "{}";
-    const parsed = JSON.parse(content);
-    return {
-      subscription_id: sub.id,
-      action: parsed.action || "RENEW",
-      target_plan: parsed.target_plan || null,
-      policy_rule_reference: parsed.policy_rule_reference || policy.rules[0]?.rule_id || "policy_default",
-      reasoning: parsed.reasoning || "AI analysis complete.",
-    };
-  } catch (err: any) {
-    console.error("AI reasoner failed:", err.message);
-    return fallbackDecide(sub, policy, portfolioTotal);
+Return JSON: {"action": "RENEW|SWITCH|DECLINE", "target_plan": "plan_id or null", "policy_rule_reference": "rule_id", "reasoning": "explanation"}`;
+
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key, ...(url.includes("openrouter") ? { "HTTP-Referer": "https://warden-api-ten.vercel.app", "X-Title": "WARDEN" } : {}) },
+        body: JSON.stringify({ model, messages: [{ role: "user", content: prompt }], response_format: { type: "json_object" }, temperature: 0.1 }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || data.error) throw new Error(data.error?.message || `API error ${resp.status}`);
+      const content = data.choices?.[0]?.message?.content || "{}";
+      const parsed = JSON.parse(content);
+      if (parsed.action) return { subscription_id: sub.id, action: parsed.action, target_plan: parsed.target_plan || null, policy_rule_reference: parsed.policy_rule_reference || policy.rules[0]?.rule_id || "policy_default", reasoning: parsed.reasoning || "AI analysis complete." };
+    } catch (err: any) { console.error(`AI reasoner (${url}):`, err.message); }
   }
+  return fallbackDecide(sub, policy, portfolioTotal);
 }
 
 function fallbackDecide(sub: any, policy: any, portfolioTotal: number): any {
@@ -109,8 +107,7 @@ export default async function handler(req: any, res: any) {
   let body: any = {};
   if (["POST", "PUT", "PATCH"].includes(method)) body = await readBody(req);
 
-  if (path === "/api/v1/health") return json(res, 200, { status: "ok", mode: environment, hasOpenAI: !!openaiKey, hasPg: !!pgUrl });
-  if (path === "/api/v1/debug") return json(res, 200, { openaiKey: openaiKey ? openaiKey.slice(0, 10) + "..." : null, pgUrl: pgUrl ? "set" : null });
+  if (path === "/api/v1/health") return json(res, 200, { status: "ok", mode: environment });
   if (path === "/api/v1/session") {
     const payload = `user_demo.${Date.now()}`; const value = `${payload}.${sign(payload)}`;
     res.setHeader("Set-Cookie", `warden_session=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${12*60*60*1000}`);
