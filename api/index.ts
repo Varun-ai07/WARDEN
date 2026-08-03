@@ -205,6 +205,22 @@ export default async function handler(req: any, res: any) {
   if (["POST", "PUT", "PATCH"].includes(method)) body = await readBody(req);
 
   if (path === "/api/v1/health") return json(res, 200, { status: "ok", mode: environment });
+  if (path === "/api/v1/debug/prava") {
+    const results: any = { pravaKey: pravaApiKey ? `${pravaApiKey.slice(0, 10)}...` : "MISSING", baseUrl: pravaBaseUrl };
+    if (pravaApiKey) {
+      try {
+        // Test session creation
+        const session = await pravaCreateSession({ authorized_amount_minor: 1100, merchant_name: "Debug Test", currency: "USD", action: "SWITCH", subscription_id: "sub_debug" });
+        results.createSession = { ok: true, sessionId: session.session_id };
+        // Test payment-result
+        const paymentResult = await pravaRequest(`/v1/sessions/${encodeURIComponent(session.session_id)}/payment-result`);
+        results.paymentResult = { ok: true, status: paymentResult.status, txns: paymentResult.transactions?.length };
+      } catch (err: any) {
+        results.error = err.message;
+      }
+    }
+    return json(res, 200, results);
+  }
   if (path === "/api/v1/session") {
     const payload = `user_demo.${Date.now()}`; const value = `${payload}.${sign(payload)}`;
     res.setHeader("Set-Cookie", `warden_session=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${12*60*60*1000}`);
