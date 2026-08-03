@@ -91,8 +91,16 @@ td small { display: block; color: var(--muted); font-family: "IBM Plex Mono", mo
 .capability--payment, .capability--prevention { border-color: #8abfae; color: var(--success); }
 .capability--unverified { color: var(--warning); border-color: #d5ae74; }
 .decision-rail { padding: 0 18px 12px; }
-.decision { display: grid; grid-template-columns: 28px 3px 1px 1fr; gap: 0 12px; position: relative; }
+.decision { display: grid; grid-template-columns: 28px 3px 1px 1fr; gap: 0 12px; position: relative; border-left: 3px solid transparent; }
+.decision--renew { border-left-color: var(--success); }
+.decision--switch { border-left-color: #e65100; }
+.decision--decline { border-left-color: var(--error); }
+.decision--recommendation { border-left-color: #c9a800; }
 .decision__index { padding-top: 21px; color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 10px; }
+.decision--renew .decision__index { color: var(--success); font-weight: 700; }
+.decision--switch .decision__index { color: #e65100; font-weight: 700; }
+.decision--decline .decision__index { color: var(--error); font-weight: 700; }
+.decision--recommendation .decision__index { color: #c9a800; font-weight: 700; }
 .decision__line-thick { border-radius: 2px; }
 .decision__line-thin { border-radius: 1px; }
 .decision__body { padding: 18px 0 20px; border-bottom: 1px solid var(--rule); min-width: 0; }
