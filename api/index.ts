@@ -20,15 +20,29 @@ function json(res: any, s: number, d: any) { res.writeHead(s, { "Content-Type": 
 function readBody(req: any): Promise<any> { return new Promise(r => { let d = ""; req.on("data", (c: any) => d += c); req.on("end", () => { try { r(JSON.parse(d)); } catch { r({}); } }); }); }
 
 // ─── Supabase helpers ────────────────────────────────────────────────────
-async function pgQuery(sql: string, params: any[] = []): Promise<any[]> {
-  if (!pgUrl) return [];
-  const res = await fetch(pgUrl.replace("postgresql://", "https://") + "?apikey=" + env("SUPABASE_SERVICE_KEY"), {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "apikey": env("SUPABASE_SERVICE_KEY"), "Authorization": "Bearer " + env("SUPABASE_SERVICE_KEY") },
-    body: JSON.stringify({ query: sql, params }),
-  });
-  const j = await res.json();
-  return j.data || j.rows || [];
+const supabaseUrl = env("SUPABASE_URL");
+const supabaseKey = env("SUPABASE_SERVICE_KEY");
+
+async function supabaseQuery(table: string, query: string = "*"): Promise<any[]> {
+  if (!supabaseUrl || !supabaseKey) return [];
+  try {
+    const res = await fetch(`${supabaseUrl}/rest/v1/${table}?${query}`, {
+      headers: { "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}`, "Content-Type": "application/json" },
+    });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch { return []; }
+}
+
+async function supabaseUpsert(table: string, data: any): Promise<void> {
+  if (!supabaseUrl || !supabaseKey) return;
+  try {
+    await fetch(`${supabaseUrl}/rest/v1/${table}`, {
+      method: "POST",
+      headers: { "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}`, "Content-Type": "application/json", "Prefer": "resolution=merge-duplicates" },
+      body: JSON.stringify(data),
+    });
+  } catch {}
 }
 
 // ─── AI reasoner via OpenAI ──────────────────────────────────────────────
@@ -199,13 +213,35 @@ export default async function handler(req: any, res: any) {
     const runStatus = needsApproval ? "EXECUTING" : "COMPLETED";
     pushEv(needsApproval ? "run_ready" : "run_completed", { decisions: decisions.length, run_status: runStatus });
     runs[runId] = { run_id: runId, run_status: runStatus, policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions, events };
+    // Persist to Supabase so runs survive serverless cold starts
+    supabaseUpsert("warden_runs", { run_id: runId, user_id: "user_demo", run_data: JSON.stringify(runs[runId]), created_at: now() }).catch(() => {});
     return json(res, 202, { run_id: runId, run_status: runStatus, policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions });
   }
-  if (path === "/api/v1/runs/latest") { const last = Object.values(runs).pop(); return json(res, 200, { run: last || null }); }
-  if (path.match(/^\/api\/v1\/runs\/[^/]+$/) && (method === "GET" || method === "PATCH")) { const runId = path.split("/").pop()!; return json(res, 200, runs[runId] || { error: "Not found" }); }
+  if (path === "/api/v1/runs/latest") {
+    let last = Object.values(runs).pop();
+    if (!last) {
+      // Try Supabase
+      const rows = await supabaseQuery("warden_runs", "order=created_at.desc&limit=1");
+      if (rows[0]?.run_data) { last = JSON.parse(rows[0].run_data); runs[last.run_id] = last; }
+    }
+    return json(res, 200, { run: last || null });
+  }
+  if (path.match(/^\/api\/v1\/runs\/[^/]+$/) && (method === "GET" || method === "PATCH")) {
+    const runId = path.split("/").pop()!;
+    let run = runs[runId];
+    if (!run) {
+      const rows = await supabaseQuery("warden_runs", `run_id=eq.${runId}&limit=1`);
+      if (rows[0]?.run_data) { run = JSON.parse(rows[0].run_data); runs[runId] = run; }
+    }
+    return json(res, 200, run || { error: "Not found" });
+  }
   if (path.match(/^\/api\/v1\/runs\/[^/]+\/events$/)) {
     const runId = path.split("/")[4];
-    const run = runs[runId] || Object.values(runs).pop();
+    let run = runs[runId];
+    if (!run) {
+      const rows = await supabaseQuery("warden_runs", `run_id=eq.${runId}&limit=1`);
+      if (rows[0]?.run_data) { run = JSON.parse(rows[0].run_data); runs[runId] = run; }
+    }
     return json(res, 200, { events: run?.events || [] });
   }
   if (path.match(/^\/api\/v1\/runs\/[^/]+\/stream$/)) {
@@ -223,8 +259,13 @@ export default async function handler(req: any, res: any) {
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/approval-session$/) && method === "POST") {
     const decisionId = path.split("/")[4];
-    const run = Object.values(runs).pop();
-    const decision = run?.decisions.find((x: any) => x.decision_id === decisionId);
+    // Try in-memory first, then Supabase
+    let run = Object.values(runs).pop();
+    if (!run) {
+      const rows = await supabaseQuery("warden_runs", "order=created_at.desc&limit=1");
+      if (rows[0]?.run_data) { run = JSON.parse(rows[0].run_data); runs[run.run_id] = run; }
+    }
+    const decision = run?.decisions?.find((x: any) => x.decision_id === decisionId);
     if (!decision) return json(res, 404, { error: "Decision not found" });
     // Try real Prava session first
     if (pravaApiKey) {
