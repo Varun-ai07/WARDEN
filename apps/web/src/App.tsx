@@ -379,16 +379,14 @@ export function App() {
     setBusy(approval.decision.decision_id);
     try {
       if (approval.mode === "simulation") {
-        // Simulation mode: complete immediately without Prava
         setRun(await api.executeAttempt(approval.decision.decision_id, approval.attemptId));
         setApproval(null);
         return;
       }
-      // Provider mode: open Prava iframe and poll for result
-      if (approval.iframeUrl) window.open(approval.iframeUrl, "_blank");
+      // Provider mode: poll for payment result
       const sessionId = approval.providerSessionId;
       const finalize = async (attempt = 0): Promise<void> => {
-        if (attempt > 30) throw new Error("Prava session timed out.");
+        if (attempt > 60) throw new Error("Prava session timed out.");
         const result = await api.pravaPaymentResult(sessionId);
         const txn = result.transactions?.[0];
         if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item: any) => item.status === "credentials_generated")) {
@@ -476,14 +474,19 @@ export function App() {
         <dl><div><dt>Action</dt><dd>{approval.decision.action}{approval.decision.target_plan_id ? ` → ${approval.decision.target_plan_id}` : ""}</dd></div><div><dt>Amount</dt><dd>{money(approval.decision.authorized_amount_minor)}</dd></div><div><dt>Prava session</dt><dd>{approval.providerSessionId ? shortId(approval.providerSessionId) : "simulation"}</dd></div></dl>
         {approval.mode === "provider" && approval.iframeUrl && (
           <div className="approval-instructions">
-            <p className="approval-note">This opens the Prava sandbox checkout. Enter the test card to complete the transaction.</p>
+            <p className="approval-note">Click the button below to open the Prava sandbox checkout in a new tab. Enter the test card to complete the transaction.</p>
             <div className="approval-test-card">
               <strong>Test Card:</strong> 4622 9431 2313 7789<br />
               <strong>CVV:</strong> 757 · <strong>Expiry:</strong> 12/27 · <strong>OTP:</strong> 456789
             </div>
+            <a href={approval.iframeUrl} target="_blank" rel="noopener noreferrer" className="button button--primary button--wide" style={{ textAlign: "center", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+              Open Prava Checkout <ArrowRight size={16} />
+            </a>
           </div>
         )}
-        <button ref={approvalButtonRef} disabled={busy === approval.decision.decision_id} className="button button--primary button--wide" onClick={confirmApproval}>{busy === approval.decision.decision_id ? <LoaderCircle className="spin" size={16} /> : approval.mode === "provider" ? "Open Prava Checkout" : approval.label}<ArrowRight size={16} /></button>
+        {approval.mode === "simulation" && (
+          <button ref={approvalButtonRef} disabled={busy === approval.decision.decision_id} className="button button--primary button--wide" onClick={confirmApproval}>{busy === approval.decision.decision_id ? <LoaderCircle className="spin" size={16} /> : approval.label}<ArrowRight size={16} /></button>
+        )}
       </div>
     </div>}
 
