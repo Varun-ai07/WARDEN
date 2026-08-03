@@ -189,7 +189,33 @@ export default async function handler(req: any, res: any) {
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/attempts$/) && method === "POST") {
     const decisionId = path.split("/")[4];
     const run = Object.values(runs).pop();
-    if (run) { const d = run.decisions.find((x: any) => x.decision_id === decisionId); if (d) { d.execution_status = "COMPLETED"; d.outcome_type = "decision_only"; } if (!run.decisions.some((d: any) => d.execution_status === "AWAITING_APPROVAL")) run.run_status = "COMPLETED"; }
+    if (run) {
+      const d = run.decisions.find((x: any) => x.decision_id === decisionId);
+      if (d) {
+        d.execution_status = "COMPLETED";
+        d.outcome_type = "decision_only";
+        const corrId = id("corr");
+        const seq = (run.events?.length ?? 0) + 1;
+        const evTime = now();
+        run.events = run.events || [];
+        const pushEv = (type: string, payload: any) => {
+          const eid = id("evt");
+          const hash = sign(JSON.stringify({ eid, run_id: run.run_id, seq, type, evTime, payload }));
+          run.events.push({ event_id: eid, correlation_id: corrId, run_id: run.run_id, decision_id: decisionId, sequence: seq, event_type: type, occurred_at: evTime, payload, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
+        };
+        pushEv("approval_resolved", { decision_id: decisionId, action: d.action, target_plan: d.target_plan_id, status: "COMPLETED" });
+        pushEv("execution_state_changed", { from: "AWAITING_APPROVAL", to: "COMPLETED", outcome_type: "decision_only" });
+      }
+      if (!run.decisions.some((d: any) => d.execution_status === "AWAITING_APPROVAL")) {
+        run.run_status = "COMPLETED";
+        const corrId = id("corr");
+        const seq = (run.events?.length ?? 0) + 1;
+        const evTime = now();
+        run.events = run.events || [];
+        const hash = sign(JSON.stringify({ eid: id("evt"), run_id: run.run_id, seq, type: "run_completed", evTime }));
+        run.events.push({ event_id: id("evt"), correlation_id: corrId, run_id: run.run_id, decision_id: null, sequence: seq, event_type: "run_completed", occurred_at: evTime, payload: { run_status: "COMPLETED" }, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
+      }
+    }
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/cancel$/) && method === "POST") {

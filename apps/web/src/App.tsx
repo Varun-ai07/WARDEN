@@ -363,15 +363,22 @@ export function App() {
 
   async function confirmApproval() {
     if (!approval?.providerSessionId) return;
-    const sessionId = approval.providerSessionId;
     setBusy(approval.decision.decision_id);
     try {
+      if (approval.mode === "simulation") {
+        // Simulation mode: complete immediately without Prava
+        setRun(await api.executeAttempt(approval.decision.decision_id, approval.attemptId));
+        setApproval(null);
+        return;
+      }
+      // Provider mode: open Prava iframe and poll for result
       if (approval.iframeUrl) window.open(approval.iframeUrl, "_blank");
+      const sessionId = approval.providerSessionId;
       const finalize = async (attempt = 0): Promise<void> => {
         if (attempt > 30) throw new Error("Prava session timed out.");
         const result = await api.pravaPaymentResult(sessionId);
         const txn = result.transactions?.[0];
-        if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item) => item.status === "credentials_generated")) {
+        if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item: any) => item.status === "credentials_generated")) {
           setRun(await api.finalizePrava(sessionId));
           setApproval(null);
           return;
