@@ -120,8 +120,8 @@ export default async function handler(req: any, res: any) {
   }
   if (path === "/api/v1/subscriptions") return json(res, 200, { subscriptions: SUBS, portfolio_version: 1 });
   if (path === "/api/v1/policies/current" && method === "GET") return json(res, 200, POLICY);
-  if (path === "/api/v1/policies/current" && method === "PUT") return json(res, 200, { ...POLICY, policy_text: body.policy_text || POLICY.policy_text, version: POLICY.version + 1, status: "DRAFT" });
-  if (path.match(/^\/api\/v1\/policies\/[^/]+\/activate$/) && method === "POST") return json(res, 200, POLICY);
+  if (path === "/api/v1/policies/current" && method === "PUT") { const v = POLICY.version + 1; return json(res, 200, { ...POLICY, policy_text: body.policy_text || POLICY.policy_text, version: v, status: "DRAFT" }); }
+  if (path.match(/^\/api\/v1\/policies\/[^/]+\/activate$/) && method === "POST") { const v = body.version || POLICY.version; POLICY.version = v; POLICY.status = "ACTIVE"; if (body.policy_text) POLICY.policy_text = body.policy_text; return json(res, 200, POLICY); }
   if (path === "/api/v1/savings") return json(res, 200, { currency: "USD", recurring_monthly_saved_minor: 0, one_time_avoided_minor: 0 });
 
   if (path === "/api/v1/runs" && method === "POST") {
