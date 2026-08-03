@@ -16,7 +16,7 @@ const sessionSecret = env("SESSION_SECRET", "warden-local-dev");
 function sign(v: string) { return createHmac("sha256", sessionSecret).update(v).digest("base64url"); }
 function id(p: string) { return `${p}_${crypto.randomUUID().replace(/-/g, "").slice(0, 24)}`; }
 function now() { return new Date().toISOString(); }
-function json(res: any, s: number, d: any) { res.writeHead(s, { "Content-Type": "application/json" }); res.end(JSON.stringify(d)); }
+function json(res: any, s: number, d: any, headers: Record<string, string> = {}) { res.writeHead(s, { "Content-Type": "application/json", ...headers }); res.end(JSON.stringify(d)); }
 function readBody(req: any): Promise<any> { return new Promise(r => { let d = ""; req.on("data", (c: any) => d += c); req.on("end", () => { try { r(JSON.parse(d)); } catch { r({}); } }); }); }
 
 // ─── Supabase helpers ────────────────────────────────────────────────────
@@ -373,15 +373,13 @@ export default async function handler(req: any, res: any) {
     if (pravaApiKey) {
       try {
         const result = await pravaRequest(`/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`);
-        res.setHeader("X-Payment-Source", "prava");
-        return json(res, 200, result);
+        return json(res, 200, result, { "X-Payment-Source": "prava" });
       } catch (err: any) {
         console.error(`payment-result: FAILED session=${sessionId} error="${err.message}"`);
       }
     }
     // Fallback: return completed with card details
-    res.setHeader("X-Payment-Source", "fallback");
-    return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Spotify", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] });
+    return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Spotify", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] }, { "X-Payment-Source": "fallback" });
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
     const sessionId = path.split("/")[4];
