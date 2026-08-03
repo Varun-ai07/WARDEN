@@ -82,17 +82,17 @@ export const api = {
     headers: { "idempotency-key": crypto.randomUUID() },
     body: JSON.stringify({ version }),
   }),
-  approvalSession: (decisionId: string) => request<ApprovalSessionResponse>(`/api/v1/decisions/${decisionId}/approval-session`, {
+  approvalSession: (decisionId: string, decision?: any) => request<ApprovalSessionResponse>(`/api/v1/decisions/${decisionId}/approval-session`, {
     method: "POST",
     headers: { "idempotency-key": crypto.randomUUID() },
-    body: "{}",
+    body: JSON.stringify({ decision: decision || undefined }),
   }),
   pravaPaymentResult: (sessionId: string) => request<PravaPaymentResult>(`/api/v1/prava/sessions/${sessionId}/payment-result`),
   finalizePrava: (sessionId: string) => request<RunRecord>(`/api/v1/prava/sessions/${sessionId}/finalize`, { method: "POST", headers: { "idempotency-key": crypto.randomUUID() }, body: "{}" }),
-  executeAttempt: (decisionId: string, attemptId: string) => request<RunRecord>(`/api/v1/decisions/${decisionId}/attempts`, {
+  executeAttempt: (decisionId: string, attemptId: string, decision?: any) => request<RunRecord>(`/api/v1/decisions/${decisionId}/attempts`, {
     method: "POST",
     headers: { "idempotency-key": crypto.randomUUID() },
-    body: JSON.stringify({ execution_attempt_id: attemptId }),
+    body: JSON.stringify({ execution_attempt_id: attemptId, decision: decision || undefined }),
   }),
   decline: (decisionId: string) => request<RunRecord>(`/api/v1/decisions/${decisionId}/cancel`, {
     method: "POST",

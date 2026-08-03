@@ -76,7 +76,7 @@ function StatusMark({ status, label, action, targetPlan }: { status?: string; la
   else if (s === "FAILED" || s === "EXPIRED" || s === "STALE") tone = "error";
   else if (s === "RECONCILING" || s === "UNKNOWN") tone = "unknown";
 
-  const displayLabel = label ?? (action ? actionTypeLabel(action, targetPlan ?? null) : s.replaceAll("_", " "));
+  const displayLabel = label ?? (action ? actionTypeLabel(action, targetPlan ?? null) : (s ?? "").replaceAll("_", " "));
   return <span className={`status status--${tone}`}><span className="status__dot" />{displayLabel}</span>;
 }
 
@@ -103,7 +103,7 @@ function decisionStatusLabel(decision: Decision, environment?: string): string {
     if (decision?.outcome_type === "decision_only") return "RECOMMENDATION";
     return "DECLINED · CHARGE PREVENTED";
   }
-  return s.replaceAll("_", " ");
+  return (s ?? "").replaceAll("_", " ");
 }
 
 function RuleLabel({ rule }: { rule: PolicyRecord["compiled_rules"]["rules"][number] }) {
@@ -128,7 +128,7 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
         <div className="decision__facts">
           <span>Rule <strong>{decision.policy_rule_reference}</strong></span>
           {decision.authorized_amount_minor > 0 && <span>Authorize <strong>{money(decision.authorized_amount_minor, decision.currency)}</strong></span>}
-          {decision.recurring_monthly_savings_minor > 0 && <span>Save <strong>{money(decision.recurring_monthly_savings_minor, decision.currency)}/mo</strong> ({Math.round((decision.recurring_monthly_savings_minor / decision.effective_monthly_cost_minor) * 100)}%)</span>}
+          {decision.recurring_monthly_savings_minor > 0 && <span>Save <strong>{money(decision.recurring_monthly_savings_minor, decision.currency)}/mo</strong> ({decision.effective_monthly_cost_minor > 0 ? Math.round((decision.recurring_monthly_savings_minor / decision.effective_monthly_cost_minor) * 100) : 0}%)</span>}
         </div>
         {decision.outcome_type === "decision_only" && decision.action === "DECLINE" && (
           <div className="decision__auto-decline">
@@ -139,7 +139,7 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
         {decision.outcome_type === "decision_only" && decision.action !== "DECLINE" && (
           <p className="decision__recommendation">This is a recommendation only. No payment will be processed.</p>
         )}
-        {(decision.execution_status === "COMPLETED" || decision.execution_status === "AVOIDED") && decision.evidence_ids.length > 0 && (
+        {(decision.execution_status === "COMPLETED" || decision.execution_status === "AVOIDED") && (decision.evidence_ids?.length ?? 0) > 0 && (
           <div className="decision__transaction-proof">
             <Check size={14} />
             <span>{decision.execution_status === "COMPLETED" ? "Transaction completed successfully" : "Charge prevented successfully"}</span>
@@ -170,7 +170,7 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
             </button>
           </div>
         )}
-        {decision.evidence_ids.length > 0 && <div className="evidence-links">{decision.evidence_ids.map((evidenceId) => <button data-evidence-id={evidenceId} className="evidence-link" key={evidenceId}><FileCheck2 size={14} />{shortId(evidenceId)}</button>)}</div>}
+        {(decision.evidence_ids?.length ?? 0) > 0 && <div className="evidence-links">{(decision.evidence_ids ?? []).map((evidenceId) => <button data-evidence-id={evidenceId} className="evidence-link" key={evidenceId}><FileCheck2 size={14} />{shortId(evidenceId)}</button>)}</div>}
       </div>
     </article>
   ))}</div>;
@@ -220,8 +220,8 @@ export function App() {
       setPolicy(policyData);
       setPolicyText(policyData.policy_text);
       setSavings(savingsData);
-      setRun(latestRun.run);
-      if (latestRun.run) setEvents((await api.events(latestRun.run.run_id)).events);
+      setRun(latestRun.run && latestRun.run.run_id ? latestRun.run : null);
+      if (latestRun.run?.run_id) setEvents((await api.events(latestRun.run.run_id)).events);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "WARDEN could not load.");
     } finally {
@@ -240,7 +240,7 @@ export function App() {
   }, [view, load]);
 
   useEffect(() => {
-    if (!run) { setConnectionState("idle"); return; }
+    if (!run?.run_id) { setConnectionState("idle"); return; }
     if (["COMPLETED", "PARTIALLY_COMPLETED", "FAILED", "CANCELLED", "STALE"].includes(run?.run_status ?? "")) {
       setConnectionState("closed");
       return;
@@ -254,7 +254,7 @@ export function App() {
       void Promise.all([api.run(run.run_id), api.subscriptions(), api.savings()]).then(([nextRun, nextSubscriptions, nextSavings]) => {
         if (requestedSequence < latestRefreshSequenceRef.current) return;
         latestRefreshSequenceRef.current = requestedSequence;
-        setRun(nextRun);
+        if (nextRun && nextRun.run_id && nextRun.decisions) setRun(nextRun);
         setSubscriptions(nextSubscriptions.subscriptions);
         setPortfolioVersion(nextSubscriptions.portfolio_version);
         setSavings(nextSavings);
@@ -353,14 +353,20 @@ export function App() {
   }, []);
 
   const currentMonthly = useMemo(() => subscriptions.reduce((sum, item) => sum + item.current_monthly_cost_minor, 0), [subscriptions]);
-  const cap = policy?.compiled_rules.rules.find((rule) => rule.type === "MONTHLY_CAP");
+  const cap = policy?.compiled_rules?.rules?.find((rule) => rule.type === "MONTHLY_CAP");
   const pendingCount = run?.decisions?.filter((decision) => !terminalStatuses.has(decision.execution_status))?.length ?? 0;
   const policyDirty = Boolean(policy && policyText !== policy.policy_text);
 
   async function startRun() {
     if (!policy) return;
     setBusy("run");
-    try { const next = await api.createRun(policy.version, portfolioVersion); setRun(next); setEvents((await api.events(next.run_id)).events); }
+    try {
+      const next = await api.createRun(policy.version, portfolioVersion);
+      if (next && next.run_id && next.decisions) {
+        setRun(next);
+        setEvents((await api.events(next.run_id)).events);
+      }
+    }
     catch (cause) { setError(cause instanceof Error ? cause.message : "Run failed."); }
     finally { setBusy(null); }
   }
@@ -380,7 +386,7 @@ export function App() {
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     setBusy(decision.decision_id);
     try {
-      const next = await api.approvalSession(decision.decision_id);
+      const next = await api.approvalSession(decision.decision_id, decision);
       setApproval({
         decision,
         attemptId: next.execution_attempt_id,
@@ -401,7 +407,8 @@ export function App() {
     setBusy(approval.decision.decision_id);
     try {
       if (approval.mode === "simulation") {
-        setRun(await api.executeAttempt(approval.decision.decision_id, approval.attemptId));
+        const result = await api.executeAttempt(approval.decision.decision_id, approval.attemptId, approval.decision);
+        if (result && result.run_id) setRun(result);
         setApproval(null);
         return;
       }
@@ -412,7 +419,8 @@ export function App() {
         const result = await api.pravaPaymentResult(sessionId);
         const txn = result.transactions?.[0];
         if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item: any) => item.status === "credentials_generated")) {
-          setRun(await api.finalizePrava(sessionId));
+          const finalized = await api.finalizePrava(sessionId);
+          if (finalized && finalized.run_id) setRun(finalized);
           setApproval(null);
           return;
         }
@@ -425,7 +433,10 @@ export function App() {
   }
 
   async function decline(decision: Decision) {
-    try { setRun(await api.decline(decision.decision_id)); } catch (cause) { setError(cause instanceof Error ? cause.message : "Decline failed."); }
+    try {
+      const result = await api.decline(decision.decision_id);
+      if (result && result.run_id) setRun(result);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Decline failed."); }
   }
 
   if (view === "landing") return <Landing onGetStarted={navigateToDashboard} />;
@@ -458,7 +469,7 @@ export function App() {
           <div className="section-head"><div><p className="eyebrow">{policyDirty ? "Draft policy" : "Your spending rules"}</p><h2>{policyDirty ? "Review before activation" : "How WARDEN decides"}</h2></div><span className="mono">v{policy?.version}</span></div>
           <textarea aria-label="Policy text" value={policyText} onChange={(event) => setPolicyText(event.target.value)} />
           {policyDirty && <p className="draft-notice">Draft changes are not active. Compile and confirm them before running WARDEN.</p>}
-          <div className="rules">{policy?.compiled_rules.rules.map((rule) => <div className="rule" key={rule.rule_id}><Check size={14} /><RuleLabel rule={rule} /><code>{rule.rule_id}</code></div>)}</div>
+          <div className="rules">{(policy?.compiled_rules?.rules ?? []).map((rule) => <div className="rule" key={rule.rule_id}><Check size={14} /><RuleLabel rule={rule} /><code>{rule.rule_id}</code></div>)}</div>
           <div className="policy-actions">
             <button className="button button--secondary" disabled={busy === "policy" || policyText === policy?.policy_text} onClick={savePolicy}>{busy === "policy" ? <LoaderCircle className="spin" size={16} /> : <RefreshCw size={15} />}Compile and activate</button>
             <button className="button button--primary" disabled={busy === "run" || pendingCount > 0 || policyDirty} onClick={startRun}>{busy === "run" ? <LoaderCircle className="spin" size={16} /> : <Play size={15} />}Manage My Subscriptions</button>
@@ -480,7 +491,7 @@ export function App() {
 
         <div className="ledger plane">
           <div className="section-head"><div><p className="eyebrow">Activity log</p><h2>What WARDEN has done</h2></div><span className={`connection connection--${connectionState}`} aria-live="polite"><Activity size={14} />{connectionState}</span></div>
-          {events.length === 0 ? <div className="empty"><Activity size={18} /><p>Events will appear here with stable IDs and sequence numbers.</p></div> : <div className="ledger-list" aria-live="polite">{[...events].reverse().map((event) => <div className="ledger-event" key={event.event_id}><span className="ledger-event__sequence">{String(event.sequence).padStart(3, "0")}</span><div><strong>{event.event_type.replaceAll("_", " ")}</strong><span>{new Date(event.occurred_at).toLocaleTimeString()}</span></div><code>{shortId(event.event_id)}</code></div>)}</div>}
+          {events.length === 0 ? <div className="empty"><Activity size={18} /><p>Events will appear here with stable IDs and sequence numbers.</p></div> : <div className="ledger-list" aria-live="polite">{[...events].reverse().map((event) => <div className="ledger-event" key={event.event_id}><span className="ledger-event__sequence">{String(event.sequence ?? 0).padStart(3, "0")}</span><div><strong>{(event.event_type ?? "unknown").replaceAll("_", " ")}</strong><span>{event.occurred_at ? new Date(event.occurred_at).toLocaleTimeString() : ""}</span></div><code>{shortId(event.event_id)}</code></div>)}</div>}
         </div>
       </section>
     </main>
@@ -513,7 +524,7 @@ export function App() {
     </div>}
 
     {evidence && <div className="proof-backdrop"><aside className="proof-drawer" role="dialog" aria-modal="true" aria-labelledby="proof-title">
-      <div className="section-head"><div><p className="eyebrow">{evidence.provider === "fake" ? "Simulation evidence" : "Verified provider evidence"}</p><h2 id="proof-title">{evidence.evidence_type.replaceAll("_", " ")}</h2></div><button ref={evidenceCloseRef} aria-label="Close evidence" onClick={() => setEvidence(null)}><X size={18} /></button></div>
+      <div className="section-head"><div><p className="eyebrow">{evidence.provider === "fake" ? "Simulation evidence" : "Verified provider evidence"}</p><h2 id="proof-title">{(evidence.evidence_type ?? "unknown").replaceAll("_", " ")}</h2></div><button ref={evidenceCloseRef} aria-label="Close evidence" onClick={() => setEvidence(null)}><X size={18} /></button></div>
 
       {evidence.provider_status === "confirmed" && (
         <div className="transaction-proof">

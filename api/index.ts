@@ -37,12 +37,21 @@ async function supabaseQuery(table: string, query: string = "*"): Promise<any[]>
 async function supabaseUpsert(table: string, data: any): Promise<void> {
   if (!supabaseUrl || !supabaseKey) return;
   try {
-    await fetch(`${supabaseUrl}/rest/v1/${table}`, {
+    const res = await fetch(`${supabaseUrl}/rest/v1/${table}`, {
       method: "POST",
       headers: { "apikey": supabaseKey, "Authorization": `Bearer ${supabaseKey}`, "Content-Type": "application/json", "Prefer": "resolution=merge-duplicates" },
       body: JSON.stringify(data),
     });
-  } catch {}
+    if (!res.ok) console.error(`Supabase upsert ${table} failed:`, res.status, await res.text().catch(() => ""));
+  } catch (e: any) { console.error(`Supabase upsert ${table} error:`, e.message); }
+}
+
+function parseRunData(row: any): any | null {
+  if (!row?.run_data) return null;
+  try {
+    const rd = row.run_data;
+    return typeof rd === "string" ? JSON.parse(rd) : (typeof rd === "object" ? rd : null);
+  } catch { return null; }
 }
 
 // ─── AI reasoner via OpenAI ──────────────────────────────────────────────
@@ -158,6 +167,24 @@ const POLICY = { policy_id: "policy_demo", version: 1, status: "ACTIVE", policy_
 
 const runs: Record<string, any> = {};
 
+async function findRun(runId?: string): Promise<any | null> {
+  // Try in-memory first
+  if (runId && runs[runId]) return runs[runId];
+  const last = Object.values(runs).pop();
+  if (last) return last;
+  // Try Supabase
+  if (!supabaseUrl || !supabaseKey) return null;
+  try {
+    const query = runId ? `run_id=eq.${runId}&limit=1` : "order=created_at.desc&limit=1";
+    const rows = await supabaseQuery("warden_runs", query);
+    if (rows[0]) {
+      const run = parseRunData(rows[0]);
+      if (run?.run_id) { runs[run.run_id] = run; return run; }
+    }
+  } catch {}
+  return null;
+}
+
 // ─── Request handler ─────────────────────────────────────────────────────
 export default async function handler(req: any, res: any) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -214,34 +241,21 @@ export default async function handler(req: any, res: any) {
     pushEv(needsApproval ? "run_ready" : "run_completed", { decisions: decisions.length, run_status: runStatus });
     runs[runId] = { run_id: runId, run_status: runStatus, policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions, events };
     // Persist to Supabase so runs survive serverless cold starts
-    supabaseUpsert("warden_runs", { run_id: runId, user_id: "user_demo", run_data: JSON.stringify(runs[runId]), created_at: now() }).catch(() => {});
+    await supabaseUpsert("warden_runs", { run_id: runId, user_id: "user_demo", run_data: JSON.stringify(runs[runId]), created_at: now() });
     return json(res, 202, { run_id: runId, run_status: runStatus, policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions });
   }
   if (path === "/api/v1/runs/latest") {
-    let last = Object.values(runs).pop();
-    if (!last) {
-      // Try Supabase
-      const rows = await supabaseQuery("warden_runs", "order=created_at.desc&limit=1");
-      if (rows[0]?.run_data) { last = JSON.parse(rows[0].run_data); runs[last.run_id] = last; }
-    }
+    const last = await findRun();
     return json(res, 200, { run: last || null });
   }
   if (path.match(/^\/api\/v1\/runs\/[^/]+$/) && (method === "GET" || method === "PATCH")) {
     const runId = path.split("/").pop()!;
-    let run = runs[runId];
-    if (!run) {
-      const rows = await supabaseQuery("warden_runs", `run_id=eq.${runId}&limit=1`);
-      if (rows[0]?.run_data) { run = JSON.parse(rows[0].run_data); runs[runId] = run; }
-    }
+    const run = await findRun(runId);
     return json(res, 200, run || { error: "Not found" });
   }
   if (path.match(/^\/api\/v1\/runs\/[^/]+\/events$/)) {
     const runId = path.split("/")[4];
-    let run = runs[runId];
-    if (!run) {
-      const rows = await supabaseQuery("warden_runs", `run_id=eq.${runId}&limit=1`);
-      if (rows[0]?.run_data) { run = JSON.parse(rows[0].run_data); runs[runId] = run; }
-    }
+    const run = await findRun(runId);
     return json(res, 200, { events: run?.events || [] });
   }
   if (path.match(/^\/api\/v1\/runs\/[^/]+\/stream$/)) {
@@ -259,13 +273,13 @@ export default async function handler(req: any, res: any) {
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/approval-session$/) && method === "POST") {
     const decisionId = path.split("/")[4];
-    // Try in-memory first, then Supabase
-    let run = Object.values(runs).pop();
-    if (!run) {
-      const rows = await supabaseQuery("warden_runs", "order=created_at.desc&limit=1");
-      if (rows[0]?.run_data) { run = JSON.parse(rows[0].run_data); runs[run.run_id] = run; }
-    }
-    const decision = run?.decisions?.find((x: any) => x.decision_id === decisionId);
+    // Accept decision data from request body (frontend sends it for stateless resilience)
+    const bodyDecision = body?.decision || null;
+    // Try finding run from state/Supabase
+    const run = await findRun();
+    let decision = run?.decisions?.find((x: any) => x.decision_id === decisionId);
+    // Fallback: use decision data from request body
+    if (!decision && bodyDecision) decision = bodyDecision;
     if (!decision) return json(res, 404, { error: "Decision not found" });
     // Try real Prava session first
     if (pravaApiKey) {
@@ -288,9 +302,11 @@ export default async function handler(req: any, res: any) {
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/attempts$/) && method === "POST") {
     const decisionId = path.split("/")[4];
-    const run = Object.values(runs).pop();
+    const bodyDecision = body?.decision || null;
+    const run = await findRun();
     if (run) {
-      const d = run.decisions.find((x: any) => x.decision_id === decisionId);
+      let d = run.decisions?.find((x: any) => x.decision_id === decisionId);
+      if (!d && bodyDecision) d = bodyDecision;
       if (d) {
         d.execution_status = "COMPLETED";
         d.outcome_type = "decision_only";
@@ -306,7 +322,7 @@ export default async function handler(req: any, res: any) {
         pushEv("approval_resolved", { decision_id: decisionId, action: d.action, target_plan: d.target_plan_id, status: "COMPLETED" });
         pushEv("execution_state_changed", { from: "AWAITING_APPROVAL", to: "COMPLETED", outcome_type: "decision_only" });
       }
-      if (!run.decisions.some((d: any) => d.execution_status === "AWAITING_APPROVAL")) {
+      if (!(run.decisions ?? []).some((d: any) => d.execution_status === "AWAITING_APPROVAL")) {
         run.run_status = "COMPLETED";
         const corrId = id("corr");
         const seq = (run.events?.length ?? 0) + 1;
@@ -319,8 +335,8 @@ export default async function handler(req: any, res: any) {
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/cancel$/) && method === "POST") {
-    const run = Object.values(runs).pop();
-    if (run) { for (const d of run.decisions) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; }
+    const run = await findRun();
+    if (run) { for (const d of (run.decisions ?? [])) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; }
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
@@ -337,9 +353,9 @@ export default async function handler(req: any, res: any) {
     return json(res, 200, { status: "completed", transactions: [{ txn_id: id("txn"), status: "completed", line_items: [{ txn_ref_id: id("ref"), merchant_name: "Merchant", total_amount: "0.00", status: "completed", token: null, dynamic_cvv: null, expiry_month: null, expiry_year: null }] }] });
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
-    const run = Object.values(runs).pop();
+    const run = await findRun();
     if (run) {
-      for (const d of run.decisions) {
+      for (const d of (run.decisions ?? [])) {
         if (d.execution_status === "AWAITING_APPROVAL") {
           d.execution_status = "COMPLETED";
           d.outcome_type = "decision_only";
@@ -351,7 +367,7 @@ export default async function handler(req: any, res: any) {
           run.events.push({ event_id: id("evt"), correlation_id: corrId, run_id: run.run_id, decision_id: d.decision_id, sequence: seq, event_type: "approval_resolved", occurred_at: evTime, payload: { decision_id: d.decision_id, action: d.action, target_plan: d.target_plan_id, status: "COMPLETED" }, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
         }
       }
-      if (!run.decisions.some((d: any) => d.execution_status === "AWAITING_APPROVAL")) run.run_status = "COMPLETED";
+      if (!(run.decisions ?? []).some((d: any) => d.execution_status === "AWAITING_APPROVAL")) run.run_status = "COMPLETED";
     }
     return json(res, 200, run || {});
   }
