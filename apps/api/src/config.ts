@@ -1,12 +1,11 @@
 import { resolve } from "node:path";
-
-const root = resolve(import.meta.dirname, "../../..");
-
 import fs from "node:fs";
 
+const dirname = typeof import.meta.dirname !== "undefined" ? import.meta.dirname : process.cwd();
+const root = resolve(dirname, "../../..");
+
 function loadEnvFiles() {
-  const root = resolve(import.meta.dirname, "../../..");
-  const files = [resolve(root, ".env"), resolve(import.meta.dirname, ".env"), resolve(root, "apps/api/.env")];
+  const files = [resolve(root, ".env"), resolve(dirname, ".env"), resolve(root, "apps/api/.env")];
   for (const file of files) {
     try {
       const text = fs.readFileSync(file, "utf8");

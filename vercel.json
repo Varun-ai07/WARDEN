@@ -1,17 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "npm run build && npx esbuild apps/api/src/server.ts --bundle --platform=node --format=cjs --outfile=api/index.js",
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
   "framework": null,
-  "functions": {
-    "api/index.ts": {
-      "maxDuration": 30,
-      "includeFiles": ["apps/api/**", "packages/**"]
-    }
-  },
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index.ts" }
+    { "source": "/api/:path*", "destination": "/api/index.js" }
   ],
   "headers": [
     {
