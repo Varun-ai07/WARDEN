@@ -362,8 +362,8 @@ export function App() {
       setApproval({
         decision,
         attemptId: next.execution_attempt_id,
-        label: next.label,
-        mode: next.mode,
+        label: next.label || "Approve WARDEN action",
+        mode: next.mode || "simulation",
         providerSessionId: next.payload?.provider_session_id ?? null,
         providerSessionToken: next.payload?.provider_session_token ?? null,
         iframeUrl: next.payload?.iframe_url ?? null,
