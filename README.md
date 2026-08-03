@@ -34,7 +34,7 @@ The average household has **12+ active subscriptions** and wastes **$2,400/year*
 ## The Solution
 
 <p align="center">
-  <img src="artifacts/8_dashboard-improved.png" width="800" alt="WARDEN Dashboard">
+  <img src="artifacts/main_dash.png" width="800" alt="WARDEN Dashboard">
 </p>
 
 WARDEN is a **policy engine for recurring commitments**. Write spending rules in plain English, and an AI agent:
