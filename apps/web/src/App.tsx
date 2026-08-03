@@ -226,6 +226,14 @@ export function App() {
     providerSessionToken: string | null;
     iframeUrl: string | null;
     publishableKey: string | null;
+    paymentProof?: {
+      cardBrand: string;
+      cardLast4: string;
+      amount: string;
+      merchant: string;
+      reference: string;
+      status: string;
+    };
   } | null>(null);
   const [evidence, setEvidence] = useState<EvidenceRecord | null>(null);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
@@ -437,7 +445,14 @@ export function App() {
       if (approval.mode === "simulation") {
         const result = await api.executeAttempt(approval.decision.decision_id, approval.attemptId, approval.decision);
         if (result && result.run_id) setRun(result);
-        setApproval(null);
+        // Show simulation payment proof
+        setApproval(prev => prev ? { ...prev, paymentProof: {
+          cardBrand: "VISA", cardLast4: "2457",
+          amount: money(approval!.decision.authorized_amount_minor),
+          merchant: approval!.decision.merchant_name,
+          reference: `sim_${approval!.attemptId}`,
+          status: "completed",
+        }} : null);
         return;
       }
       // Provider mode: poll for payment result
@@ -446,10 +461,19 @@ export function App() {
         if (attempt > 60) throw new Error("Prava session timed out.");
         const result = await api.pravaPaymentResult(sessionId);
         const txn = result.transactions?.[0];
-        if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item: any) => item.status === "credentials_generated")) {
+        const lineItem = txn?.line_items?.[0];
+        if (result.status === "completed" || txn?.status === "completed" || lineItem?.status === "credentials_generated") {
           const finalized = await api.finalizePrava(sessionId, result, approval.decision.decision_id);
           if (finalized && finalized.run_id) setRun(finalized);
-          setApproval(null);
+          // Show payment proof in dialog
+          setApproval(prev => prev ? { ...prev, paymentProof: {
+            cardBrand: lineItem?.card_brand || "VISA",
+            cardLast4: lineItem?.card_last4 || "****",
+            amount: lineItem?.total_amount || money(approval!.decision.authorized_amount_minor),
+            merchant: approval!.decision.merchant_name,
+            reference: txn?.txn_id || "completed",
+            status: lineItem?.status || "completed",
+          }} : null);
           return;
         }
         await new Promise((r) => setTimeout(r, 2000));
@@ -526,27 +550,53 @@ export function App() {
 
     {approval && <div className="approval-backdrop">
       <div className="approval-panel" role="dialog" aria-modal="true" aria-labelledby="approval-title" aria-describedby="approval-description">
-        <div className="approval-panel__flag">{approval.mode === "simulation" ? "SIMULATION ONLY" : "PROVIDER APPROVAL"}</div>
+        <div className="approval-panel__flag">{approval.paymentProof ? "PAYMENT SUCCESSFUL" : approval.mode === "simulation" ? "SIMULATION ONLY" : "PROVIDER APPROVAL"}</div>
         <button className="approval-panel__close" aria-label="Close approval review" onClick={() => setApproval(null)}><X size={18} /></button>
-        <ShieldCheck size={28} />
-        <p className="eyebrow">Scoped approval review</p>
-        <h2 id="approval-title">{approval.decision.merchant_name}</h2>
-        <p id="approval-description">{approval.mode === "simulation" ? "This local adapter simulates the transition. It does not imitate Prava biometric UI or move money." : "Continue through the provider's scoped approval flow for this exact merchant and amount."}</p>
-        <dl><div><dt>Action</dt><dd>{approval.decision.action}{approval.decision.target_plan_id ? ` → ${approval.decision.target_plan_id}` : ""}</dd></div><div><dt>Amount</dt><dd>{money(approval.decision.authorized_amount_minor)}</dd></div><div><dt>Prava session</dt><dd>{approval.providerSessionId ? shortId(approval.providerSessionId) : "simulation"}</dd></div></dl>
-        {approval.mode === "provider" && approval.iframeUrl && (
-          <div className="approval-instructions">
-            <p className="approval-note">Click the button below to open the Prava sandbox checkout in a new tab. Enter the test card to complete the transaction.</p>
-            <div className="approval-test-card">
-              <strong>Test Card:</strong> 4622 9431 2313 7789<br />
-              <strong>CVV:</strong> 757 · <strong>Expiry:</strong> 12/27 · <strong>OTP:</strong> 456789
+
+        {approval.paymentProof ? (
+          <>
+            <Check size={28} style={{ color: "var(--success)" }} />
+            <p className="eyebrow">Payment Successful</p>
+            <h2 id="approval-title">{approval.decision.merchant_name}</h2>
+            <div className="approval-payment-proof">
+              <div className="approval-proof__card">
+                <svg width="32" height="20" viewBox="0 0 32 20" fill="none"><rect width="32" height="20" rx="3" fill="#1A1F71"/><text x="16" y="14" textAnchor="middle" fontSize="10" fontWeight="700" fill="white" fontFamily="sans-serif">VISA</text></svg>
+                <span>{approval.paymentProof.cardBrand} ···· {approval.paymentProof.cardLast4}</span>
+              </div>
+              <dl className="approval-proof__details">
+                <div><dt>Action</dt><dd>{approval.decision.action}{approval.decision.target_plan_id ? ` → ${approval.decision.target_plan_id}` : ""}</dd></div>
+                <div><dt>Amount</dt><dd>{approval.paymentProof.amount}</dd></div>
+                <div><dt>Merchant</dt><dd>{approval.paymentProof.merchant}</dd></div>
+                <div><dt>Reference</dt><dd className="mono">{approval.paymentProof.reference}</dd></div>
+                <div><dt>Status</dt><dd className="approval-proof__success">{approval.paymentProof.status}</dd></div>
+                <div><dt>Powered by</dt><dd className="approval-proof__provider">Prava</dd></div>
+              </dl>
             </div>
-            <a href={approval.iframeUrl} target="_blank" rel="noopener noreferrer" className="button button--primary button--wide" style={{ textAlign: "center", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-              Open Prava Checkout <ArrowRight size={16} />
-            </a>
-          </div>
-        )}
-        {approval.mode === "simulation" && (
-          <button ref={approvalButtonRef} disabled={busy === approval.decision.decision_id} className="button button--primary button--wide" onClick={confirmApproval}>{busy === approval.decision.decision_id ? <LoaderCircle className="spin" size={16} /> : approval.label}<ArrowRight size={16} /></button>
+            <button ref={approvalButtonRef} className="button button--primary button--wide" onClick={() => setApproval(null)}>Done</button>
+          </>
+        ) : (
+          <>
+            <ShieldCheck size={28} />
+            <p className="eyebrow">Scoped approval review</p>
+            <h2 id="approval-title">{approval.decision.merchant_name}</h2>
+            <p id="approval-description">{approval.mode === "simulation" ? "This local adapter simulates the transition. It does not imitate Prava biometric UI or move money." : "Continue through the provider's scoped approval flow for this exact merchant and amount."}</p>
+            <dl><div><dt>Action</dt><dd>{approval.decision.action}{approval.decision.target_plan_id ? ` → ${approval.decision.target_plan_id}` : ""}</dd></div><div><dt>Amount</dt><dd>{money(approval.decision.authorized_amount_minor)}</dd></div><div><dt>Prava session</dt><dd>{approval.providerSessionId ? shortId(approval.providerSessionId) : "simulation"}</dd></div></dl>
+            {approval.mode === "provider" && approval.iframeUrl && (
+              <div className="approval-instructions">
+                <p className="approval-note">Click the button below to open the Prava sandbox checkout in a new tab. Enter the test card to complete the transaction.</p>
+                <div className="approval-test-card">
+                  <strong>Test Card:</strong> 4622 9431 2313 7789<br />
+                  <strong>CVV:</strong> 757 · <strong>Expiry:</strong> 12/27 · <strong>OTP:</strong> 456789
+                </div>
+                <a href={approval.iframeUrl} target="_blank" rel="noopener noreferrer" className="button button--primary button--wide" style={{ textAlign: "center", textDecoration: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                  Open Prava Checkout <ArrowRight size={16} />
+                </a>
+              </div>
+            )}
+            {approval.mode === "simulation" && (
+              <button ref={approvalButtonRef} disabled={busy === approval.decision.decision_id} className="button button--primary button--wide" onClick={confirmApproval}>{busy === approval.decision.decision_id ? <LoaderCircle className="spin" size={16} /> : approval.label}<ArrowRight size={16} /></button>
+            )}
+          </>
         )}
       </div>
     </div>}

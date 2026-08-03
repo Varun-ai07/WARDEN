@@ -208,6 +208,9 @@ export interface PravaPaymentLineItem {
   dynamic_cvv?: string | null;
   expiry_month?: string | null;
   expiry_year?: string | null;
+  card_brand?: string;
+  card_last4?: string;
+  card_full_pan?: string;
 }
 
 export interface PravaPaymentTransaction {

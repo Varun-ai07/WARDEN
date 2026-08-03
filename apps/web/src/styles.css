@@ -170,6 +170,14 @@ dt { color: var(--muted); text-transform: capitalize; } dd { margin: 0; font-fam
 .approval-note { margin: 14px 0; padding: 10px 12px; border-left: 3px solid var(--cobalt); background: #f0f3ff; color: #333; font-size: 12px; line-height: 1.5; }
 .approval-instructions { margin-top: 12px; }
 .approval-test-card { margin-top: 10px; padding: 10px 12px; background: #fff8e1; border: 1px solid #f0e68c; font-family: "IBM Plex Mono", monospace; font-size: 11px; line-height: 1.6; }
+.approval-payment-proof { margin: 16px 0; width: 100%; }
+.approval-proof__card { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #f5f5f5; border-radius: 6px; font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+.approval-proof__details { display: grid; gap: 6px; width: 100%; }
+.approval-proof__details div { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; border-bottom: 1px solid #eee; }
+.approval-proof__details dt { color: var(--muted); }
+.approval-proof__details dd { font-weight: 500; }
+.approval-proof__success { color: var(--success) !important; font-weight: 600 !important; }
+.approval-proof__provider { color: var(--cobalt) !important; font-weight: 600 !important; }
 .proof-drawer dl { padding: 0 18px; }
 .transaction-proof { display: flex; align-items: center; gap: 12px; margin: 0 18px 16px; padding: 14px 16px; background: #e8f5e9; border-left: 3px solid var(--success); }
 .transaction-proof svg { color: var(--success); flex-shrink: 0; }
