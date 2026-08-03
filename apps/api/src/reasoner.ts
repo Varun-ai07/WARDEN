@@ -22,7 +22,7 @@ export interface Reasoner {
 const candidateSchema = z.object({
   subscription_id: z.string(),
   action: actionSchema,
-  target_plan: z.string().nullable(),
+  target_plan: z.string().nullish().default(null).transform(v => v ?? null),
   policy_rule_reference: z.string(),
   reasoning: z.string().min(1),
 });
