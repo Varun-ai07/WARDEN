@@ -170,8 +170,11 @@ const runs: Record<string, any> = {};
 async function findRun(runId?: string): Promise<any | null> {
   // Try in-memory first
   if (runId && runs[runId]) return runs[runId];
-  const last = Object.values(runs).pop();
-  if (last) return last;
+  // If no specific runId requested, try last in-memory
+  if (!runId) {
+    const last = Object.values(runs).pop();
+    if (last) return last;
+  }
   // Try Supabase
   if (!supabaseUrl || !supabaseKey) return null;
   try {
