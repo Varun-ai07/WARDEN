@@ -1,3 +1,2 @@
-// @ts-ignore — bundled by esbuild in buildCommand
-import app from "./index.mjs";
+import app from "../apps/api/src/app.js";
 export default app;
