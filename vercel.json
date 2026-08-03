@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && npx esbuild apps/api/src/server.ts --bundle --platform=node --format=cjs --outfile=api/serve.js",
+  "buildCommand": "npm run build && npx esbuild api/build-entry.ts --bundle --platform=node --format=cjs --outfile=api/warden-app.js --external:node:sqlite --external:node:crypto --external:node:fs --external:node:path --external:node:module",
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
   "framework": null,

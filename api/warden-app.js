@@ -1,4 +1,3 @@
-"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -40,7 +39,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // node_modules/cookie/index.js
 var require_cookie = __commonJS({
@@ -31425,13 +31423,6 @@ var init_esm = __esm({
   }
 });
 
-// apps/api/src/server.ts
-var server_exports = {};
-__export(server_exports, {
-  default: () => server_default
-});
-module.exports = __toCommonJS(server_exports);
-
 // apps/api/src/app.ts
 var import_cookie_parser = __toESM(require_cookie_parser(), 1);
 var import_express = __toESM(require_express2(), 1);
@@ -60526,7 +60517,7 @@ function requiredIdempotencyKey(req) {
   if (!value || value.length < 8 || value.length > 200) throw new HttpError(400, "A valid Idempotency-Key header is required", "IDEMPOTENCY_KEY_REQUIRED");
   return value;
 }
-function createApp(service2 = new WardenService()) {
+function createApp(service = new WardenService()) {
   const app2 = (0, import_express.default)();
   app2.set("trust proxy", 1);
   app2.use(helmet({ contentSecurityPolicy: false }));
@@ -60567,53 +60558,53 @@ function createApp(service2 = new WardenService()) {
     });
   });
   app2.get("/api/v1/subscriptions", requireSession, asyncRoute(async (req, res) => {
-    res.json({ subscriptions: await service2.subscriptions(req.userId), portfolio_version: await service2.portfolioVersion(req.userId) });
+    res.json({ subscriptions: await service.subscriptions(req.userId), portfolio_version: await service.portfolioVersion(req.userId) });
   }));
   app2.get("/api/v1/policies/current", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.activePolicy(req.userId));
+    res.json(await service.activePolicy(req.userId));
   }));
   app2.put("/api/v1/policies/current", requireSession, asyncRoute(async (req, res) => {
     const body = updatePolicySchema.parse(req.body);
-    const current = await service2.activePolicy(req.userId);
-    res.json(await service2.draftPolicy(req.userId, body.policy_text, Number(req.header("if-match") ?? current.version)));
+    const current = await service.activePolicy(req.userId);
+    res.json(await service.draftPolicy(req.userId, body.policy_text, Number(req.header("if-match") ?? current.version)));
   }));
   app2.post("/api/v1/policies/:policyId/activate", requireSession, asyncRoute(async (req, res) => {
     requiredIdempotencyKey(req);
     const version2 = external_exports.object({ version: external_exports.number().int().positive() }).parse(req.body).version;
     const policyId = String(req.params.policyId);
-    res.json(await service2.activatePolicy(req.userId, policyId, version2));
+    res.json(await service.activatePolicy(req.userId, policyId, version2));
   }));
   app2.post("/api/v1/runs", requireSession, asyncRoute(async (req, res) => {
     const key = requiredIdempotencyKey(req);
     const body = createRunSchema.parse(req.body);
-    const run = await service2.createRun(req.userId, key, body.policy_version, body.expected_portfolio_version);
+    const run = await service.createRun(req.userId, key, body.policy_version, body.expected_portfolio_version);
     res.status(202).json(run);
   }));
   app2.get("/api/v1/runs/latest", requireSession, asyncRoute(async (req, res) => {
-    res.json({ run: await service2.latestRun(req.userId) });
+    res.json({ run: await service.latestRun(req.userId) });
   }));
   app2.get("/api/v1/runs/:runId", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.run(String(req.params.runId), req.userId));
+    res.json(await service.run(String(req.params.runId), req.userId));
   }));
   app2.patch("/api/v1/runs/:runId", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.run(String(req.params.runId), req.userId));
+    res.json(await service.run(String(req.params.runId), req.userId));
   }));
   app2.get("/api/v1/runs/:runId/events", requireSession, asyncRoute(async (req, res) => {
     const after = Number(String(req.query.after_sequence ?? 0));
-    res.json({ events: await service2.events(String(req.params.runId), req.userId, Number.isFinite(after) ? after : 0) });
+    res.json({ events: await service.events(String(req.params.runId), req.userId, Number.isFinite(after) ? after : 0) });
   }));
   app2.get("/api/v1/runs/:runId/stream", requireSession, asyncRoute(async (req, res) => {
     const runId = String(req.params.runId);
-    await service2.run(runId, req.userId);
+    await service.run(runId, req.userId);
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache, no-transform");
     res.setHeader("Connection", "keep-alive");
     res.flushHeaders();
     const lastEventId = req.header("last-event-id");
-    const lastEvent = lastEventId ? await service2.db.get("SELECT sequence FROM ledger_events WHERE event_id=$1 AND run_id=$2", lastEventId, runId) : void 0;
+    const lastEvent = lastEventId ? await service.db.get("SELECT sequence FROM ledger_events WHERE event_id=$1 AND run_id=$2", lastEventId, runId) : void 0;
     let cursor = Number(lastEvent?.sequence ?? req.query.after_sequence ?? 0);
     const send = async () => {
-      for (const event of await service2.events(runId, req.userId, cursor)) {
+      for (const event of await service.events(runId, req.userId, cursor)) {
         res.write(`id: ${event.event_id}
 event: run_event
 data: ${JSON.stringify(event)}
@@ -60634,26 +60625,26 @@ data: ${JSON.stringify(event)}
     });
   }));
   app2.post("/api/v1/decisions/:decisionId/approval-session", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.createApprovalSession(req.userId, String(req.params.decisionId), requiredIdempotencyKey(req)));
+    res.json(await service.createApprovalSession(req.userId, String(req.params.decisionId), requiredIdempotencyKey(req)));
   }));
   app2.post("/api/v1/decisions/:decisionId/attempts", requireSession, asyncRoute(async (req, res) => {
     const body = attemptSchema.parse(req.body);
-    res.json(await service2.executeAttempt(req.userId, String(req.params.decisionId), body.execution_attempt_id, requiredIdempotencyKey(req)));
+    res.json(await service.executeAttempt(req.userId, String(req.params.decisionId), body.execution_attempt_id, requiredIdempotencyKey(req)));
   }));
   app2.post("/api/v1/decisions/:decisionId/cancel", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.declineApproval(req.userId, String(req.params.decisionId), requiredIdempotencyKey(req)));
+    res.json(await service.declineApproval(req.userId, String(req.params.decisionId), requiredIdempotencyKey(req)));
   }));
   app2.get("/api/v1/savings", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.savings(req.userId));
+    res.json(await service.savings(req.userId));
   }));
   app2.get("/api/v1/prava/sessions/:sessionId/payment-result", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.pravaPaymentResult(req.userId, String(req.params.sessionId)));
+    res.json(await service.pravaPaymentResult(req.userId, String(req.params.sessionId)));
   }));
   app2.post("/api/v1/prava/sessions/:sessionId/finalize", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.finalizePravaSession(req.userId, String(req.params.sessionId)));
+    res.json(await service.finalizePravaSession(req.userId, String(req.params.sessionId)));
   }));
   app2.get("/api/v1/evidence/:evidenceId", requireSession, asyncRoute(async (req, res) => {
-    res.json(await service2.evidence(req.userId, String(req.params.evidenceId)));
+    res.json(await service.evidence(req.userId, String(req.params.evidenceId)));
   }));
   app2.use((error51, req, res, _next) => {
     const correlationId = req.correlationId;
@@ -60672,24 +60663,13 @@ data: ${JSON.stringify(event)}
     logger.error("unhandled_error", context, error51);
     res.status(500).json({ error: { code: "INTERNAL_ERROR", message: "The request could not be completed." } });
   });
-  return { app: app2, service: service2 };
+  return { app: app2, service };
 }
 
-// apps/api/src/server.ts
-var { app, service } = createApp();
-service.recoverStuckRuns().then((recovered) => {
-  if (recovered > 0) {
-    console.log(`WARDEN recovered ${recovered} stuck run(s) from a previous process.`);
-  }
-}).catch((err) => {
-  console.error("Failed to recover stuck runs:", err);
-});
-if (!config2.vercel) {
-  app.listen(config2.port, () => {
-    console.log(`WARDEN API listening on http://localhost:${config2.port} (${config2.environment})`);
-  });
-}
-var server_default = app;
+// api/build-entry.ts
+var { app } = createApp();
+module.exports = app;
+module.exports.default = app;
 /*! Bundled license information:
 
 cookie/index.js:
