@@ -11,12 +11,32 @@ import {
   ShieldCheck,
   X,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Component, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Decision, EvidenceRecord, LedgerEvent, PolicyRecord, RunRecord, SavingsSummary, SessionResponse, Subscription } from "@warden/shared";
 import { api, NetworkError } from "./api";
 import { CommandPalette } from "./CommandPalette";
 import { Landing } from "./Landing";
 import "./landing.css";
+
+// ─── Error Boundary: catches any render crash and shows fallback ───────
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: 40, fontFamily: "IBM Plex Mono, monospace", background: "#f5f2ea", minHeight: "100vh" }}>
+          <h2 style={{ color: "#bc3f35" }}>Something went wrong</h2>
+          <p style={{ color: "#48443c", marginBottom: 16 }}>{this.state.error.message}</p>
+          <button onClick={() => { this.setState({ error: null }); window.location.reload(); }} style={{ padding: "8px 16px", background: "#2947f2", color: "white", border: "none", borderRadius: 4, cursor: "pointer" }}>
+            Reload page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const money = (minor: number, currency = "USD") => new Intl.NumberFormat("en-US", { style: "currency", currency }).format(minor / 100);
 const shortId = (value: string) => `${value.slice(0, 11)}…${value.slice(-4)}`;
