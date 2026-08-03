@@ -358,6 +358,14 @@ export function App() {
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     setBusy(decision.decision_id);
     try {
+      // Refresh run data first to get current decision IDs (serverless may have lost state)
+      const latestRun = await api.latestRun();
+      if (latestRun.run) {
+        setRun(latestRun.run);
+        // Find the matching decision in the refreshed data
+        const freshDecision = latestRun.run.decisions.find((d: Decision) => d.subscription_id === decision.subscription_id && d.execution_status === "AWAITING_APPROVAL");
+        if (freshDecision) decision = freshDecision;
+      }
       const next = await api.approvalSession(decision.decision_id);
       setApproval({
         decision,
