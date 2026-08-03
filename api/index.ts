@@ -382,22 +382,16 @@ export default async function handler(req: any, res: any) {
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
     const sessionId = path.split("/")[5];
-    console.log(`payment-result: session=${sessionId} key=${pravaApiKey ? "set" : "MISSING"}`);
     if (pravaApiKey) {
       try {
-        const url = `/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`;
-        console.log(`payment-result: calling pravaRequest(${url})`);
-        const result = await pravaRequest(url);
-        console.log(`payment-result: OK status=${result.status}`);
+        const result = await pravaRequest(`/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`);
         return json(res, 200, result, { "X-Payment-Source": "prava" });
       } catch (err: any) {
-        console.error(`payment-result: FAILED session=${sessionId} err="${err.message}"`);
+        console.error(`payment-result: FAILED sid=${sessionId} err=${err.message}`);
       }
-    } else {
-      console.log(`payment-result: NO KEY`);
     }
     // Fallback: return completed with card details
-    return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Spotify", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] }, { "X-Payment-Source": "fallback" });
+    return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Spotify", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] }, { "X-Payment-Source": "fallback", "X-Session-Id": sessionId });
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
     const sessionId = path.split("/")[5];
