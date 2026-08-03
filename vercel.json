@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && cp -r apps/api/dist api/dist",
+  "buildCommand": "npm run build && cp -r apps/api/dist api/dist && mkdir -p api/node_modules/@warden && cp -r packages/shared api/node_modules/@warden/shared",
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
   "framework": null,
