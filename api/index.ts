@@ -124,9 +124,7 @@ async function pravaRequest(path: string, init: RequestInit = {}): Promise<any> 
     "Authorization": `Bearer ${pravaApiKey}`,
     ...(init.headers as Record<string, string> || {}),
   };
-  console.log(`pravaRequest: ${init.method || "GET"} ${url}`);
-  const resp = await fetch(url, { ...init, headers, signal: AbortSignal.timeout(10000) });
-  console.log(`pravaRequest: response ${resp.status}`);
+  const resp = await fetch(url, { ...init, headers, signal: AbortSignal.timeout(15000) });
   const body = await resp.json().catch(() => ({}));
   if (!resp.ok) throw new Error(body?.error?.message || `Prava error ${resp.status}`);
   return body;
@@ -205,22 +203,6 @@ export default async function handler(req: any, res: any) {
   if (["POST", "PUT", "PATCH"].includes(method)) body = await readBody(req);
 
   if (path === "/api/v1/health") return json(res, 200, { status: "ok", mode: environment });
-  if (path === "/api/v1/debug/prava") {
-    const results: any = { pravaKey: pravaApiKey ? `${pravaApiKey.slice(0, 10)}...` : "MISSING", baseUrl: pravaBaseUrl };
-    if (pravaApiKey) {
-      try {
-        // Test session creation
-        const session = await pravaCreateSession({ authorized_amount_minor: 1100, merchant_name: "Debug Test", currency: "USD", action: "SWITCH", subscription_id: "sub_debug" });
-        results.createSession = { ok: true, sessionId: session.session_id };
-        // Test payment-result
-        const paymentResult = await pravaRequest(`/v1/sessions/${encodeURIComponent(session.session_id)}/payment-result`);
-        results.paymentResult = { ok: true, status: paymentResult.status, txns: paymentResult.transactions?.length };
-      } catch (err: any) {
-        results.error = err.message;
-      }
-    }
-    return json(res, 200, results);
-  }
   if (path === "/api/v1/session") {
     const payload = `user_demo.${Date.now()}`; const value = `${payload}.${sign(payload)}`;
     res.setHeader("Set-Cookie", `warden_session=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${12*60*60*1000}`);
@@ -309,9 +291,7 @@ export default async function handler(req: any, res: any) {
     // Try real Prava session first
     if (pravaApiKey) {
       try {
-        console.log(`approval-session: creating Prava session for ${decision.merchant_name}`);
         const session = await pravaCreateSession(decision);
-        console.log(`approval-session: Prava session created: ${session.session_id}`);
         return json(res, 200, {
           execution_attempt_id: id("attempt"),
           mode: "provider",
@@ -390,30 +370,13 @@ export default async function handler(req: any, res: any) {
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
     const sessionId = path.split("/")[4];
-    console.log(`payment-result: sessionId=${sessionId} pravaKey=${pravaApiKey ? "set" : "MISSING"} baseUrl=${pravaBaseUrl}`);
     if (pravaApiKey) {
       try {
-        const encodedSid = encodeURIComponent(sessionId);
-        const url = `${pravaBaseUrl}/v1/sessions/${encodedSid}/payment-result`;
-        console.log(`payment-result: fetching URL=${url}`);
-        const resp = await fetch(url, {
-          method: "GET",
-          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${pravaApiKey}` },
-          signal: AbortSignal.timeout(15000),
-        });
-        console.log(`payment-result: fetch returned status=${resp.status}`);
-        const body = await resp.json().catch(() => ({}));
-        if (!resp.ok) {
-          console.error(`payment-result: Prava returned ${resp.status}: ${JSON.stringify(body).slice(0, 200)}`);
-        } else {
-          console.log(`payment-result: SUCCESS status=${body.status} txns=${body.transactions?.length}`);
-          return json(res, 200, body);
-        }
+        const result = await pravaRequest(`/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`);
+        return json(res, 200, result);
       } catch (err: any) {
-        console.error(`payment-result: EXCEPTION type=${err.name} message="${err.message}"`);
+        console.error(`payment-result: FAILED session=${sessionId} error="${err.message}"`);
       }
-    } else {
-      console.log(`payment-result: NO PRAVA KEY, using fallback`);
     }
     // Fallback: return completed with card details
     return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Merchant", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] });
