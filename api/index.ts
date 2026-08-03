@@ -188,6 +188,12 @@ async function findRun(runId?: string): Promise<any | null> {
   return null;
 }
 
+async function persistRun(run: any): Promise<void> {
+  if (!run?.run_id) return;
+  runs[run.run_id] = run;
+  await supabaseUpsert("warden_runs", { run_id: run.run_id, user_id: "user_demo", run_data: JSON.stringify(run), created_at: run.created_at || now() });
+}
+
 // ─── Request handler ─────────────────────────────────────────────────────
 export default async function handler(req: any, res: any) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -354,13 +360,14 @@ export default async function handler(req: any, res: any) {
         const hash = sign(JSON.stringify({ eid: id("evt"), run_id: run.run_id, seq, type: "run_completed", evTime }));
         run.events.push({ event_id: id("evt"), correlation_id: corrId, run_id: run.run_id, decision_id: null, sequence: seq, event_type: "run_completed", occurred_at: evTime, payload: { run_status: "COMPLETED" }, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
       }
+      await persistRun(run);
     }
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/cancel$/) && method === "POST") {
     const bodyDecision = body?.decision || null;
     const run = await findRun(bodyDecision?.run_id);
-    if (run) { for (const d of (run.decisions ?? [])) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; }
+    if (run) { for (const d of (run.decisions ?? [])) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; await persistRun(run); }
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
@@ -417,6 +424,7 @@ export default async function handler(req: any, res: any) {
         }
       }
       if (!(run.decisions ?? []).some((d: any) => d.execution_status === "AWAITING_APPROVAL")) run.run_status = "COMPLETED";
+      await persistRun(run);
     }
     return json(res, 200, run || {});
   }
