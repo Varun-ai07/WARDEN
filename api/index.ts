@@ -365,7 +365,7 @@ export default async function handler(req: any, res: any) {
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/cancel$/) && method === "POST") {
     const bodyDecision = body?.decision || null;
     const run = await findRun(bodyDecision?.run_id);
-    if (run) { for (const d of (run.decisions ?? [])) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; await persistRun(run); }
+    if (run) { for (const d of (run.decisions ?? [])) { if (d.execution_status === "AWAITING_APPROVAL" || d.execution_status === "RECOMMENDED") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; await persistRun(run); }
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
