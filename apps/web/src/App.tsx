@@ -30,7 +30,7 @@ function actionTypeLabel(action: string, targetPlan: string | null): string {
 }
 
 function MerchantIcon({ name }: { name: string }) {
-  const logos: Record<string, JSX.Element> = {
+  const logos: Record<string, React.ReactNode> = {
     "Adobe Creative Cloud": <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M9.4 2H3.6l6 17.1h5.8L9.4 2zm2.2 10.6L10.2 5h.1l4.2 12.1h-2.3l-1-3.1H9.6l-.4 1.4h-1.9L11.6 12.6zM17.1 2h5.8l-6 17.1h-5.7L17.1 2z"/></svg>,
     "Equinox Gym": <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><circle cx="12" cy="12" r="10" fill="#1a1a1a"/><text x="12" y="16" textAnchor="middle" fontSize="12" fontWeight="700" fill="white">E</text></svg>,
     "Spotify": <svg viewBox="0 0 24 24" width="18" height="18" fill="#1db954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381C8.64 6.001 15.6 6.24 20.04 8.76c.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.439.36z"/></svg>,
