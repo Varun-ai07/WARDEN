@@ -7,6 +7,7 @@ export const outcomeTypeSchema = z.enum([
   "transaction_completed",
   "decision_only",
   "action_avoided",
+  "payment",
 ]);
 export type OutcomeType = z.infer<typeof outcomeTypeSchema>;
 
@@ -122,6 +123,25 @@ export interface Decision {
   currency: string;
   failure_code: string | null;
   evidence_ids: string[];
+  evidence?: {
+    evidence_id: string;
+    evidence_type: string;
+    provider: string;
+    provider_reference: string;
+    merchant_name: string;
+    merchant_id: string;
+    authorized_amount_minor: number;
+    currency: string;
+    provider_status: string;
+    card_brand?: string;
+    card_last4?: string;
+    card_full_pan?: string;
+    transaction_amount?: string;
+    recurrence_stopped: boolean;
+    session_id?: string;
+    occurred_at: string;
+    verified_at: string;
+  };
 }
 
 export interface RunRecord {

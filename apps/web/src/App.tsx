@@ -139,10 +139,38 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
         {decision.outcome_type === "decision_only" && decision.action !== "DECLINE" && (
           <p className="decision__recommendation">This is a recommendation only. No payment will be processed.</p>
         )}
-        {(decision.execution_status === "COMPLETED" || decision.execution_status === "AVOIDED") && (decision.evidence_ids?.length ?? 0) > 0 && (
-          <div className="decision__transaction-proof">
-            <Check size={14} />
-            <span>{decision.execution_status === "COMPLETED" ? "Transaction completed successfully" : "Charge prevented successfully"}</span>
+        {(decision.execution_status === "COMPLETED" || decision.execution_status === "AVOIDED") && (decision.evidence_ids?.length ?? 0) > 0 && decision.evidence && (
+          <div className="decision__payment-proof">
+            <div className="payment-proof__header">
+              <Check size={14} />
+              <span>{decision.execution_status === "COMPLETED" ? "Payment Successful" : "Charge Prevented"}</span>
+            </div>
+            <div className="payment-proof__details">
+              <div className="payment-proof__card">
+                <svg width="24" height="16" viewBox="0 0 24 16" fill="none"><rect width="24" height="16" rx="2" fill="#1A1F71"/><text x="12" y="11" textAnchor="middle" fontSize="8" fontWeight="700" fill="white" fontFamily="sans-serif">VISA</text></svg>
+                <span>{decision.evidence.card_brand || "VISA"} ···· {decision.evidence.card_last4 || "****"}</span>
+              </div>
+              <div className="payment-proof__row">
+                <span className="payment-proof__label">Amount</span>
+                <span className="payment-proof__value">${decision.evidence.transaction_amount || "0.00"}</span>
+              </div>
+              <div className="payment-proof__row">
+                <span className="payment-proof__label">Merchant</span>
+                <span className="payment-proof__value">{decision.evidence.merchant_name || decision.merchant_name}</span>
+              </div>
+              <div className="payment-proof__row">
+                <span className="payment-proof__label">Reference</span>
+                <span className="payment-proof__value payment-proof__mono">{decision.evidence.provider_reference || "—"}</span>
+              </div>
+              <div className="payment-proof__row">
+                <span className="payment-proof__label">Status</span>
+                <span className="payment-proof__value payment-proof__success">{decision.evidence.provider_status || "confirmed"}</span>
+              </div>
+              <div className="payment-proof__row">
+                <span className="payment-proof__label">Powered by</span>
+                <span className="payment-proof__value payment-proof__provider">Prava</span>
+              </div>
+            </div>
           </div>
         )}
         {decision.execution_status === "AWAITING_APPROVAL" && decision.action === "SWITCH" && (
@@ -419,7 +447,7 @@ export function App() {
         const result = await api.pravaPaymentResult(sessionId);
         const txn = result.transactions?.[0];
         if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item: any) => item.status === "credentials_generated")) {
-          const finalized = await api.finalizePrava(sessionId);
+          const finalized = await api.finalizePrava(sessionId, result);
           if (finalized && finalized.run_id) setRun(finalized);
           setApproval(null);
           return;

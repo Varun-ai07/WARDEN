@@ -309,7 +309,27 @@ export default async function handler(req: any, res: any) {
       if (!d && bodyDecision) d = bodyDecision;
       if (d) {
         d.execution_status = "COMPLETED";
-        d.outcome_type = "decision_only";
+        d.outcome_type = "payment";
+        // Save simulation evidence
+        d.evidence = {
+          evidence_id: id("ev"),
+          evidence_type: "checkout_confirmation",
+          provider: "prava",
+          provider_reference: `ref_${id("ref")}`,
+          merchant_name: d.merchant_name,
+          merchant_id: d.subscription_id,
+          authorized_amount_minor: d.authorized_amount_minor,
+          currency: d.currency || "USD",
+          provider_status: "completed",
+          card_brand: "VISA",
+          card_last4: "2457",
+          transaction_amount: (d.authorized_amount_minor / 100).toFixed(2),
+          recurrence_stopped: d.action === "SWITCH" || d.action === "DECLINE",
+          session_id: `sim_${id("ses")}`,
+          occurred_at: now(),
+          verified_at: now(),
+        };
+        d.evidence_ids = [d.evidence.evidence_id];
         const corrId = id("corr");
         const seq = (run.events?.length ?? 0) + 1;
         const evTime = now();
@@ -354,18 +374,43 @@ export default async function handler(req: any, res: any) {
     return json(res, 200, { status: "completed", transactions: [{ txn_id: id("txn"), status: "completed", line_items: [{ txn_ref_id: id("ref"), merchant_name: "Merchant", total_amount: "0.00", status: "completed", token: null, dynamic_cvv: null, expiry_month: null, expiry_year: null }] }] });
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
+    const sessionId = path.split("/")[4];
+    const paymentResult = body?.paymentResult || null;
     const run = await findRun();
     if (run) {
       for (const d of (run.decisions ?? [])) {
         if (d.execution_status === "AWAITING_APPROVAL") {
           d.execution_status = "COMPLETED";
-          d.outcome_type = "decision_only";
+          d.outcome_type = "payment";
+          // Save payment evidence from Prava result
+          const txn = paymentResult?.transactions?.[0];
+          const lineItem = txn?.line_items?.[0];
+          d.evidence = {
+            evidence_id: id("ev"),
+            evidence_type: "checkout_confirmation",
+            provider: "prava",
+            provider_reference: txn?.txn_id || `ref_${id("ref")}`,
+            merchant_name: d.merchant_name,
+            merchant_id: d.subscription_id,
+            authorized_amount_minor: d.authorized_amount_minor,
+            currency: d.currency || "USD",
+            provider_status: lineItem?.status || "completed",
+            card_brand: lineItem?.card_brand || "VISA",
+            card_last4: lineItem?.card_last4 || "****",
+            card_full_pan: lineItem?.card_full_pan || null,
+            transaction_amount: lineItem?.total_amount || (d.authorized_amount_minor / 100).toFixed(2),
+            recurrence_stopped: d.action === "SWITCH" || d.action === "DECLINE",
+            session_id: sessionId,
+            occurred_at: now(),
+            verified_at: now(),
+          };
+          d.evidence_ids = [d.evidence.evidence_id];
           const corrId = id("corr");
           const seq = (run.events?.length ?? 0) + 1;
           const evTime = now();
           run.events = run.events || [];
-          const hash = sign(JSON.stringify({ eid: id("evt"), run_id: run.run_id, seq, type: "approval_resolved", evTime }));
-          run.events.push({ event_id: id("evt"), correlation_id: corrId, run_id: run.run_id, decision_id: d.decision_id, sequence: seq, event_type: "approval_resolved", occurred_at: evTime, payload: { decision_id: d.decision_id, action: d.action, target_plan: d.target_plan_id, status: "COMPLETED" }, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
+          const hash = sign(JSON.stringify({ eid: id("evt"), run_id: run.run_id, seq, type: "payment_completed", evTime }));
+          run.events.push({ event_id: id("evt"), correlation_id: corrId, run_id: run.run_id, decision_id: d.decision_id, sequence: seq, event_type: "payment_completed", occurred_at: evTime, payload: { decision_id: d.decision_id, action: d.action, target_plan: d.target_plan_id, status: "COMPLETED", card_brand: d.evidence.card_brand, card_last4: d.evidence.card_last4, amount: d.evidence.transaction_amount, merchant: d.merchant_name }, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
         }
       }
       if (!(run.decisions ?? []).some((d: any) => d.execution_status === "AWAITING_APPROVAL")) run.run_status = "COMPLETED";
