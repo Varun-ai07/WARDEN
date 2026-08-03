@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && cp -r apps/api/dist api/dist && mkdir -p api/node_modules/@warden && cp -r packages/shared api/node_modules/@warden/shared",
+  "buildCommand": "npm run build && npx esbuild apps/api/src/server.ts --bundle --platform=node --format=esm --outfile=api/index.mjs --external:node:* --conditions=import",
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
   "framework": null,
