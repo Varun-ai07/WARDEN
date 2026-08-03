@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "npm run build && npx esbuild apps/api/src/server.ts --bundle --platform=node --format=cjs --outfile=api/index.js",
+  "buildCommand": "npm run build && npx esbuild apps/api/src/server.ts --bundle --platform=node --format=cjs --outfile=api/serve.js",
   "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
   "framework": null,
   "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/index.js" }
+    { "source": "/api/:path*", "destination": "/api/index.ts" }
   ],
   "headers": [
     {
