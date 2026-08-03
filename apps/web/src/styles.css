@@ -91,17 +91,17 @@ td small { display: block; color: var(--muted); font-family: "IBM Plex Mono", mo
 .capability--payment, .capability--prevention { border-color: #8abfae; color: var(--success); }
 .capability--unverified { color: var(--warning); border-color: #d5ae74; }
 .decision-rail { padding: 0 18px 12px; }
-.decision { display: grid; grid-template-columns: 28px 1px 1fr; gap: 12px; position: relative; }
+.decision { display: grid; grid-template-columns: 28px 3px 1px 1fr; gap: 0 12px; position: relative; }
 .decision__index { padding-top: 21px; color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 10px; }
-.decision__line { background: var(--rule); }
+.decision__line-thick { border-radius: 2px; }
+.decision__line-thin { border-radius: 1px; }
 .decision__body { padding: 18px 0 20px; border-bottom: 1px solid var(--rule); min-width: 0; }
 .decision:last-child .decision__body { border-bottom: 0; }
-.decision--active .decision__line { background: var(--signal); }
-.decision--renew .decision__line { background: #e65100; }
-.decision--switch .decision__line { background: var(--success); }
-.decision--decline .decision__line { background: var(--error); }
-.decision--recommendation .decision__line { background: var(--cobalt); }
-.decision--recommendation .decision__body { background: #f8f7f3; }
+.decision--renew .decision__line-thick, .decision--renew .decision__line-thin { background: var(--success); }
+.decision--switch .decision__line-thick, .decision--switch .decision__line-thin { background: #e65100; }
+.decision--decline .decision__line-thick, .decision--decline .decision__line-thin { background: var(--error); }
+.decision--recommendation .decision__line-thick, .decision--recommendation .decision__line-thin { background: #c9a800; }
+.decision--recommendation .decision__body { background: #fffde7; }
 .decision__recommendation { margin: 10px 0 0; padding: 8px 10px; background: #f0f3ff; border-left: 3px solid var(--cobalt); color: #333; font-size: 12px; line-height: 1.4; }
 .decision__transaction-proof { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; padding: 8px 10px; background: #e8f5e9; border-left: 3px solid var(--success); color: var(--success); font-size: 12px; font-weight: 550; }
 .demo-note { padding: 10px 18px; background: #fff8e1; border-bottom: 1px solid var(--rule); font-size: 11px; color: #666; }

@@ -38,30 +38,33 @@ async function aiDecide(sub: any, policy: any, portfolioTotal: number): Promise<
   ].filter(Boolean) as [string, string, string][]) {
     try {
       const availablePlans = sub.alt_plans.map((p: any) => p.plan_id).join(", ") || "None";
-      const prompt = `You are WARDEN's AI subscription policy engine. Apply the rules EXACTLY.
+      const prompt = `You are WARDEN's AI subscription policy engine. Apply rules EXACTLY and explain your reasoning clearly.
 
-## RULES (follow these strictly)
-1. MONTHLY_CAP: If total portfolio exceeds $150/month, switch or decline expensive items.
-2. MAX_INACTIVE_DAYS: If unused >= 30 days → SWITCH to cheapest available plan, or DECLINE if no cheaper plan.
-3. MIN_ANNUAL_SAVINGS_BPS: If an annual plan saves > 15% → SWITCH to annual.
+## RULES
+1. MONTHLY_CAP ($150/mo): If total exceeds cap, switch expensive items to cheaper plans or decline.
+2. MAX_INACTIVE_DAYS (30d): Unused >= 30 days → SWITCH to cheapest plan, or DECLINE if no cheaper plan.
+3. ANNUAL_SAVINGS (15%): If annual plan saves > 15% → SWITCH to annual.
 
-## DECISION FRAMEWORK (follow this order)
-- Trial with zero usage → DECLINE (prevent paid conversion)
-- Unused >= 30 days with cheaper plan available → SWITCH to cheapest plan
-- Unused >= 30 days with no cheaper plan → DECLINE (cancel)
-- Active subscription with annual plan saving > 15% → SWITCH to annual
-- Active subscription within budget, no better plan → RENEW
+## DECISION FRAMEWORK (follow in order)
+1. Trial with zero usage → **DECLINE** (prevent paid conversion)
+2. Unused >= 30 days with cheaper plan → **SWITCH** to cheapest
+3. Unused >= 30 days, no cheaper plan → **DECLINE** (cancel)
+4. Active + annual plan saves >15% → **SWITCH** to annual
+5. Active + within budget + no better plan → **RENEW**
 
-## Portfolio total: $${(portfolioTotal / 100).toFixed(2)}/month
+## IMPORTANT
+- For RECOMMENDATION: This merchant is NOT integrated with Prava payment system. If the action requires payment (SWITCH), mark it as RECOMMENDATION and note that Prava integration is needed for automated execution.
+- For AWAITING_APPROVAL: This merchant IS integrated with Prava. Payment will be processed through Prava sandbox.
 
-## Subscription
-- ${sub.merchant_name} (${sub.id})
-- Current: ${sub.plan_id} at $${(sub.current_monthly_cost_minor / 100).toFixed(2)}/mo
+## Portfolio: $${(portfolioTotal / 100).toFixed(2)}/month
+
+## Subscription: ${sub.merchant_name} (${sub.id})
+- Plan: ${sub.plan_id} at $${(sub.current_monthly_cost_minor / 100).toFixed(2)}/mo
 - Cycle: ${sub.billing_cycle}
 - Last used: ${sub.last_used_days_ago !== null ? sub.last_used_days_ago + " days ago" : "Never used"}
-- Available plans: ${sub.alt_plans.map((p: any) => `${p.plan_id} ($${(p.effective_monthly_cost_minor / 100).toFixed(2)}/mo)`).join(", ") || "None"}
+- Alt plans: ${sub.alt_plans.map((p: any) => `${p.plan_id} ($${(p.effective_monthly_cost_minor / 100).toFixed(2)}/mo)`).join(", ") || "None"}
 
-Return JSON: {"action":"RENEW|SWITCH|DECLINE","target_plan":"plan_id or null","policy_rule_reference":"rule_id","reasoning":"brief explanation citing rule"}`;
+Return JSON: {"action":"RENEW|SWITCH|DECLINE","target_plan":"plan_id or null","policy_rule_reference":"rule_id","reasoning":"clear explanation citing the specific rule and numbers"}`;
 
       const resp = await fetch(url, {
         method: "POST",
@@ -166,7 +169,19 @@ export default async function handler(req: any, res: any) {
     const run = runs[runId] || Object.values(runs).pop();
     return json(res, 200, { events: run?.events || [] });
   }
-  if (path.match(/^\/api\/v1\/runs\/[^/]+\/stream$/)) { res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive" }); res.write(": heartbeat\n\n"); res.end(); return; }
+  if (path.match(/^\/api\/v1\/runs\/[^/]+\/stream$/)) {
+    const runId = path.split("/")[4];
+    const run = runs[runId] || Object.values(runs).pop();
+    res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive" });
+    if (run?.events) {
+      for (const event of run.events) {
+        res.write(`id: ${event.event_id}\nevent: run_event\ndata: ${JSON.stringify(event)}\n\n`);
+      }
+    }
+    res.write(": heartbeat\n\n");
+    res.end();
+    return;
+  }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/approval-session$/) && method === "POST") {
     const sessionId = id("ses");
     return json(res, 200, { execution_attempt_id: id("attempt"), mode: "simulation", label: "Approve WARDEN action", expires_at: new Date(Date.now() + 5*60000).toISOString(), payload: { provider_session_id: sessionId, provider_session_token: sign(sessionId), iframe_url: null, order_id: id("ord"), expires_at: new Date(Date.now() + 5*60000).toISOString() } });

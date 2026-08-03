@@ -82,7 +82,8 @@ function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { 
   return <div className="decision-rail">{decisions.map((decision, index) => (
     <article className={`decision decision--${decision.action.toLowerCase()} ${decision.execution_status === "AWAITING_APPROVAL" ? "decision--active" : ""} ${decision.outcome_type === "decision_only" ? "decision--recommendation" : ""}`} key={decision.decision_id}>
       <div className="decision__index">{String(index + 1).padStart(2, "0")}</div>
-      <div className="decision__line" aria-hidden="true" />
+      <div className="decision__line-thick" aria-hidden="true" />
+      <div className="decision__line-thin" aria-hidden="true" />
       <div className="decision__body">
         <div className="decision__head">
           <div><p className="eyebrow">{decision.action}{decision.target_plan_id ? ` → ${decision.target_plan_id}` : ""}</p><h3>{decision.merchant_name}</h3></div>
