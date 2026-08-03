@@ -173,9 +173,9 @@ WARDEN/
 ## Screenshots
 
 <p align="center">
-  <img src="artifacts/10-landing-hero.png" width="400" alt="Landing Page">
+  <img src="artifacts/1_landing1.png" width="400" alt="Landing Page">
   &nbsp;&nbsp;
-  <img src="artifacts/12-dashboard-improved.png" width="400" alt="Dashboard">
+  <img src="artifacts/3_landing3.png" width="400" alt="Dashboard">
 </p>
 
 ---
