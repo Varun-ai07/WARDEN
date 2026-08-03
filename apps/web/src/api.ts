@@ -88,7 +88,7 @@ export const api = {
     body: JSON.stringify({ decision: decision || undefined }),
   }),
   pravaPaymentResult: (sessionId: string) => request<PravaPaymentResult>(`/api/v1/prava/sessions/${sessionId}/payment-result`),
-  finalizePrava: (sessionId: string, paymentResult?: any) => request<RunRecord>(`/api/v1/prava/sessions/${sessionId}/finalize`, { method: "POST", headers: { "idempotency-key": crypto.randomUUID() }, body: JSON.stringify({ paymentResult: paymentResult || undefined }) }),
+  finalizePrava: (sessionId: string, paymentResult?: any, decisionId?: string) => request<RunRecord>(`/api/v1/prava/sessions/${sessionId}/finalize`, { method: "POST", headers: { "idempotency-key": crypto.randomUUID() }, body: JSON.stringify({ paymentResult: paymentResult || undefined, decisionId: decisionId || undefined }) }),
   executeAttempt: (decisionId: string, attemptId: string, decision?: any) => request<RunRecord>(`/api/v1/decisions/${decisionId}/attempts`, {
     method: "POST",
     headers: { "idempotency-key": crypto.randomUUID() },

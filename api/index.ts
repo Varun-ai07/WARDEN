@@ -386,7 +386,21 @@ export default async function handler(req: any, res: any) {
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
     const sessionId = path.split("/")[4];
     const paymentResult = body?.paymentResult || null;
-    const run = await findRun();
+    const decisionId = body?.decisionId || null;
+    // Find the correct run — try by decision_id first, then fallback
+    let run = null;
+    if (decisionId) {
+      // Search all runs for the one containing this decision
+      for (const r of Object.values(runs)) {
+        if (r.decisions?.some((d: any) => d.decision_id === decisionId)) { run = r; break; }
+      }
+      if (!run) {
+        // Search Supabase for the latest run
+        run = await findRun();
+        if (run && !run.decisions?.some((d: any) => d.decision_id === decisionId)) run = null;
+      }
+    }
+    if (!run) run = await findRun();
     if (run) {
       for (const d of (run.decisions ?? [])) {
         if (d.execution_status === "AWAITING_APPROVAL") {

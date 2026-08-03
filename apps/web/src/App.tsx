@@ -447,7 +447,7 @@ export function App() {
         const result = await api.pravaPaymentResult(sessionId);
         const txn = result.transactions?.[0];
         if (result.status === "completed" || txn?.status === "completed" || txn?.line_items?.some((item: any) => item.status === "credentials_generated")) {
-          const finalized = await api.finalizePrava(sessionId, result);
+          const finalized = await api.finalizePrava(sessionId, result, approval.decision.decision_id);
           if (finalized && finalized.run_id) setRun(finalized);
           setApproval(null);
           return;
