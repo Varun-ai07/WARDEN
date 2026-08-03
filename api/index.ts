@@ -393,13 +393,24 @@ export default async function handler(req: any, res: any) {
     console.log(`payment-result: sessionId=${sessionId} pravaKey=${pravaApiKey ? "set" : "MISSING"} baseUrl=${pravaBaseUrl}`);
     if (pravaApiKey) {
       try {
-        const url = `${pravaBaseUrl}/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`;
-        console.log(`payment-result: fetching ${url}`);
-        const result = await pravaRequest(`/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`);
-        console.log(`payment-result: SUCCESS status=${result.status} txns=${result.transactions?.length}`);
-        return json(res, 200, result);
+        const encodedSid = encodeURIComponent(sessionId);
+        const url = `${pravaBaseUrl}/v1/sessions/${encodedSid}/payment-result`;
+        console.log(`payment-result: fetching URL=${url}`);
+        const resp = await fetch(url, {
+          method: "GET",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${pravaApiKey}` },
+          signal: AbortSignal.timeout(15000),
+        });
+        console.log(`payment-result: fetch returned status=${resp.status}`);
+        const body = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          console.error(`payment-result: Prava returned ${resp.status}: ${JSON.stringify(body).slice(0, 200)}`);
+        } else {
+          console.log(`payment-result: SUCCESS status=${body.status} txns=${body.transactions?.length}`);
+          return json(res, 200, body);
+        }
       } catch (err: any) {
-        console.error(`payment-result: FAILED error="${err.message}" stack=${err.stack?.split('\n')[1] || ''}`);
+        console.error(`payment-result: EXCEPTION type=${err.name} message="${err.message}"`);
       }
     } else {
       console.log(`payment-result: NO PRAVA KEY, using fallback`);
