@@ -139,12 +139,33 @@ export default async function handler(req: any, res: any) {
       return { decision_id: id("decision"), run_id: runId, subscription_id: sub.id, merchant_name: sub.merchant_name, action: candidate.action, target_plan_id: candidate.target_plan, policy_rule_reference: candidate.policy_rule_reference, reasoning: candidate.reasoning, execution_status: status, outcome_type: outcome, authorized_amount_minor: authorized, effective_monthly_cost_minor: effective, recurring_monthly_savings_minor: savings, one_time_avoided_minor: 0, currency: "USD", failure_code: null, evidence_ids: [], plan_order: i, depends_on_decision_id: null };
     }));
     const needsApproval = decisions.some(d => d.execution_status === "AWAITING_APPROVAL");
-    runs[runId] = { run_id: runId, run_status: needsApproval ? "EXECUTING" : "COMPLETED", policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions };
-    return json(res, 202, { run_id: runId, run_status: needsApproval ? "EXECUTING" : "COMPLETED", policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions });
+    const corrId = id("corr");
+    let seq = 1;
+    const events: any[] = [];
+    const evTime = now();
+    const pushEv = (type: string, payload: any, decisionId: string | null = null) => {
+      const eid = id("evt");
+      const hash = sign(JSON.stringify({ eid, runId, seq, type, evTime, payload }));
+      events.push({ event_id: eid, correlation_id: corrId, run_id: runId, decision_id: decisionId, sequence: seq, event_type: type, occurred_at: evTime, payload, previous_event_hash: events.length > 0 ? events[events.length - 1].payload_hash : null, payload_hash: hash });
+      seq++;
+    };
+    pushEv("run_started", { policy_version: 1, portfolio_version: 1 });
+    for (const d of decisions) {
+      pushEv("decision_recorded", { subscription_id: d.subscription_id, action: d.action, target_plan_id: d.target_plan_id, execution_status: d.execution_status, outcome_type: d.outcome_type }, d.decision_id);
+      if (d.execution_status === "AWAITING_APPROVAL") pushEv("approval_required", { decision_id: d.decision_id, merchant: d.merchant_name, action: d.action, amount: d.authorized_amount_minor }, d.decision_id);
+    }
+    const runStatus = needsApproval ? "EXECUTING" : "COMPLETED";
+    pushEv(needsApproval ? "run_ready" : "run_completed", { decisions: decisions.length, run_status: runStatus });
+    runs[runId] = { run_id: runId, run_status: runStatus, policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions, events };
+    return json(res, 202, { run_id: runId, run_status: runStatus, policy_version: 1, portfolio_snapshot_id: id("snapshot"), portfolio_version: 1, created_at: now(), decisions });
   }
   if (path === "/api/v1/runs/latest") { const last = Object.values(runs).pop(); return json(res, 200, { run: last || null }); }
   if (path.match(/^\/api\/v1\/runs\/[^/]+$/) && (method === "GET" || method === "PATCH")) { const runId = path.split("/").pop()!; return json(res, 200, runs[runId] || { error: "Not found" }); }
-  if (path.match(/^\/api\/v1\/runs\/[^/]+\/events$/)) return json(res, 200, { events: [] });
+  if (path.match(/^\/api\/v1\/runs\/[^/]+\/events$/)) {
+    const runId = path.split("/")[4];
+    const run = runs[runId] || Object.values(runs).pop();
+    return json(res, 200, { events: run?.events || [] });
+  }
   if (path.match(/^\/api\/v1\/runs\/[^/]+\/stream$/)) { res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", "Connection": "keep-alive" }); res.write(": heartbeat\n\n"); res.end(); return; }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/approval-session$/) && method === "POST") {
     const sessionId = id("ses");
