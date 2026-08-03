@@ -374,15 +374,19 @@ export default async function handler(req: any, res: any) {
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
     const sessionId = path.split("/")[4];
-    console.log(`payment-result: sessionId=${sessionId} pravaKey=${pravaApiKey ? "set" : "MISSING"}`);
+    console.log(`payment-result: sessionId=${sessionId} pravaKey=${pravaApiKey ? "set" : "MISSING"} baseUrl=${pravaBaseUrl}`);
     if (pravaApiKey) {
       try {
+        const url = `${pravaBaseUrl}/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`;
+        console.log(`payment-result: fetching ${url}`);
         const result = await pravaRequest(`/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`);
-        console.log(`payment-result: Prava returned status=${result.status} txns=${result.transactions?.length}`);
+        console.log(`payment-result: SUCCESS status=${result.status} txns=${result.transactions?.length}`);
         return json(res, 200, result);
       } catch (err: any) {
-        console.error("Prava payment-result FAILED:", err.message);
+        console.error(`payment-result: FAILED error="${err.message}" stack=${err.stack?.split('\n')[1] || ''}`);
       }
+    } else {
+      console.log(`payment-result: NO PRAVA KEY, using fallback`);
     }
     // Fallback: return completed with card details
     return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Merchant", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] });
