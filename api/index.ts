@@ -161,7 +161,13 @@ const runs: Record<string, any> = {};
 // ─── Request handler ─────────────────────────────────────────────────────
 export default async function handler(req: any, res: any) {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const path = url.pathname;
+  // Vercel rewrites may change the pathname — extract original path from query or pathname
+  let path = url.pathname;
+  if (path === "/api/index.ts" || path === "/api/index.js") {
+    // Vercel rewrite: original path is in the query string or headers
+    const rewrittenPath = url.searchParams.get("path") || req.headers["x-vercel-original-path"] || "";
+    if (rewrittenPath) path = "/" + rewrittenPath;
+  }
   const method = req.method;
   if (method === "OPTIONS") { res.writeHead(204); return res.end(); }
 
