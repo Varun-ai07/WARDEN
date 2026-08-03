@@ -42,46 +42,48 @@ function MerchantIcon({ name }: { name: string }) {
   return <span className="merchant-icon" style={{ background: "#888", color: "white", fontSize: "12px", fontWeight: 700 }}>{name.charAt(0)}</span>;
 }
 
-function StatusMark({ status, label, action, targetPlan }: { status: string; label?: string; action?: string; targetPlan?: string | null }) {
-  const isTerminal = status === "COMPLETED" || status === "AVOIDED";
-  const isRecommendation = status === "RECOMMENDED" || status === "NO_ACTION_REQUIRED";
+function StatusMark({ status, label, action, targetPlan }: { status?: string; label?: string; action?: string; targetPlan?: string | null }) {
+  const s = status ?? "";
+  const isTerminal = s === "COMPLETED" || s === "AVOIDED";
+  const isRecommendation = s === "RECOMMENDED" || s === "NO_ACTION_REQUIRED";
 
   let tone = "info";
   if (isTerminal && action === "DECLINE") tone = "error";
   else if (isTerminal && action === "SWITCH") tone = "success";
   else if (isTerminal && action === "RENEW") tone = "warning";
   else if (isRecommendation) tone = "info";
-  else if (status?.includes("APPROVAL") || status === "AUTHORIZED") tone = "warning";
-  else if (status === "FAILED" || status === "EXPIRED" || status === "STALE") tone = "error";
-  else if (status === "RECONCILING" || status === "UNKNOWN") tone = "unknown";
+  else if (s.includes("APPROVAL") || s === "AUTHORIZED") tone = "warning";
+  else if (s === "FAILED" || s === "EXPIRED" || s === "STALE") tone = "error";
+  else if (s === "RECONCILING" || s === "UNKNOWN") tone = "unknown";
 
-  const displayLabel = label ?? (action ? actionTypeLabel(action, targetPlan ?? null) : status.replaceAll("_", " "));
+  const displayLabel = label ?? (action ? actionTypeLabel(action, targetPlan ?? null) : s.replaceAll("_", " "));
   return <span className={`status status--${tone}`}><span className="status__dot" />{displayLabel}</span>;
 }
 
-function decisionStatusLabel(decision: Decision, environment: SessionResponse["environment"] | undefined): string {
-  if (decision.execution_status === "RECOMMENDED") return "RECOMMENDATION";
-  if (decision.execution_status === "NO_ACTION_REQUIRED") return "NO ACTION REQUIRED";
-  if (decision.execution_status === "STALE") return "BLOCKED BY PREREQUISITE";
-  if (decision.execution_status === "VALIDATION_FAILED") return "VALIDATION FAILED";
-  if (decision.execution_status === "APPROVAL_DECLINED") return "APPROVAL DECLINED";
-  if (decision.execution_status === "EXPIRED") return "APPROVAL EXPIRED";
-  if (decision.execution_status === "FAILED") return "EXECUTION FAILED";
-  if (decision.execution_status === "UNKNOWN") return "UNRESOLVED PROVIDER STATE";
-  if (decision.execution_status === "RECONCILING") return "RECONCILING PROVIDER RESULT";
-  if (decision.execution_status === "COMPLETED") {
-    if (decision.evidence_ids.length === 0) return "EVIDENCE PENDING";
-    if (decision.outcome_type === "decision_only") return "RECOMMENDATION";
-    if (decision.action === "RENEW") return "RENEWED";
-    if (decision.action === "SWITCH") return `SWITCHED → ${decision.target_plan_id}`;
+function decisionStatusLabel(decision: Decision, environment?: string): string {
+  const s = decision?.execution_status ?? "";
+  if (s === "RECOMMENDED") return "RECOMMENDATION";
+  if (s === "NO_ACTION_REQUIRED") return "NO ACTION REQUIRED";
+  if (s === "STALE") return "BLOCKED BY PREREQUISITE";
+  if (s === "VALIDATION_FAILED") return "VALIDATION FAILED";
+  if (s === "APPROVAL_DECLINED") return "APPROVAL DECLINED";
+  if (s === "EXPIRED") return "APPROVAL EXPIRED";
+  if (s === "FAILED") return "EXECUTION FAILED";
+  if (s === "UNKNOWN") return "UNRESOLVED PROVIDER STATE";
+  if (s === "RECONCILING") return "RECONCILING PROVIDER RESULT";
+  if (s === "COMPLETED") {
+    if ((decision?.evidence_ids?.length ?? 0) === 0) return "EVIDENCE PENDING";
+    if (decision?.outcome_type === "decision_only") return "RECOMMENDATION";
+    if (decision?.action === "RENEW") return "RENEWED";
+    if (decision?.action === "SWITCH") return `SWITCHED → ${decision?.target_plan_id ?? ""}`;
     return "TRANSACTION COMPLETED";
   }
-  if (decision.execution_status === "AVOIDED") {
-    if (decision.evidence_ids.length === 0) return "EVIDENCE PENDING";
-    if (decision.outcome_type === "decision_only") return "RECOMMENDATION";
+  if (s === "AVOIDED") {
+    if ((decision?.evidence_ids?.length ?? 0) === 0) return "EVIDENCE PENDING";
+    if (decision?.outcome_type === "decision_only") return "RECOMMENDATION";
     return "DECLINED · CHARGE PREVENTED";
   }
-  return decision.execution_status.replaceAll("_", " ");
+  return s.replaceAll("_", " ");
 }
 
 function RuleLabel({ rule }: { rule: PolicyRecord["compiled_rules"]["rules"][number] }) {
@@ -93,7 +95,7 @@ function RuleLabel({ rule }: { rule: PolicyRecord["compiled_rules"]["rules"][num
 function DecisionRail({ decisions, onApprove, onDecline, busy, environment }: { decisions: Decision[]; onApprove: (decision: Decision) => void; onDecline: (decision: Decision) => void; busy: string | null; environment?: SessionResponse["environment"] }) {
   if (decisions.length === 0) return <div className="empty"><CircleDot size={18} /><p>Run the active policy to create a versioned decision plan.</p></div>;
   return <div className="decision-rail">{decisions.map((decision, index) => (
-    <article className={`decision decision--${decision.action.toLowerCase()} ${decision.execution_status === "AWAITING_APPROVAL" ? "decision--active" : ""} ${decision.outcome_type === "decision_only" ? "decision--recommendation" : ""}`} key={decision.decision_id}>
+    <article className={`decision decision--${(decision.action ?? "").toLowerCase()} ${decision.execution_status === "AWAITING_APPROVAL" ? "decision--active" : ""} ${decision.outcome_type === "decision_only" ? "decision--recommendation" : ""}`} key={decision.decision_id}>
       <div className="decision__index">{String(index + 1).padStart(2, "0")}</div>
       <div className="decision__line-thick" aria-hidden="true" />
       <div className="decision__line-thin" aria-hidden="true" />
