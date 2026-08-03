@@ -3,6 +3,8 @@ import { createHmac } from "node:crypto";
 const env = (k: string, d = "") => process.env[k] || d;
 const environment = env("PAYMENT_PROVIDER_MODE") === "prava" ? "sandbox" : "demo";
 const pravaKey = env("RAVA_PUBLISHABLE_KEY") || env("PRAVA_PUBLISHABLE_KEY");
+const pravaApiKey = env("PRAVA_API_KEY");
+const pravaBaseUrl = env("PRAVA_BASE_URL", "https://sandbox.api.prava.space");
 const openaiKey = env("OPENAI_API_KEY");
 const openrouterKey = env("OPENROUTER_API_KEY");
 const openaiModel = env("OPENAI_MODEL", "gpt-4.1");
@@ -89,6 +91,43 @@ function fallbackDecide(sub: any, policy: any, portfolioTotal: number): any {
   if (sub.last_used_days_ago !== null && unused && sub.last_used_days_ago >= unused.days) { const cheapest = sub.alt_plans.sort((a: any, b: any) => a.effective_monthly_cost_minor - b.effective_monthly_cost_minor)[0]; if (cheapest) return { subscription_id: sub.id, action: "SWITCH", target_plan: cheapest.plan_id, policy_rule_reference: unused.rule_id, reasoning: `${sub.merchant_name} unused ${sub.last_used_days_ago} days. Switch to cheapest plan: ${cheapest.plan_id}.` }; return { subscription_id: sub.id, action: "DECLINE", target_plan: null, policy_rule_reference: unused.rule_id, reasoning: `${sub.merchant_name} unused ${sub.last_used_days_ago} days with no alternatives.` }; }
   if (sub.alt_plans.length > 0 && annual) { const best = sub.alt_plans[0]; const savingsPct = ((sub.current_monthly_cost_minor - best.effective_monthly_cost_minor) / sub.current_monthly_cost_minor) * 100; if (savingsPct > annual.basis_points / 100) return { subscription_id: sub.id, action: "SWITCH", target_plan: best.plan_id, policy_rule_reference: annual.rule_id, reasoning: `Annual plan saves ${savingsPct.toFixed(0)}%, exceeding ${(annual.basis_points / 100).toFixed(0)}% threshold.` }; }
   return { subscription_id: sub.id, action: "RENEW", target_plan: null, policy_rule_reference: cap?.rule_id || "policy_default", reasoning: `${sub.merchant_name} remains within the policy. Current portfolio: $${(portfolioTotal / 100).toFixed(2)}/month.` };
+}
+
+// ─── Prava helpers ───────────────────────────────────────────────────────
+async function pravaRequest(path: string, init: RequestInit = {}): Promise<any> {
+  const url = `${pravaBaseUrl}${path}`;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${pravaApiKey}`,
+    ...(init.headers as Record<string, string> || {}),
+  };
+  const resp = await fetch(url, { ...init, headers });
+  const body = await resp.json().catch(() => ({}));
+  if (!resp.ok) throw new Error(body?.error?.message || `Prava error ${resp.status}`);
+  return body;
+}
+
+function formatAmount(minor: number): string { return (minor / 100).toFixed(2); }
+function sanitizeMerchantName(name: string): string { const s = name.replace(/[^A-Za-z0-9 ]/g, "").trim(); return s.length > 0 ? s : "Merchant"; }
+
+async function pravaCreateSession(decision: any): Promise<any> {
+  const amount = formatAmount(decision.authorized_amount_minor);
+  const merchantName = sanitizeMerchantName(decision.merchant_name);
+  return pravaRequest("/v1/sessions", {
+    method: "POST",
+    body: JSON.stringify({
+      user_id: decision.subscription_id,
+      user_email: `warden+${decision.subscription_id}@example.com`,
+      total_amount: amount,
+      currency: decision.currency || "USD",
+      description: `WARDEN ${decision.action} ${merchantName}`.slice(0, 200),
+      integration_type: "embedding",
+      purchase_context: [{
+        merchant_details: { name: merchantName, url: "https://example.com", country_code_iso2: "US", category: "Software Services" },
+        product_details: [{ description: `WARDEN ${decision.action} ${merchantName}`.slice(0, 200), unit_price: amount, quantity: 1 }],
+      }],
+    }),
+  });
 }
 
 // ─── Demo data ───────────────────────────────────────────────────────────
@@ -183,6 +222,26 @@ export default async function handler(req: any, res: any) {
     return;
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/approval-session$/) && method === "POST") {
+    const decisionId = path.split("/")[4];
+    const run = Object.values(runs).pop();
+    const decision = run?.decisions.find((x: any) => x.decision_id === decisionId);
+    if (!decision) return json(res, 404, { error: "Decision not found" });
+    // Try real Prava session first
+    if (pravaApiKey) {
+      try {
+        const session = await pravaCreateSession(decision);
+        return json(res, 200, {
+          execution_attempt_id: id("attempt"),
+          mode: "provider",
+          label: "Continue checkout on Prava",
+          expires_at: session.expires_at || new Date(Date.now() + 5*60000).toISOString(),
+          payload: { provider_session_id: session.session_id, provider_session_token: session.session_token, iframe_url: session.iframe_url, order_id: session.order_id, expires_at: session.expires_at || new Date(Date.now() + 5*60000).toISOString() },
+        });
+      } catch (err: any) {
+        console.error("Prava session creation failed:", err.message);
+      }
+    }
+    // Fallback to simulation
     const sessionId = id("ses");
     return json(res, 200, { execution_attempt_id: id("attempt"), mode: "simulation", label: "Approve WARDEN action", expires_at: new Date(Date.now() + 5*60000).toISOString(), payload: { provider_session_id: sessionId, provider_session_token: sign(sessionId), iframe_url: null, order_id: id("ord"), expires_at: new Date(Date.now() + 5*60000).toISOString() } });
   }
@@ -223,8 +282,38 @@ export default async function handler(req: any, res: any) {
     if (run) { for (const d of run.decisions) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; }
     return json(res, 200, run || {});
   }
-  if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) return json(res, 200, { status: "completed", transactions: [{ txn_id: id("txn"), status: "completed", line_items: [{ txn_ref_id: id("ref"), status: "completed", token: null }] }] });
-  if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") { const run = Object.values(runs).pop(); if (run) { for (const d of run.decisions) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "COMPLETED"; d.outcome_type = "decision_only"; } } run.run_status = "COMPLETED"; } return json(res, 200, run || {}); }
+  if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
+    const sessionId = path.split("/")[4];
+    if (pravaApiKey) {
+      try {
+        const result = await pravaRequest(`/v1/sessions/${encodeURIComponent(sessionId)}/payment-result`);
+        return json(res, 200, result);
+      } catch (err: any) {
+        console.error("Prava payment-result failed:", err.message);
+      }
+    }
+    // Simulation fallback
+    return json(res, 200, { status: "completed", transactions: [{ txn_id: id("txn"), status: "completed", line_items: [{ txn_ref_id: id("ref"), merchant_name: "Merchant", total_amount: "0.00", status: "completed", token: null, dynamic_cvv: null, expiry_month: null, expiry_year: null }] }] });
+  }
+  if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
+    const run = Object.values(runs).pop();
+    if (run) {
+      for (const d of run.decisions) {
+        if (d.execution_status === "AWAITING_APPROVAL") {
+          d.execution_status = "COMPLETED";
+          d.outcome_type = "decision_only";
+          const corrId = id("corr");
+          const seq = (run.events?.length ?? 0) + 1;
+          const evTime = now();
+          run.events = run.events || [];
+          const hash = sign(JSON.stringify({ eid: id("evt"), run_id: run.run_id, seq, type: "approval_resolved", evTime }));
+          run.events.push({ event_id: id("evt"), correlation_id: corrId, run_id: run.run_id, decision_id: d.decision_id, sequence: seq, event_type: "approval_resolved", occurred_at: evTime, payload: { decision_id: d.decision_id, action: d.action, target_plan: d.target_plan_id, status: "COMPLETED" }, previous_event_hash: run.events.length > 0 ? run.events[run.events.length - 1].payload_hash : null, payload_hash: hash });
+        }
+      }
+      if (!run.decisions.some((d: any) => d.execution_status === "AWAITING_APPROVAL")) run.run_status = "COMPLETED";
+    }
+    return json(res, 200, run || {});
+  }
   if (path.match(/^\/api\/v1\/evidence\//)) return json(res, 200, { evidence_id: id("ev"), execution_attempt_id: id("attempt"), evidence_type: "checkout_confirmation", provider: "prava", provider_reference: "ref_" + id("ref"), merchant_id: "merchant", authorized_amount_minor: 0, currency: "USD", provider_status: "confirmed", recurrence_stopped: false, occurred_at: now(), verified_at: now(), payload_hash: "sha256:" + id("hash") });
 
   json(res, 404, { error: { code: "NOT_FOUND", message: "Route not found" } });
