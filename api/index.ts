@@ -168,15 +168,13 @@ const POLICY = { policy_id: "policy_demo", version: 1, status: "ACTIVE", policy_
 const runs: Record<string, any> = {};
 
 async function findRun(runId?: string): Promise<any | null> {
-  // Try in-memory first
+  // Try in-memory first (only for specific runId)
   if (runId && runs[runId]) return runs[runId];
-  // If no specific runId requested, try last in-memory
-  if (!runId) {
-    const last = Object.values(runs).pop();
-    if (last) return last;
-  }
   // Try Supabase
-  if (!supabaseUrl || !supabaseKey) return null;
+  if (!supabaseUrl || !supabaseKey) {
+    if (!runId) return Object.values(runs).pop() || null;
+    return null;
+  }
   try {
     const query = runId ? `run_id=eq.${runId}&limit=1` : "order=created_at.desc&limit=1";
     const rows = await supabaseQuery("warden_runs", query);
