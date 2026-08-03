@@ -51,7 +51,7 @@ function StatusMark({ status, label, action, targetPlan }: { status: string; lab
   else if (isTerminal && action === "SWITCH") tone = "success";
   else if (isTerminal && action === "RENEW") tone = "warning";
   else if (isRecommendation) tone = "info";
-  else if (status.includes("APPROVAL") || status === "AUTHORIZED") tone = "warning";
+  else if (status?.includes("APPROVAL") || status === "AUTHORIZED") tone = "warning";
   else if (status === "FAILED" || status === "EXPIRED" || status === "STALE") tone = "error";
   else if (status === "RECONCILING" || status === "UNKNOWN") tone = "unknown";
 
@@ -219,7 +219,7 @@ export function App() {
 
   useEffect(() => {
     if (!run) { setConnectionState("idle"); return; }
-    if (["COMPLETED", "PARTIALLY_COMPLETED", "FAILED", "CANCELLED", "STALE"].includes(run.run_status)) {
+    if (["COMPLETED", "PARTIALLY_COMPLETED", "FAILED", "CANCELLED", "STALE"].includes(run?.run_status ?? "")) {
       setConnectionState("closed");
       return;
     }
