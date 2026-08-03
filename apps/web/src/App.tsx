@@ -332,7 +332,7 @@ export function App() {
 
   const currentMonthly = useMemo(() => subscriptions.reduce((sum, item) => sum + item.current_monthly_cost_minor, 0), [subscriptions]);
   const cap = policy?.compiled_rules.rules.find((rule) => rule.type === "MONTHLY_CAP");
-  const pendingCount = run?.decisions.filter((decision) => !terminalStatuses.has(decision.execution_status)).length ?? 0;
+  const pendingCount = run?.decisions?.filter((decision) => !terminalStatuses.has(decision.execution_status))?.length ?? 0;
   const policyDirty = Boolean(policy && policyText !== policy.policy_text);
 
   async function startRun() {
@@ -363,7 +363,7 @@ export function App() {
       if (latestRun.run) {
         setRun(latestRun.run);
         // Find the matching decision in the refreshed data
-        const freshDecision = latestRun.run.decisions.find((d: Decision) => d.subscription_id === decision.subscription_id && d.execution_status === "AWAITING_APPROVAL");
+        const freshDecision = latestRun.run?.decisions?.find((d: Decision) => d.subscription_id === decision.subscription_id && d.execution_status === "AWAITING_APPROVAL");
         if (freshDecision) decision = freshDecision;
       }
       const next = await api.approvalSession(decision.decision_id);
