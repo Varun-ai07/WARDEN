@@ -29,18 +29,17 @@ function actionTypeLabel(action: string, targetPlan: string | null): string {
   return action;
 }
 
-const merchantIcons: Record<string, { emoji: string; color: string }> = {
-  "Adobe Creative Cloud": { emoji: "A", color: "#ff0000" },
-  "Equinox Gym": { emoji: "E", color: "#1a1a1a" },
-  "Spotify": { emoji: "S", color: "#1db954" },
-  "Figma": { emoji: "F", color: "#a259ff" },
-  "Notion": { emoji: "N", color: "#000000" },
-  "Coursera Plus": { emoji: "C", color: "#0056d2" },
-};
-
 function MerchantIcon({ name }: { name: string }) {
-  const icon = merchantIcons[name] || { emoji: name.charAt(0), color: "#888" };
-  return <span className="merchant-icon" style={{ background: icon.color }}>{icon.emoji}</span>;
+  const logos: Record<string, JSX.Element> = {
+    "Adobe Creative Cloud": <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M9.4 2H3.6l6 17.1h5.8L9.4 2zm2.2 10.6L10.2 5h.1l4.2 12.1h-2.3l-1-3.1H9.6l-.4 1.4h-1.9L11.6 12.6zM17.1 2h5.8l-6 17.1h-5.7L17.1 2z"/></svg>,
+    "Equinox Gym": <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><circle cx="12" cy="12" r="10" fill="#1a1a1a"/><text x="12" y="16" textAnchor="middle" fontSize="12" fontWeight="700" fill="white">E</text></svg>,
+    "Spotify": <svg viewBox="0 0 24 24" width="18" height="18" fill="#1db954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381C8.64 6.001 15.6 6.24 20.04 8.76c.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.439.36z"/></svg>,
+    "Figma": <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 5.5A3.5 3.5 0 0 1 8.5 2H12v7H8.5A3.5 3.5 0 0 1 5 5.5z" fill="#0acf83"/><path d="M12 2h3.5a3.5 3.5 0 0 1 0 7H12V2z" fill="#a259ff"/><path d="M12 12.5a3.5 3.5 0 0 1 3.5-3.5H18v3.5a3.5 3.5 0 0 1-7 0z" fill="#f24e1e"/><path d="M5 19.5A3.5 3.5 0 0 1 8.5 16H12v3.5a3.5 3.5 0 1 1-7 0z" fill="#ff7262"/><path d="M5 12.5A3.5 3.5 0 0 1 8.5 9H12v7H8.5A3.5 3.5 0 0 1 5 12.5z" fill="#1abcfe"/></svg>,
+    "Notion": <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L18.2 2.16c-.42-.326-.98-.7-2.055-.607l-12.8.934c-.466.047-.56.28-.374.466zm.793 3.08v13.904c0 .747.373 1.027 1.214.98l14.523-.84c.841-.046.935-.56.935-1.168V6.354c0-.28-.14-.466-.467-.42l-15.677.935c-.372.047-.56.28-.56.653zm14.337.745c.093.467 0 .934-.466.98l-.7.14v10.264c-.608.327-1.168.515-1.635.515-.748 0-.935-.234-1.498-.934l-4.577-7.186v6.952l1.497.327s0 .935-1.311.935l-3.666.187c-.094-.187 0-.653.327-.746l.98-.233V9.854L7.822 9.66c-.094-.467.14-1.168.793-1.215l3.834-.233 5.282 8.03V9.29l-1.265-.14c-.093-.56.233-.934.606-1.028z"/></svg>,
+    "Coursera Plus": <svg viewBox="0 0 24 24" width="18" height="18" fill="#0056d2"><circle cx="12" cy="12" r="10"/><text x="12" y="16" textAnchor="middle" fontSize="12" fontWeight="700" fill="white">C</text></svg>,
+  };
+  if (logos[name]) return <span className="merchant-icon">{logos[name]}</span>;
+  return <span className="merchant-icon" style={{ background: "#888", color: "white", fontSize: "12px", fontWeight: 700 }}>{name.charAt(0)}</span>;
 }
 
 function StatusMark({ status, label, action, targetPlan }: { status: string; label?: string; action?: string; targetPlan?: string | null }) {

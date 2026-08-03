@@ -224,7 +224,8 @@ dt { color: var(--muted); text-transform: capitalize; } dd { margin: 0; font-fam
 }
 .github-link { display: inline-flex; align-items: center; color: var(--ink); opacity: 0.6; transition: opacity 0.15s; }
 .github-link:hover { opacity: 1; }
-.merchant-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; color: white; font-size: 12px; font-weight: 700; font-family: "IBM Plex Sans", sans-serif; flex-shrink: 0; }
+.merchant-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; background: #1a1a1a; flex-shrink: 0; overflow: hidden; }
+.merchant-icon svg { width: 16px; height: 16px; }
 .merchant-cell { display: flex; align-items: center; gap: 10px; }
 .merchant-cell div { display: grid; }
 .merchant-cell strong { font-size: 13px; }
