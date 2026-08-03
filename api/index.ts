@@ -124,7 +124,9 @@ async function pravaRequest(path: string, init: RequestInit = {}): Promise<any> 
     "Authorization": `Bearer ${pravaApiKey}`,
     ...(init.headers as Record<string, string> || {}),
   };
-  const resp = await fetch(url, { ...init, headers });
+  console.log(`pravaRequest: ${init.method || "GET"} ${url}`);
+  const resp = await fetch(url, { ...init, headers, signal: AbortSignal.timeout(10000) });
+  console.log(`pravaRequest: response ${resp.status}`);
   const body = await resp.json().catch(() => ({}));
   if (!resp.ok) throw new Error(body?.error?.message || `Prava error ${resp.status}`);
   return body;
@@ -291,7 +293,9 @@ export default async function handler(req: any, res: any) {
     // Try real Prava session first
     if (pravaApiKey) {
       try {
+        console.log(`approval-session: creating Prava session for ${decision.merchant_name}`);
         const session = await pravaCreateSession(decision);
+        console.log(`approval-session: Prava session created: ${session.session_id}`);
         return json(res, 200, {
           execution_attempt_id: id("attempt"),
           mode: "provider",
