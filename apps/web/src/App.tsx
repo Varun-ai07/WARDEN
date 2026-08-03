@@ -434,7 +434,7 @@ export function App() {
 
   async function decline(decision: Decision) {
     try {
-      const result = await api.decline(decision.decision_id);
+      const result = await api.decline(decision.decision_id, decision);
       if (result && result.run_id) setRun(result);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Decline failed."); }
   }

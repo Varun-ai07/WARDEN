@@ -94,9 +94,9 @@ export const api = {
     headers: { "idempotency-key": crypto.randomUUID() },
     body: JSON.stringify({ execution_attempt_id: attemptId, decision: decision || undefined }),
   }),
-  decline: (decisionId: string) => request<RunRecord>(`/api/v1/decisions/${decisionId}/cancel`, {
+  decline: (decisionId: string, decision?: any) => request<RunRecord>(`/api/v1/decisions/${decisionId}/cancel`, {
     method: "POST",
     headers: { "idempotency-key": crypto.randomUUID() },
-    body: "{}",
+    body: JSON.stringify({ decision: decision || undefined }),
   }),
 };

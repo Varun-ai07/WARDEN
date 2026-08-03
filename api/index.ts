@@ -276,7 +276,7 @@ export default async function handler(req: any, res: any) {
     // Accept decision data from request body (frontend sends it for stateless resilience)
     const bodyDecision = body?.decision || null;
     // Try finding run from state/Supabase
-    const run = await findRun();
+    const run = await findRun(bodyDecision?.run_id);
     let decision = run?.decisions?.find((x: any) => x.decision_id === decisionId);
     // Fallback: use decision data from request body
     if (!decision && bodyDecision) decision = bodyDecision;
@@ -303,7 +303,7 @@ export default async function handler(req: any, res: any) {
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/attempts$/) && method === "POST") {
     const decisionId = path.split("/")[4];
     const bodyDecision = body?.decision || null;
-    const run = await findRun();
+    const run = await findRun(bodyDecision?.run_id);
     if (run) {
       let d = run.decisions?.find((x: any) => x.decision_id === decisionId);
       if (!d && bodyDecision) d = bodyDecision;
@@ -335,7 +335,8 @@ export default async function handler(req: any, res: any) {
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/decisions\/[^/]+\/cancel$/) && method === "POST") {
-    const run = await findRun();
+    const bodyDecision = body?.decision || null;
+    const run = await findRun(bodyDecision?.run_id);
     if (run) { for (const d of (run.decisions ?? [])) { if (d.execution_status === "AWAITING_APPROVAL") { d.execution_status = "APPROVAL_DECLINED"; d.outcome_type = null; } } run.run_status = "COMPLETED"; }
     return json(res, 200, run || {});
   }
