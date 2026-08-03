@@ -29,6 +29,20 @@ function actionTypeLabel(action: string, targetPlan: string | null): string {
   return action;
 }
 
+const merchantIcons: Record<string, { emoji: string; color: string }> = {
+  "Adobe Creative Cloud": { emoji: "A", color: "#ff0000" },
+  "Equinox Gym": { emoji: "E", color: "#1a1a1a" },
+  "Spotify": { emoji: "S", color: "#1db954" },
+  "Figma": { emoji: "F", color: "#a259ff" },
+  "Notion": { emoji: "N", color: "#000000" },
+  "Coursera Plus": { emoji: "C", color: "#0056d2" },
+};
+
+function MerchantIcon({ name }: { name: string }) {
+  const icon = merchantIcons[name] || { emoji: name.charAt(0), color: "#888" };
+  return <span className="merchant-icon" style={{ background: icon.color }}>{icon.emoji}</span>;
+}
+
 function StatusMark({ status, label, action, targetPlan }: { status: string; label?: string; action?: string; targetPlan?: string | null }) {
   const isTerminal = status === "COMPLETED" || status === "AVOIDED";
   const isRecommendation = status === "RECOMMENDED" || status === "NO_ACTION_REQUIRED";
@@ -405,6 +419,7 @@ export function App() {
       <div className="command-strip__meta">
         <span className="environment"><CircleDot size={12} />{session?.environment ?? "simulation"}</span>
         <span className="mono">policy v{policy?.version ?? "—"}</span>
+        <a href="https://github.com/Varun-ai07/WARDEN" target="_blank" rel="noopener noreferrer" className="github-link" title="View on GitHub"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
       </div>
     </header>
 
@@ -434,7 +449,7 @@ export function App() {
         <div className="portfolio-panel plane">
           <div className="section-head"><div><p className="eyebrow">Your subscriptions</p><h2>All recurring charges</h2></div><span>{subscriptions.length} items</span></div>
           <div className="demo-note">Demo data — A production version would auto-discover subscriptions from your email/bank.</div>
-          <div className="table-wrap"><table><thead><tr><th>Merchant</th><th>Plan</th><th>Monthly</th><th>Use</th><th>Health</th><th>Capability</th></tr></thead><tbody>{subscriptions.map((item) => <tr key={item.id}><td data-label="Merchant"><strong>{item.merchant_name}</strong><small>{item.id}</small></td><td data-label="Plan" className="mono">{item.plan_id}</td><td data-label="Monthly" className="mono">{money(item.current_monthly_cost_minor, item.currency)}</td><td data-label="Use">{item.last_used_days_ago === null ? "No data" : `${item.last_used_days_ago}d ago`}</td><td data-label="Health"><span className="health"><i style={{ width: `${item.health_score}%` }} />{item.health_score}</span></td><td data-label="Capability"><span className={`capability capability--${item.capability}`}>{item.capability}</span></td></tr>)}</tbody></table></div>
+          <div className="table-wrap"><table><thead><tr><th>Merchant</th><th>Plan</th><th>Monthly</th><th>Use</th><th>Health</th><th>Capability</th></tr></thead><tbody>{subscriptions.map((item) => <tr key={item.id}><td data-label="Merchant"><div className="merchant-cell"><MerchantIcon name={item.merchant_name} /><div><strong>{item.merchant_name}</strong><small>{item.id}</small></div></div></td><td data-label="Plan" className="mono">{item.plan_id}</td><td data-label="Monthly" className="mono">{money(item.current_monthly_cost_minor, item.currency)}</td><td data-label="Use">{item.last_used_days_ago === null ? "No data" : `${item.last_used_days_ago}d ago`}</td><td data-label="Health"><span className="health"><i style={{ width: `${item.health_score}%` }} />{item.health_score}</span></td><td data-label="Capability"><span className={`capability capability--${item.capability}`}>{item.capability}</span></td></tr>)}</tbody></table></div>
         </div>
       </section>
 

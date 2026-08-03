@@ -214,6 +214,16 @@ dt { color: var(--muted); text-transform: capitalize; } dd { margin: 0; font-fam
   .decision__facts { display: grid; gap: 6px; }
   .approval-panel { right: 16px; bottom: 16px; }
 }
+.github-link { display: inline-flex; align-items: center; color: var(--ink); opacity: 0.6; transition: opacity 0.15s; }
+.github-link:hover { opacity: 1; }
+.merchant-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; color: white; font-size: 12px; font-weight: 700; font-family: "IBM Plex Sans", sans-serif; flex-shrink: 0; }
+.merchant-cell { display: flex; align-items: center; gap: 10px; }
+.merchant-cell div { display: grid; }
+.merchant-cell strong { font-size: 13px; }
+.merchant-cell small { font-size: 9px; color: var(--muted); font-family: "IBM Plex Mono", monospace; margin-top: 2px; }
+.landing__github { display: inline-flex; align-items: center; color: var(--ink); opacity: 0.7; transition: opacity 0.15s; margin-left: 4px; }
+.landing__github:hover { opacity: 1; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
