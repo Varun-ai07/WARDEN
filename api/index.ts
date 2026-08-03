@@ -38,25 +38,30 @@ async function aiDecide(sub: any, policy: any, portfolioTotal: number): Promise<
   ].filter(Boolean) as [string, string, string][]) {
     try {
       const availablePlans = sub.alt_plans.map((p: any) => p.plan_id).join(", ") || "None";
-      const prompt = `You are WARDEN's AI decision engine for subscription management.
+      const prompt = `You are WARDEN's AI subscription policy engine. Apply the rules EXACTLY.
 
-## Policy Rules
-${JSON.stringify(policy.rules, null, 2)}
+## RULES (follow these strictly)
+1. MONTHLY_CAP: If total portfolio exceeds $150/month, switch or decline expensive items.
+2. MAX_INACTIVE_DAYS: If unused >= 30 days → SWITCH to cheapest available plan, or DECLINE if no cheaper plan.
+3. MIN_ANNUAL_SAVINGS_BPS: If an annual plan saves > 15% → SWITCH to annual.
+
+## DECISION FRAMEWORK (follow this order)
+- Trial with zero usage → DECLINE (prevent paid conversion)
+- Unused >= 30 days with cheaper plan available → SWITCH to cheapest plan
+- Unused >= 30 days with no cheaper plan → DECLINE (cancel)
+- Active subscription with annual plan saving > 15% → SWITCH to annual
+- Active subscription within budget, no better plan → RENEW
 
 ## Portfolio total: $${(portfolioTotal / 100).toFixed(2)}/month
 
-## Subscription to evaluate
-- Name: ${sub.merchant_name}
-- ID: ${sub.id}
-- Current plan: ${sub.plan_id}
-- Monthly cost: $${(sub.current_monthly_cost_minor / 100).toFixed(2)}
-- Billing cycle: ${sub.billing_cycle}
-- Last used: ${sub.last_used_days_ago !== null ? sub.last_used_days_ago + " days ago" : "No data"}
-- Available plans: ${availablePlans}
+## Subscription
+- ${sub.merchant_name} (${sub.id})
+- Current: ${sub.plan_id} at $${(sub.current_monthly_cost_minor / 100).toFixed(2)}/mo
+- Cycle: ${sub.billing_cycle}
+- Last used: ${sub.last_used_days_ago !== null ? sub.last_used_days_ago + " days ago" : "Never used"}
+- Available plans: ${sub.alt_plans.map((p: any) => `${p.plan_id} ($${(p.effective_monthly_cost_minor / 100).toFixed(2)}/mo)`).join(", ") || "None"}
 
-Decide the action (RENEW, SWITCH, or DECLINE). For SWITCH, specify target_plan from available plans. Cite the exact rule that triggered your decision. Be specific about numbers.
-
-Return JSON: {"action": "RENEW|SWITCH|DECLINE", "target_plan": "plan_id or null", "policy_rule_reference": "rule_id", "reasoning": "explanation"}`;
+Return JSON: {"action":"RENEW|SWITCH|DECLINE","target_plan":"plan_id or null","policy_rule_reference":"rule_id","reasoning":"brief explanation citing rule"}`;
 
       const resp = await fetch(url, {
         method: "POST",
@@ -79,7 +84,7 @@ function fallbackDecide(sub: any, policy: any, portfolioTotal: number): any {
   const annual = policy.rules.find((r: any) => r.type === "MIN_ANNUAL_SAVINGS_BPS");
   if (sub.plan_id === "trial" && sub.last_used_days_ago === null) return { subscription_id: sub.id, action: "DECLINE", target_plan: null, policy_rule_reference: unused?.rule_id || "policy_default", reasoning: `${sub.merchant_name} has no recorded use and is approaching a paid conversion.` };
   if (sub.last_used_days_ago !== null && unused && sub.last_used_days_ago >= unused.days) { const cheapest = sub.alt_plans.sort((a: any, b: any) => a.effective_monthly_cost_minor - b.effective_monthly_cost_minor)[0]; if (cheapest) return { subscription_id: sub.id, action: "SWITCH", target_plan: cheapest.plan_id, policy_rule_reference: unused.rule_id, reasoning: `${sub.merchant_name} unused ${sub.last_used_days_ago} days. Switch to cheapest plan: ${cheapest.plan_id}.` }; return { subscription_id: sub.id, action: "DECLINE", target_plan: null, policy_rule_reference: unused.rule_id, reasoning: `${sub.merchant_name} unused ${sub.last_used_days_ago} days with no alternatives.` }; }
-  if (sub.alt_plans.length > 0 && annual) { const best = sub.alt_plans[0]; const savingsPct = ((sub.current_monthly_cost_minor - best.effective_monthly_cost_minor) / sub.current_monthly_cost_minor) * 100; if (savingsPct * 100 > annual.basis_points) return { subscription_id: sub.id, action: "SWITCH", target_plan: best.plan_id, policy_rule_reference: annual.rule_id, reasoning: `Annual plan saves ${savingsPct.toFixed(0)}%, exceeding ${(annual.basis_points / 100).toFixed(0)}% threshold.` }; }
+  if (sub.alt_plans.length > 0 && annual) { const best = sub.alt_plans[0]; const savingsPct = ((sub.current_monthly_cost_minor - best.effective_monthly_cost_minor) / sub.current_monthly_cost_minor) * 100; if (savingsPct > annual.basis_points / 100) return { subscription_id: sub.id, action: "SWITCH", target_plan: best.plan_id, policy_rule_reference: annual.rule_id, reasoning: `Annual plan saves ${savingsPct.toFixed(0)}%, exceeding ${(annual.basis_points / 100).toFixed(0)}% threshold.` }; }
   return { subscription_id: sub.id, action: "RENEW", target_plan: null, policy_rule_reference: cap?.rule_id || "policy_default", reasoning: `${sub.merchant_name} remains within the policy. Current portfolio: $${(portfolioTotal / 100).toFixed(2)}/month.` };
 }
 
