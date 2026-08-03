@@ -165,6 +165,9 @@ export default async function handler(req: any, res: any) {
   const method = req.method;
   if (method === "OPTIONS") { res.writeHead(204); return res.end(); }
 
+  // Debug: return the raw request info
+  if (path === "/api/v1/debug") return json(res, 200, { path, method, url: req.url, headers: { host: req.headers.host, "x-vercel-original-url": req.headers["x-vercel-original-url"], "x-vercel-forwarded-for": req.headers["x-vercel-forwarded-for"] } });
+
   let body: any = {};
   if (["POST", "PUT", "PATCH"].includes(method)) body = await readBody(req);
 
