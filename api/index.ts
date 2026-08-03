@@ -109,7 +109,8 @@ export default async function handler(req: any, res: any) {
   let body: any = {};
   if (["POST", "PUT", "PATCH"].includes(method)) body = await readBody(req);
 
-  if (path === "/api/v1/health") return json(res, 200, { status: "ok", mode: environment });
+  if (path === "/api/v1/health") return json(res, 200, { status: "ok", mode: environment, hasOpenAI: !!openaiKey, hasPg: !!pgUrl });
+  if (path === "/api/v1/debug") return json(res, 200, { openaiKey: openaiKey ? openaiKey.slice(0, 10) + "..." : null, pgUrl: pgUrl ? "set" : null });
   if (path === "/api/v1/session") {
     const payload = `user_demo.${Date.now()}`; const value = `${payload}.${sign(payload)}`;
     res.setHeader("Set-Cookie", `warden_session=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${12*60*60*1000}`);
