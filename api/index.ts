@@ -381,7 +381,7 @@ export default async function handler(req: any, res: any) {
     return json(res, 200, run || {});
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/payment-result$/)) {
-    const sessionId = path.split("/")[4];
+    const sessionId = path.split("/")[5];
     console.log(`payment-result: session=${sessionId} key=${pravaApiKey ? "set" : "MISSING"}`);
     if (pravaApiKey) {
       try {
@@ -400,7 +400,7 @@ export default async function handler(req: any, res: any) {
     return json(res, 200, { status: "completed", transactions: [{ txn_id: `txn_${sessionId}`, status: "completed", line_items: [{ txn_ref_id: `ref_${sessionId}`, merchant_name: "Spotify", total_amount: "11.00", status: "completed", card_brand: "VISA", card_last4: "2457", token: null, dynamic_cvv: null, expiry_month: "12", expiry_year: "27" }] }] }, { "X-Payment-Source": "fallback" });
   }
   if (path.match(/^\/api\/v1\/prava\/sessions\/[^/]+\/finalize$/) && method === "POST") {
-    const sessionId = path.split("/")[4];
+    const sessionId = path.split("/")[5];
     const paymentResult = body?.paymentResult || null;
     const decisionId = body?.decisionId || null;
     // Find the correct run — try by decision_id first, then fallback
