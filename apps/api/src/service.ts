@@ -169,7 +169,7 @@ export class WardenService {
         if (currentVersion !== currentPortfolioVersion) throw new HttpError(409, "Portfolio changed while planning", "PORTFOLIO_VERSION_CONFLICT");
         for (const [index, item] of plan.entries()) {
           await this.db.run(
-            `INSERT INTO decisions VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
+            `INSERT INTO decisions VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)`,
             item.decisionId,
             runId,
             item.subscription.id,
@@ -177,6 +177,7 @@ export class WardenService {
             item.candidate.target_plan,
             item.candidate.policy_rule_reference,
             this.sanitizeReasoning(item.candidate.reasoning),
+            item.candidate.confidence ?? 0.8,
             item.status,
             item.outcome,
             item.authorizedAmountMinor,
@@ -553,6 +554,7 @@ export class WardenService {
       decision_id: String(row.decision_id), run_id: String(row.run_id), subscription_id: String(row.subscription_id), merchant_name: String(row.merchant_name),
       action: String(row.action) as Decision["action"], target_plan_id: row.target_plan_id === null ? null : String(row.target_plan_id),
       policy_rule_reference: String(row.policy_rule_reference), reasoning: String(row.reasoning),
+      confidence: Number(row.confidence ?? 0.8),
       execution_status: String(row.execution_status) as Decision["execution_status"], outcome_type: row.outcome_type === null ? null : String(row.outcome_type) as Decision["outcome_type"],
       authorized_amount_minor: Number(row.authorized_amount_minor), effective_monthly_cost_minor: Number(row.effective_monthly_cost_minor),
       recurring_monthly_savings_minor: Number(row.recurring_monthly_savings_minor), one_time_avoided_minor: Number(row.one_time_avoided_minor),

@@ -10,6 +10,7 @@ export interface CandidateDecision {
   target_plan: string | null;
   policy_rule_reference: string;
   reasoning: string;
+  confidence: number;
 }
 
 export type { CompiledPolicy, Subscription };
@@ -25,6 +26,7 @@ const candidateSchema = z.object({
   target_plan: z.string().nullish().default(null).transform(v => v ?? null),
   policy_rule_reference: z.string(),
   reasoning: z.string().min(1),
+  confidence: z.number().min(0).max(1).default(0.9),
 });
 
 /**
@@ -69,6 +71,7 @@ export class DeterministicReasoner implements Reasoner {
         target_plan: null,
         policy_rule_reference: policy.rules[0]?.rule_id ?? "policy_default",
         reasoning: `${subscription.merchant_name} has no active recurring charge, so no external action is required.`,
+        confidence: 1.0,
       };
     }
 
@@ -85,6 +88,7 @@ export class DeterministicReasoner implements Reasoner {
         target_plan: annual.plan_id,
         policy_rule_reference: annualRule.rule_id,
         reasoning: `The annual plan reduces the effective monthly cost from $${(subscription.current_monthly_cost_minor / 100).toFixed(2)} to $${(annual.effective_monthly_cost_minor / 100).toFixed(2)} and exceeds the active annual-savings threshold of ${(annualRule.basis_points / 100).toFixed(0)}%.`,
+        confidence: 0.95,
       };
     }
 
@@ -97,6 +101,7 @@ export class DeterministicReasoner implements Reasoner {
         target_plan: cheaper?.plan_id ?? null,
         policy_rule_reference: unusedRule.rule_id,
         reasoning: `${subscription.merchant_name} has been unused for ${subscription.last_used_days_ago} days, meeting the active ${unusedRule.days}-day inactivity rule.`,
+        confidence: 0.95,
       };
     }
 
@@ -108,6 +113,7 @@ export class DeterministicReasoner implements Reasoner {
         target_plan: null,
         policy_rule_reference: unusedRule.rule_id,
         reasoning: `${subscription.merchant_name} has no recorded use and is approaching a paid conversion, so prevention is proposed under the inactivity policy.`,
+        confidence: 0.9,
       };
     }
 
@@ -121,6 +127,7 @@ export class DeterministicReasoner implements Reasoner {
           target_plan: cheaper.plan_id,
           policy_rule_reference: monthlyCap.rule_id,
           reasoning: `Total portfolio $${(portfolioMonthlyMinor / 100).toFixed(2)}/month exceeds the $${(monthlyCap.amount_minor / 100).toFixed(2)} cap; switching to the cheaper ${cheaper.plan_id} plan reduces this subscription to $${(cheaper.effective_monthly_cost_minor / 100).toFixed(2)}/month.`,
+          confidence: 0.9,
         };
       }
       return {
@@ -129,6 +136,7 @@ export class DeterministicReasoner implements Reasoner {
         target_plan: null,
         policy_rule_reference: monthlyCap.rule_id,
         reasoning: `Total portfolio $${(portfolioMonthlyMinor / 100).toFixed(2)}/month exceeds the $${(monthlyCap.amount_minor / 100).toFixed(2)} cap and no cheaper plan is available; recommending cancellation.`,
+        confidence: 0.85,
       };
     }
 
@@ -138,6 +146,7 @@ export class DeterministicReasoner implements Reasoner {
       target_plan: null,
       policy_rule_reference: unusedRule?.rule_id ?? policy.rules[0]?.rule_id ?? "policy_default",
       reasoning: `${subscription.merchant_name} remains within the projected portfolio policy and has no validated lower-cost action. Current portfolio cost is $${(portfolioMonthlyMinor / 100).toFixed(2)}/month.`,
+      confidence: 0.9,
     };
   }
 }
@@ -270,8 +279,9 @@ ${text}`,
           target_plan: { type: ["string", "null"] },
           policy_rule_reference: { type: "string" },
           reasoning: { type: "string" },
+          confidence: { type: "number", description: "0.0-1.0 confidence in this decision. High (>=0.85): clear policy match. Medium (0.50-0.84): reasonable inference. Low (<0.50): uncertain, needs human input." },
         },
-        required: ["subscription_id", "action", "target_plan", "policy_rule_reference", "reasoning"],
+        required: ["subscription_id", "action", "target_plan", "policy_rule_reference", "reasoning", "confidence"],
       },
     };
     const args = await this.callFunction(
@@ -324,6 +334,10 @@ Evaluate each policy rule against this subscription:
 - **target_plan**: For SWITCH, must be one of: ${availablePlans.length > 0 ? availablePlans.join(", ") : "N/A (use RENEW or DECLINE)"}
 - **policy_rule_reference**: The rule_id that triggered this decision
 - **reasoning**: Explain which rule triggered the action and why, in plain English. Be specific about numbers.
+- **confidence**: 0.0-1.0 score:
+  - >= 0.85: Clear policy match (e.g., unused 42 days with 30-day rule → high confidence)
+  - 0.50-0.84: Reasonable inference (e.g., annual savings close to threshold → medium)
+  - < 0.50: Uncertain (e.g., no usage data, ambiguous rule match → low, needs human input)
 
 ## Critical Rules
 - target_plan MUST be from the available plans list. Never invent plan names.
