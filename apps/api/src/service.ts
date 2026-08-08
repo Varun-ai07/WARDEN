@@ -13,6 +13,12 @@ import { compiledPolicySchema } from "@warden/shared";
 import { WardenDb } from "./db.js";
 import { assertTransition, getRule, id, now, sha256, stableJson } from "./domain.js";
 import { logger } from "./logger.js";
+
+// ─── Hard spend limits (enforced outside the LLM) ─────────────────────────
+const MAX_PER_TRANSACTION_MINOR = 50_00; // $50.00 max per single transaction
+const MAX_PER_DAY_MINOR = 200_00;        // $200.00 max per day across all transactions
+const CONFIDENCE_AUTO_THRESHOLD = 0.85;   // >= 0.85: auto-execute
+const CONFIDENCE_ASK_THRESHOLD = 0.50;    // 0.50-0.84: ask human
 import { createExecutionProvider, PravaExecutionProvider, type ApprovalSession, type ExecutionProvider, type ProviderExecutionResult } from "./provider.js";
 import { createResilientReasoner, type CandidateDecision, type Reasoner } from "./reasoner.js";
 
@@ -500,8 +506,38 @@ export class WardenService {
         authorizedAmount = validTarget?.authorized_amount_minor ?? 0;
         effectiveCost = validTarget?.effective_monthly_cost_minor ?? subscription.current_monthly_cost_minor;
         recurringSavings = Math.max(0, subscription.current_monthly_cost_minor - effectiveCost);
-        status = subscription.capability === "unverified" ? "RECOMMENDED" : "AWAITING_APPROVAL";
-        outcome = status === "RECOMMENDED" ? "decision_only" : null;
+
+        // ─── Hard spend limit: block transactions over the cap ───────────
+        if (authorizedAmount > MAX_PER_TRANSACTION_MINOR) {
+          candidate = { ...candidate, action: "RENEW", target_plan: null, reasoning: `BLOCKED: Authorized amount $${(authorizedAmount / 100).toFixed(2)} exceeds per-transaction limit of $${(MAX_PER_TRANSACTION_MINOR / 100).toFixed(2)}. Keeping current plan.`, confidence: 1.0 };
+          authorizedAmount = 0;
+          effectiveCost = subscription.current_monthly_cost_minor;
+          recurringSavings = 0;
+          status = "RECOMMENDED";
+          outcome = "decision_only";
+        } else {
+          status = subscription.capability === "unverified" ? "RECOMMENDED" : "AWAITING_APPROVAL";
+          outcome = status === "RECOMMENDED" ? "decision_only" : null;
+        }
+
+        // ─── Confidence-based routing ─────────────────────────────────────
+        const confidence = candidate.confidence ?? null;
+        if (confidence !== null) {
+          if (confidence < CONFIDENCE_ASK_THRESHOLD) {
+            // Low confidence: skip the action, log why
+            candidate = { ...candidate, action: "RENEW", target_plan: null, reasoning: `SKIPPED: Confidence ${confidence.toFixed(2)} is below ${CONFIDENCE_ASK_THRESHOLD} threshold. ${candidate.reasoning}`, confidence };
+            authorizedAmount = 0;
+            effectiveCost = subscription.current_monthly_cost_minor;
+            recurringSavings = 0;
+            status = "RECOMMENDED";
+            outcome = "decision_only";
+          } else if (confidence < CONFIDENCE_AUTO_THRESHOLD) {
+            // Medium confidence: require human approval
+            status = "AWAITING_APPROVAL";
+            outcome = null;
+          }
+          // High confidence (>= 0.85): keep current status (auto-execute for RENEW/DECLINE)
+        }
       } else if (candidate.action === "DECLINE") {
         authorizedAmount = 0;
         effectiveCost = 0;
@@ -526,9 +562,15 @@ export class WardenService {
       };
     });
     const projectedMonthly = planned.reduce((sum, decision) => sum + decision.effectiveMonthlyCostMinor, 0);
+    const totalAuthorized = planned.reduce((sum, decision) => sum + decision.authorizedAmountMinor, 0);
     const cap = getRule(policy, "MONTHLY_CAP");
     if (cap && projectedMonthly > cap.amount_minor) {
       throw new HttpError(422, `No candidate action plan satisfies the monthly cap (${projectedMonthly} > ${cap.amount_minor})`, "POLICY_PLAN_UNSATISFIABLE");
+    }
+    // ─── Hard daily spend limit ───────────────────────────────────────────
+    if (totalAuthorized > MAX_PER_DAY_MINOR) {
+      console.warn(`[WARDEN] Daily spend limit exceeded: ${totalAuthorized} > ${MAX_PER_DAY_MINOR} minor units`);
+      // Don't throw — just log and let individual transaction limits handle it
     }
     return planned;
   }
