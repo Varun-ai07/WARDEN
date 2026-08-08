@@ -89,7 +89,7 @@ async function aiDecide(sub: any, policy: any, portfolioTotal: number): Promise<
 - Last used: ${sub.last_used_days_ago !== null ? sub.last_used_days_ago + " days ago" : "Never used"}
 - Alt plans: ${sub.alt_plans.map((p: any) => `${p.plan_id} ($${(p.effective_monthly_cost_minor / 100).toFixed(2)}/mo)`).join(", ") || "None"}
 
-Return JSON: {"action":"RENEW|SWITCH|DECLINE","target_plan":"plan_id or null","policy_rule_reference":"rule_id","reasoning":"clear explanation citing the specific rule and numbers","confidence":0.0-1.0}`;
+Return JSON: {"action":"RENEW|SWITCH|DECLINE","target_plan":"plan_id or null","policy_rule_reference":"rule_id","reasoning":"clear explanation citing the specific rule and numbers","confidence":CALCULATE_FROM_DATA_START_1.0_SUBTRACT_0.1_PER_MISSING_DATA_POINT_SUBTRACT_0.05_PER_EDGE_CASE_FLOOR_0.1_CEILING_0.99}`;
 
       const resp = await fetch(url, {
         method: "POST",

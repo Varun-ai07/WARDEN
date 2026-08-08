@@ -327,10 +327,16 @@ Evaluate each policy rule against this subscription:
 - **target_plan**: For SWITCH, must be one of: ${availablePlans.length > 0 ? availablePlans.join(", ") : "N/A (use RENEW or DECLINE)"}
 - **policy_rule_reference**: The rule_id that triggered this decision
 - **reasoning**: Explain which rule triggered the action and why, in plain English. Be specific about numbers.
-- **confidence**: 0.0-1.0 score:
-  - >= 0.85: Clear policy match (e.g., unused 42 days with 30-day rule → high confidence)
-  - 0.50-0.84: Reasonable inference (e.g., annual savings close to threshold → medium)
-  - < 0.50: Uncertain (e.g., no usage data, ambiguous rule match → low, needs human input)
+- **confidence**: Calculate from the data — do NOT guess or use default values. Compute as follows:
+  - Start at 1.0 for each rule match
+  - Subtract 0.1 for each missing data point (e.g., last_used_days_ago is null when rule requires it)
+  - Subtract 0.05 for each edge case (e.g., savings exactly at threshold, not clearly above)
+  - Subtract 0.2 if you're applying a rule to a subscription it wasn't designed for
+  - Floor at 0.1, ceiling at 0.99
+  - Example: "unused 42 days, threshold 30, clear data" → 1.0 - 0 = 1.0 (high confidence)
+  - Example: "last_used is null, trial subscription, no usage data" → 1.0 - 0.1 = 0.9
+  - Example: "annual saves 16%, threshold 15%, barely above" → 1.0 - 0.05 = 0.95
+  - Example: "no usage data, ambiguous rule match" → 1.0 - 0.1 - 0.2 = 0.7 (low confidence)
 
 ## Critical Rules
 - target_plan MUST be from the available plans list. Never invent plan names.
