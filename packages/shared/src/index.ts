@@ -114,7 +114,7 @@ export interface Decision {
   target_plan_id: string | null;
   policy_rule_reference: string;
   reasoning: string;
-  confidence: number;
+  confidence: number | null;
   execution_status: ExecutionStatus;
   outcome_type: OutcomeType | null;
   authorized_amount_minor: number;
